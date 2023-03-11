@@ -42,13 +42,15 @@
             <div class="form-group">
                 <label for="doctor-select">Doktor seçin:</label>
                 <select class="form-control" id="doctor-select">
-                    <option value="doktor1">Doktor 1</option>
+                    <option value="" selected  hidden>Seçin</option>
+                    <option value="doktor1" >Doktor 1</option>
                     <option value="doktor2">Doktor 2</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="location-select">Yer:</label>
                 <select class="form-control" id="location-select">
+                    <option value="" selected hidden>Seçin</option>
                     <option value="loc1">Loya</option>
                     <option value="loc2">Online</option>
                 </select>

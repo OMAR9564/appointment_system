@@ -21,6 +21,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.bya.CalendarService.*" %>
 <%@ page import="com.bya.Helper" %>
+<%@ page import="com.google.api.client.util.DateTime" %>
 
 <%
 
@@ -37,40 +38,45 @@
     String doctorName = request.getParameter("doctor-name");
     String locName = request.getParameter("loc-name");
 
-    String numOfMonth = String.valueOf(helper.monthNameToNum(appointMonth));
+    String numOfMonth = helper.monthNameToNum(appointMonth);
+    String[] startEndHours = helper.hourToParts(appointTime);
+    String startHour = helper.HourUnUtc(startEndHours[0]);
+    String endHour = helper.HourUnUtc(startEndHours[1]);
 
     String title = custName + " " + custSurname;
     String description = custPhone + "-" + locName;
     String  location= locName;
-    String startDateTimeStr = appointYear + "-" numOfMonth + "-" + appointDay + "T" + appointTime + ":00";
+    String startDateTimeStr = appointYear + "-" + numOfMonth + "-" + appointDay + "T" + startHour + ":00";
+    String endDateTimeStr = appointYear + "-" + numOfMonth + "-" + appointDay + "T" + endHour + ":00";
 
-    LocalDateTime startDateTime = LocalDateTime.parse("2023-03-08T11:00");
-    LocalDateTime endDateTime = LocalDateTime.parse("2023-03-08T19:00");
+//    LocalDateTime startDateTime = LocalDateTime.parse(startDateTimeStr);
+//    LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeStr);
 
 
 
-//    try {
-//        CalendarService calendarService = new CalendarService();
-//
-////      calendarService.createEvent("sdf", "sdf", "2023-03-08T11:00", "2023-03-08T19:00");
-//        calendarService.createEvent(title, description, location, startDateTime, endDateTime);
-//        out.println("Etkinlik başarıyla oluşturuldu.");
-//    } catch (IOException | GeneralSecurityException e) {
-//        out.println("Etkinlik oluşturulurken bir hata oluştu: " + e.getMessage() + "\n");
-//    }
-//    try{
-//                CalendarService calendarService = new CalendarService();
-//
-//    if(calendarService.getCalendarList().size()<0){
-//        out.println("Takvim listesi bos");
-//    }else{
-//        for(int i = 0; i < calendarService.getCalendarList().size(); i++){
-//            out.println(calendarService.getCalendarList().get(i));
-//        }
-//    }
-//    }catch(IOException | GeneralSecurityException e){
-//        out.println("\nTakvim listesi islerken bir hata oluştu: " + e.getMessage());
-//    }
+
+
+    try {
+        CalendarService calendarService = new CalendarService();
+
+        calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
+        out.println("Etkinlik başarıyla oluşturuldu.");
+    } catch (IOException | GeneralSecurityException e) {
+        out.println("Etkinlik oluşturulurken bir hata oluştu: " + e.getMessage() + "\n");
+    }
+    try{
+                CalendarService calendarService = new CalendarService();
+
+    if(calendarService.getCalendarList().size()<0){
+        out.println("Takvim listesi bos");
+    }else{
+        for(int i = 0; i < calendarService.getCalendarList().size(); i++){
+            out.println(calendarService.getCalendarList().get(i));
+        }
+    }
+    }catch(IOException | GeneralSecurityException e){
+        out.println("\nTakvim listesi islerken bir hata oluştu: " + e.getMessage());
+    }
 %>
 <html>
 <head>

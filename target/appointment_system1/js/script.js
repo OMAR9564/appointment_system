@@ -101,7 +101,7 @@ let selectedHour = null;
 
 
 function selectDay(event) {
-    const hours = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
+    const hours = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00"];
     // Remove the active class from any previously selected day
     const activeDayEl = document.querySelector(".day.active");
     if (activeDayEl) {

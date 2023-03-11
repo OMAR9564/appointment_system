@@ -73,8 +73,8 @@ public class CalendarService {
         return items;
     }
 
-    public void createEvent(String title, String description, String location, LocalDateTime startDateTime2,
-                            LocalDateTime endDateTime2) throws IOException, GeneralSecurityException {
+    public void createEvent(String title, String description, String location, String startDateTimeStr,
+                            String endDateTimeStr) throws IOException, GeneralSecurityException {
 
         try {
             Event event = new Event()
@@ -82,13 +82,13 @@ public class CalendarService {
                     .setLocation(location)
                     .setDescription(description);
 
-            DateTime startDateTime = new DateTime("2023-03-10T09:00:00");
+            DateTime startDateTime = new DateTime(startDateTimeStr);
             EventDateTime start = new EventDateTime()
                     .setDateTime(startDateTime)
                     .setTimeZone(TIMEZONE);
             event.setStart(start);
 
-            DateTime endDateTime = new DateTime("2023-03-10T17:00:00");
+            DateTime endDateTime = new DateTime(endDateTimeStr);
             EventDateTime end = new EventDateTime()
                     .setDateTime(endDateTime)
                     .setTimeZone(TIMEZONE);
