@@ -1,0 +1,167 @@
+/* Ana renkler */
+:root {
+    --primary-color: #4A4A4A;
+    --secondary-color: #FFD166;
+    --accent-color: #06D6A0;
+}
+body {
+    background-color: #F9F9F9;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+/* Saatler */
+.hours {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.hours h2 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.hours .hour-buttons button {
+    width: calc(100% / 4 - 10px);
+    height: 50px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    background-color: var(--accent-color);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.hours .hour-buttons button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Takvim */
+.calendar {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header button {
+    border: none;
+    background-color: transparent;
+    color: var(--primary-color);
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.calendar-header button:hover {
+    color: var(--accent-color);
+}
+
+.calendar-header h2 {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.weekdays {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.weekday {
+    width: calc(100% / 7);
+    text-align: center;
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.days {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.day {
+    width: calc(100% / 7);
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary-color);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.day:hover {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+.day.active {
+    background-color: var(--accent-color);
+}
+.hours .hour-buttons .active {
+    background-color:var(--secondary-color);
+}
+#schedule-appointment {
+    background-color: #007bff;
+    border-color: #007bff;
+    margin-top: 20px;
+    display: none;
+}
+
+#schedule-appointment:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+#appointment-button {
+    margin: 0 auto;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.previous-day {
+    color: gray;
+}
+
+.current-day {
+    background-color: yellow;
+}
+
+
+.day.disabled {
+    color: gray;
+}
+.day.disabled:hover {
+    cursor: default;
+    background-color: white;
+}
+.today{
+     background-color: rgb(133, 146, 158, 0.5);
+ }
+.today.disabled:hover{
+    background-color: rgb(133, 146, 158, 0.5);
+}
