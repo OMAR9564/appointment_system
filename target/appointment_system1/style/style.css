@@ -4,7 +4,6 @@
     --secondary-color: #FFD166;
     --accent-color: #06D6A0;
 }
-
 body {
     background-color: #F9F9F9;
     font-family: Arial, sans-serif;
@@ -12,14 +11,13 @@ body {
     line-height: 1.5;
     color: #333;
 }
-
 /* Saatler */
 .hours {
     background-color: #fff;
     padding: 20px;
     margin-top: 30px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
     text-align: center;
 }
 
@@ -51,15 +49,10 @@ body {
     }
 }
 
-@media only screen and (max-width: 500px) {
-    .hours .hour-buttons button {
-        height: 40px;
-    }
-}
-
 .hours .hour-buttons button:hover {
     background-color: var(--secondary-color);
 }
+
 /* Takvim */
 .calendar {
     background-color: #fff;
@@ -166,6 +159,7 @@ body {
     background-color: yellow;
 }
 
+
 .day.disabled {
     color: gray;
 }
@@ -174,115 +168,86 @@ body {
     background-color: white;
 }
 .today{
-    background-color: rgb(133, 146, 158, 0.5);
-}
+     background-color: rgb(133, 146, 158, 0.5);
+ }
 .today.disabled:hover{
     background-color: rgb(133, 146, 158, 0.5);
 }
-
-/* Responsive tasarım /
-/ Büyük ekranlar */
-@media only screen and (min-width: 992px) {
+/* Normal stil */
+@media (min-width: 992px) {
+    /* Ana renkler */
+    :root {
+        --primary-color: #4A4A4A;
+        --secondary-color: #FFD166;
+        --accent-color: #06D6A0;
+    }
     body {
+        background-color: #F9F9F9;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        color: #333;
+    }
+    /* Saatler */
+    .hours {
+        background-color: #fff;
+        padding: 20px;
+        margin-top: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    .hours h2 {
+        color: var(--primary-color);
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .hours .hour-buttons button {
+        width: calc(100% / 4 - 10px);
+        height: 50px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
         font-size: 18px;
-    }
-    .hours {
-        display: flex;
-        justify-content: center;
-    }
-    .hours .hour-buttons button {
-        width: auto;
-        margin: 0 10px;
-    }
-    .calendar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .calendar-header {
-        width: 50%;
+        font-weight: 700;
+        color: #fff;
+        background-color: var(--accent-color);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
     }
 }
 
-/* Orta boy ekranlar */
-@media only screen and (max-width: 991px) and (min-width: 768px) {
+/* Özel stiller */
+@media (max-width: 991px) {
+    /* Ana renkler */
+    :root {
+        --primary-color: #4A4A4A;
+        --secondary-color: #FFD166;
+        --accent-color: #06D6A0;
+    }
     body {
+        background-color: #F9F9F9;
+        font-family: Arial, sans-serif;
         font-size: 16px;
+        line-height: 1.5;
+        color: #333;
     }
-
-    .hours .hour-buttons button {
-        font-size: 16px;
-        height: 40px;
-    }
-
-    .calendar {
-        padding: 10px;
-        margin-top: 20px;
-    }
-
-    .calendar-header h2 {
-        font-size: 20px;
-    }
-
-    .weekday {
-        font-size: 16px;
-    }
-
-    .day {
-        height: 40px;
-        font-size: 16px;
-    }
-
-    #appointment-form label {
-        font-size: 16px;
-    }
-
-    #appointment-form input[type="text"],
-    #appointment-form input[type="email"],
-    #appointment-form input[type="tel"],
-    #appointment-form textarea {
-        font-size: 16px;
-        padding: 10px;
-    }
-
-    #appointment-form input[type="submit"] {
-        font-size: 16px;
-        padding: 10px 20px;
-    }
-}
-@media only screen and (max-width: 767px) {
-    body {
-        font-size: 14px;
-    }
+    /* Saatler */
     .hours {
-        padding: 10px;
-        margin-top: 20px;
+        margin-top: 15px;
     }
+
     .hours h2 {
         font-size: 20px;
         margin-bottom: 10px;
     }
+
     .hours .hour-buttons button {
+        width: calc(100% / 3 - 10px);
         height: 40px;
+        margin: 5px;
         font-size: 16px;
-        margin: 2px;
-    }
-    .calendar {
-        padding: 10px;
-        margin-top: 20px;
-    }
-    .calendar-header h2 {
-        font-size: 20px;
-    }
-    .weekday {
-        font-size: 16px;
-    }
-    .day {
-        height: 40px;
-        font-size: 16px;
-    }
-    #appointment-button {
-        font-size: 1rem;
-        padding: 8px 16px;
     }
 }
