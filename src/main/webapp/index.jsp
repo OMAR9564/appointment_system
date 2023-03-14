@@ -6,13 +6,46 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
+
+<%
+    Boolean appointmentMade = null;
+    String requestStr = null;
+
+    String appointmentMadeStr = "Randevunuz Basirili Bir Sekilde Alindi.";
+    String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
+
+    String appointmentMadeHeader = "Randevunuz Alindi.";
+    String appointmentNotMadeHeader = "Bir Hata Olustu!!";
+
+
+        requestStr = request.getParameter("message");
+        if(requestStr != null && requestStr.equals("true")) {
+            appointmentMade = true;
+        }
+        else {
+            appointmentMade = false;
+        }
+
+
+
+
+
+
+        %>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Psikoloji Uzmanı Randevu Sistemi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 
 
 
@@ -64,13 +97,14 @@
                 </div>
                 <div class="calendar-body">
                     <div class="weekdays">
-                        <div class="weekday">Paz</div>
                         <div class="weekday">Pzt</div>
                         <div class="weekday">Sal</div>
                         <div class="weekday">Çar</div>
                         <div class="weekday">Per</div>
                         <div class="weekday">Cum</div>
                         <div class="weekday">Cmt</div>
+                        <div class="weekday">Paz</div>
+
                     </div>
                     <div class="days"></div>
                 </div>
@@ -94,20 +128,116 @@
                     <input type="hidden" id="doctor-name" name="doctor-name" value="">
                     <input type="hidden" id="loc-name" name="loc-name" value="">
 
-
-
-
                     <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment" name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
 
                 </form>
 
             </div>
+
+            <!-- Button trigger modal -->
+            <button type="button" id="sucsessModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sucsessModal" hidden="hidden">
+                Launch demo modal
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="sucsessModal" tabindex="-1" aria-labelledby="sucsess-modal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="sucsess-modal">
+                                <%
+                                    if(appointmentMade){
+                                        out.println(appointmentMadeHeader);
+                                    }
+                                    else{
+                                        out.println(appointmentNotMadeHeader);
+                                    }
+                            %>
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <%
+                                if(appointmentMade){
+                                    out.println(appointmentMadeStr);
+                                }
+                                else{
+                                    out.println(appointmentNotMadeStr);
+                                }
+                            %>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-floating mt-2">
+                <input type="text" class="form-control" id="floatingInputGrid" placeholder="xxx-xxx">
+                <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
+                <button  type="button" class="btn btn-info mt-2">Info</button>
+            </div>
+
+            <%
+                Cookie cookie = null;
+                Cookie[] cookies = null;
+
+                String firstLastNameCo = null;
+                String appointDayTimeCo = null;
+                String locNameCo = null;
+
+                cookies = request.getCookies();
+
+                if( cookies != null ) {
+                    for (int i = 0; i < cookies.length; i++) {
+                        cookie = cookies[i];
+                        if(cookie.getName().equals("first_last_name")){
+                            firstLastNameCo = cookie.getValue();
+                        }
+                        if (cookie.getName().equals("appoint_day_time")){
+                            appointDayTimeCo = cookie.getValue();
+                        }
+                        if (cookie.getName().equals("loc_name")){
+                            locNameCo = cookie.getValue();
+                        }
+                    }
+                }
+                if(firstLastNameCo != null && appointDayTimeCo != null && locNameCo != null){
+            %>
+
+
+            <ol class="list-group list-group-numbered mt-5">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold"><%out.println(firstLastNameCo);%></div>
+                        <%out.println(appointDayTimeCo);%>
+                    </div>
+                    <span class="badge bg-primary rounded-pill"><%out.println(locNameCo);%></span>
+                </li>
+
+            </ol>
+            <%}%>
+
+
         </div>
     </div>
 
 </div>
 <script src="js/script.js"></script>
 <script>
+
+        <% if (requestStr != null && requestStr.length() > 1) { %>
+                clickButton();
+        <% } %>
+
+        function clickButton() {
+            var myButton = document.getElementById("sucsessModalBtn");
+            myButton.click();
+        }
+
     const custnNameIn = document.getElementById('name-input');
     const custnSurnameIn = document.getElementById('surname-input');
     const custnPhoneIn = document.getElementById('phone-input');
@@ -228,6 +358,8 @@
     } else {
         nextMonthBtn.style.display = "block";
     }
+
+
 </script>
 </body>
 </html>

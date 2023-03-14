@@ -33,12 +33,15 @@ public class CalendarService {
     String homeDirectory = System.getProperty("user.home");
     String TOKENS_DIRECTORY_PATH = homeDirectory + "/tokens";
 
+    static int errorCount = 0;
+
     private static final NetHttpTransport HTTP_TRANSPORT;
 
     static {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         } catch (GeneralSecurityException | IOException e) {
+            errorCount += 1;
             throw new RuntimeException("Error initializing HTTP transport.", e);
         }
     }
@@ -48,6 +51,7 @@ public class CalendarService {
         try {
             credential = authorize();
         } catch (GeneralSecurityException e) {
+            errorCount += 1;
             throw new RuntimeException(e);
         }
         return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
@@ -106,10 +110,14 @@ public class CalendarService {
             event.setReminders(reminders);
             event = getCalendarService().events().insert(CALENDAR_ID, event).execute();
             System.out.printf("Event created: %s\n", event.getHtmlLink());
-
         }catch (Exception e){
+            errorCount += 1;
             System.out.println("------>" + e);
         }
+    }
+
+    public int getErrorCount(){
+        return errorCount;
     }
 }
 

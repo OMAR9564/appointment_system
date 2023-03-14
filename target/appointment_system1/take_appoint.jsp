@@ -1,7 +1,6 @@
 <%--<%@page import="com.google.api.services.calendar.Calendar"%>
 <%@page import="com.google.api.services.calendar.model.CalendarListEntry"%>
 <%@page import="com.google.api.services.calendar.model.CalendarListEntry"%>--%>
-<%@page import="java.util.List"%>
 <%@page import="java.security.GeneralSecurityException"%>
 <%@page import="java.io.IOException"%>
 <%@page import="com.bya.CalendarService"%>
@@ -22,8 +21,12 @@
 <%@ page import="com.bya.CalendarService.*" %>
 <%@ page import="com.bya.Helper" %>
 <%@ page import="com.google.api.client.util.DateTime" %>
+<%@ page import="java.util.Timer" %>
+<%@ page import="java.util.*" %>
 
 <%
+    final String appointmentMade;
+
 
     Helper helper = new Helper();
 
@@ -37,6 +40,8 @@
     String custPhone = request.getParameter("cust-phone");
     String doctorName = request.getParameter("doctor-name");
     String locName = request.getParameter("loc-name");
+
+
 
     String numOfMonth = helper.monthNameToNum(appointMonth);
     String[] startEndHours = helper.hourToParts(appointTime);
@@ -56,27 +61,54 @@
 
 
 
-    try {
+
         CalendarService calendarService = new CalendarService();
 
         calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
-        out.println("Etkinlik başarıyla oluşturuldu.");
-    } catch (IOException | GeneralSecurityException e) {
-        out.println("Etkinlik oluşturulurken bir hata oluştu: " + e.getMessage() + "\n");
-    }
-    try{
-                CalendarService calendarService = new CalendarService();
+        int errorCount = calendarService.getErrorCount();
+        if(errorCount == 0) {
+            appointmentMade = "true";
+            response.sendRedirect("index.jsp?message=" + appointmentMade);
 
-    if(calendarService.getCalendarList().size()<0){
-        out.println("Takvim listesi bos");
-    }else{
-        for(int i = 0; i < calendarService.getCalendarList().size(); i++){
-            out.println(calendarService.getCalendarList().get(i));
         }
-    }
-    }catch(IOException | GeneralSecurityException e){
-        out.println("\nTakvim listesi islerken bir hata oluştu: " + e.getMessage());
-    }
+        else {
+            appointmentMade = "false";
+            response.sendRedirect("index.jsp?message=" + appointmentMade);
+
+        }
+
+
+
+//    try{
+//                CalendarService calendarService = new CalendarService();
+//
+//    if(calendarService.getCalendarList().size()<0){
+//        out.println("Takvim listesi bos");
+//    }else{
+//        for(int i = 0; i < calendarService.getCalendarList().size(); i++){
+//            out.println(calendarService.getCalendarList().get(i));
+//        }
+//    }
+//    }catch(IOException | GeneralSecurityException e){
+//        out.println("\nTakvim listesi islerken bir hata oluştu: " + e.getMessage());
+//    }
+
+
+    Cookie firstLastNameCo = new Cookie("first_last_name", request.getParameter("cust-name") + " " + request.getParameter("cust-surname"));
+    Cookie appointDayTimeCo = new Cookie("appoint_day_time", request.getParameter("selected-hour") + " " + request.getParameter("selected-dayIn"));
+    Cookie locNameCo = new Cookie("loc_name", request.getParameter("loc-name"));
+
+    firstLastNameCo.setMaxAge((60));
+    appointDayTimeCo.setMaxAge(60);
+    locNameCo.setMaxAge(60);
+
+    response.addCookie(firstLastNameCo);
+    response.addCookie(appointDayTimeCo);
+    response.addCookie(locNameCo);
+
+
+
+
 %>
 <html>
 <head>

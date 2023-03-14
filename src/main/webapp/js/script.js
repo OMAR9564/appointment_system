@@ -30,7 +30,7 @@ function showMonth(month, year) {
     const numDays = getNumDaysInMonth(month, year);
 
     // Get the index of the first day of the month (0-6, Sun-Sat)
-    const firstDayIndex = new Date(year, month, 1).getDay();
+    const firstDayIndex = new Date(year, month, 0).getDay();
 
     // Add empty day elements for days before the first day of the month
     for (let i = 0; i < firstDayIndex; i++) {
