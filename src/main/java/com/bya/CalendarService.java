@@ -41,7 +41,6 @@ public class CalendarService {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         } catch (GeneralSecurityException | IOException e) {
-            errorCount += 1;
             throw new RuntimeException("Error initializing HTTP transport.", e);
         }
     }

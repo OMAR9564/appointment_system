@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.bya.Helper" %><%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
@@ -174,46 +174,61 @@
             </div>
 
 
-
-            <div class="form-floating mt-2">
-                <input type="text" class="form-control" id="floatingInputGrid" placeholder="xxx-xxx">
-                <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
-                <button  type="button" class="btn btn-info mt-2">Info</button>
+            <div class="row">
+                <div class = "col-10">
+                    <div class=" form-floating mt-2">
+                        <input type="text" class="form-control" id="floatingInputGrid" placeholder="xxx-xxx">
+                        <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
+                    </div>
+                </div>
+                <div class = "col-2">
+                    <button  type="button" class="btn btn-info mt-2 btn-lg">Info</button>
+                </div>
             </div>
 
             <%
                 Cookie cookie = null;
                 Cookie[] cookies = null;
 
-                String firstLastNameCo = null;
-                String appointDayTimeCo = null;
+                String firstNameCo = null;
+                String lastNameCo = null;
+                String appointDayCo = null;
+                String appointTimeCo = null;
                 String locNameCo = null;
+
 
                 cookies = request.getCookies();
 
                 if( cookies != null ) {
                     for (int i = 0; i < cookies.length; i++) {
                         cookie = cookies[i];
-                        if(cookie.getName().equals("first_last_name")){
-                            firstLastNameCo = cookie.getValue();
+                        if(cookie.getName().equals("first_name")){
+                            firstNameCo = cookie.getValue();
                         }
-                        if (cookie.getName().equals("appoint_day_time")){
-                            appointDayTimeCo = cookie.getValue();
+                        if(cookie.getName().equals("last_name")){
+                            lastNameCo = cookie.getValue();
+                        }
+                        if(cookie.getName().equals("appoint_day")){
+                            appointDayCo = cookie.getValue();
+                        }
+                        if (cookie.getName().equals("appoint_time")){
+                            appointTimeCo = cookie.getValue();
                         }
                         if (cookie.getName().equals("loc_name")){
                             locNameCo = cookie.getValue();
                         }
                     }
                 }
-                if(firstLastNameCo != null && appointDayTimeCo != null && locNameCo != null){
+                if(firstNameCo != null && lastNameCo != null && appointDayCo != null && appointTimeCo != null && locNameCo != null){
+                    Helper helper = new Helper();
             %>
 
 
             <ol class="list-group list-group-numbered mt-5">
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
-                        <div class="fw-bold"><%out.println(firstLastNameCo);%></div>
-                        <%out.println(appointDayTimeCo);%>
+                        <div class="fw-bold"><%out.println(firstNameCo + " " + lastNameCo);%></div>
+                        <%out.println("Ayın " + appointDayCo + helper.monthEki(Integer.parseInt(appointDayCo)) ); %> <br><%out.println(" Saat " + appointTimeCo);%>
                     </div>
                     <span class="badge bg-primary rounded-pill"><%out.println(locNameCo);%></span>
                 </li>

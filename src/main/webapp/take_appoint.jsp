@@ -66,6 +66,32 @@
 
         calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
         int errorCount = calendarService.getErrorCount();
+        if(errorCount == 0){
+            try{
+                Cookie firstNameCo = new Cookie("first_name", custName);
+                Cookie lastNameCo = new Cookie("last_name", custSurname);
+                Cookie appointDayCo = new Cookie("appoint_day", appointDay);
+                Cookie appointTimeCo = new Cookie("appoint_time", appointTime);
+                Cookie locNameCo = new Cookie("loc_name", locName);
+
+                firstNameCo.setMaxAge((60));
+                lastNameCo.setMaxAge(60);
+                appointDayCo.setMaxAge(60);
+                appointTimeCo.setMaxAge(60);
+                locNameCo.setMaxAge(60);
+
+                response.addCookie( firstNameCo );
+                response.addCookie( lastNameCo );
+                response.addCookie( appointDayCo );
+                response.addCookie( appointTimeCo );
+                response.addCookie( locNameCo );
+
+            }catch(Exception e){
+                System.out.println(e);
+                errorCount += 1;
+            }
+
+        }
         if(errorCount == 0) {
             appointmentMade = "true";
             response.sendRedirect("index.jsp?message=" + appointmentMade);
@@ -94,17 +120,7 @@
 //    }
 
 
-    Cookie firstLastNameCo = new Cookie("first_last_name", request.getParameter("cust-name") + " " + request.getParameter("cust-surname"));
-    Cookie appointDayTimeCo = new Cookie("appoint_day_time", request.getParameter("selected-hour") + " " + request.getParameter("selected-dayIn"));
-    Cookie locNameCo = new Cookie("loc_name", request.getParameter("loc-name"));
 
-    firstLastNameCo.setMaxAge((60));
-    appointDayTimeCo.setMaxAge(60);
-    locNameCo.setMaxAge(60);
-
-    response.addCookie(firstLastNameCo);
-    response.addCookie(appointDayTimeCo);
-    response.addCookie(locNameCo);
 
 
 

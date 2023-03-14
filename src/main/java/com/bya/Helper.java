@@ -78,4 +78,36 @@ public class Helper {
         return result.toString();
     }
 
+    public String monthEki(int numOfDay){
+        int sonucBol = 0;
+        int sonucYuzde = numOfDay % 10;
+        if(sonucYuzde == 0){
+            sonucBol = numOfDay / 10;
+        }
+        String ek = null;
+        if(sonucBol == 1 || sonucBol == 2 || sonucBol == 3){
+            if(sonucBol == 1 || sonucBol == 3){
+                ek = "'unda";
+            }
+            if(sonucBol == 2){
+                ek = "'sinde";
+            }
+        }
+        else{
+            if(sonucYuzde ==  1 || sonucYuzde ==  5 || sonucYuzde ==  8){
+                ek = "'inde";
+            }
+            if(sonucYuzde ==  2 || sonucYuzde ==  7){
+                ek = "'sinde";
+            }
+            if(sonucYuzde ==  3 || sonucYuzde ==  4 || sonucYuzde == 9){
+                ek = "'unde";
+            }
+            if(sonucYuzde ==  6){
+                ek = "'sında";
+            }
+        }
+
+        return ek;
+    }
 }
