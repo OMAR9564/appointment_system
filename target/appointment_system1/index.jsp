@@ -61,12 +61,12 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="name-input">Adınız:</label>
-                <input type="text" class="form-control" id="name-input" name="name-input" required>
+                <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required>
             </div>
 
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
-                <input type="text" class="form-control" id="surname-input" name="surname-input" required>
+                <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required>
             </div>
             <div class="form-group">
                 <label for="phone-input">Telefon Numaranız:</label>
@@ -202,19 +202,19 @@
                 if( cookies != null ) {
                     for (int i = 0; i < cookies.length; i++) {
                         cookie = cookies[i];
-                        if(cookie.getName().equals("first_name")){
+                        if(cookie.getName().equals("firN")){
                             firstNameCo = cookie.getValue();
                         }
-                        if(cookie.getName().equals("last_name")){
+                        if(cookie.getName().equals("lasN")){
                             lastNameCo = cookie.getValue();
                         }
-                        if(cookie.getName().equals("appoint_day")){
+                        if(cookie.getName().equals("appD")){
                             appointDayCo = cookie.getValue();
                         }
-                        if (cookie.getName().equals("appoint_time")){
+                        if (cookie.getName().equals("appT")){
                             appointTimeCo = cookie.getValue();
                         }
-                        if (cookie.getName().equals("loc_name")){
+                        if (cookie.getName().equals("locN")){
                             locNameCo = cookie.getValue();
                         }
                     }

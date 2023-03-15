@@ -1,10 +1,12 @@
 package com.bya;
 
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 public class Helper {
     public String monthNameToNum(String monthName) {
@@ -59,7 +61,7 @@ public class Helper {
         return partsOfHour;
     }
 
-    public  String HourUnUtc(String timeString){
+    public  String hourUnUtc(String timeString){
         // String değerini bir LocalTime nesnesine dönüştürün
         LocalTime localTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
 
@@ -109,5 +111,28 @@ public class Helper {
         }
 
         return ek;
+    }
+
+    public long dateToSec(String dateStr){
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+
+        long dateInSec;
+        Date date = null;
+        try {
+            date = formatter.parse(dateStr);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        long plusUtc = (60*60)*6;
+
+        Date now = new Date(); // Şu anki zaman
+        long diffInMilliSec = date.getTime() - now.getTime();
+        long diffInSec = (diffInMilliSec / 1000) + plusUtc;
+        System.out.println(diffInSec);
+
+            return diffInSec;
+
+
     }
 }

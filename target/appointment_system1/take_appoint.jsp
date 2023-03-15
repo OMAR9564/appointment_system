@@ -26,10 +26,11 @@
 
 <%
     final String appointmentMade;
+    long dateInSec;
+
 
 
     Helper helper = new Helper();
-
 
     String appointYear = request.getParameter("selected-year");
     String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
@@ -42,11 +43,10 @@
     String locName = request.getParameter("loc-name");
 
 
-
     String numOfMonth = helper.monthNameToNum(appointMonth);
     String[] startEndHours = helper.hourToParts(appointTime);
-    String startHour = helper.HourUnUtc(startEndHours[0]);
-    String endHour = helper.HourUnUtc(startEndHours[1]);
+    String startHour = helper.hourUnUtc(startEndHours[0]);
+    String endHour = helper.hourUnUtc(startEndHours[1]);
 
     String title = custName + " " + custSurname;
     String description = custPhone + "-" + locName;
@@ -58,27 +58,29 @@
 //    LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeStr);
 
 
+    dateInSec = helper.dateToSec(startDateTimeStr);
 
 
 
 
         CalendarService calendarService = new CalendarService();
-
+        calendarService.resetErrorCount();
         calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
+
         int errorCount = calendarService.getErrorCount();
         if(errorCount == 0){
             try{
-                Cookie firstNameCo = new Cookie("first_name", custName);
-                Cookie lastNameCo = new Cookie("last_name", custSurname);
-                Cookie appointDayCo = new Cookie("appoint_day", appointDay);
-                Cookie appointTimeCo = new Cookie("appoint_time", appointTime);
-                Cookie locNameCo = new Cookie("loc_name", locName);
+                Cookie firstNameCo = new Cookie("firN", custName);
+                Cookie lastNameCo = new Cookie("lasN", custSurname);
+                Cookie appointDayCo = new Cookie("appD", appointDay);
+                Cookie appointTimeCo = new Cookie("appT", appointTime);
+                Cookie locNameCo = new Cookie("locN", locName);
 
-                firstNameCo.setMaxAge((60));
-                lastNameCo.setMaxAge(60);
-                appointDayCo.setMaxAge(60);
-                appointTimeCo.setMaxAge(60);
-                locNameCo.setMaxAge(60);
+                firstNameCo.setMaxAge(((int)dateInSec));
+                lastNameCo.setMaxAge(((int)dateInSec));
+                appointDayCo.setMaxAge(((int)dateInSec));
+                appointTimeCo.setMaxAge(((int)dateInSec));
+                locNameCo.setMaxAge(((int)dateInSec));
 
                 response.addCookie( firstNameCo );
                 response.addCookie( lastNameCo );
