@@ -1,5 +1,6 @@
 package com.bya;
 
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,8 +8,13 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Helper {
+
+    String rndNum = null;
+
     public String monthNameToNum(String monthName) {
         String num;
         switch (monthName.toLowerCase()) {
@@ -135,4 +141,107 @@ public class Helper {
 
 
     }
+
+    public int randNum(){
+        int randomNumberSixDigits = new Random().nextInt(900000) + 100000;
+        System.out.println("6 haneli rastgele sayı: " + randomNumberSixDigits);
+        return randomNumberSixDigits;
+    }
+
+    public void insertRandomNumToTxt(String randNum, String startDateTimeStr){
+        if(!checkRandomNumIsHere(randNum)) {
+            try {
+                FileWriter myWriter = new FileWriter("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt", true);
+                myWriter.write("\n" + randNum() + "_" + startDateTimeStr);
+                myWriter.close();
+                System.out.println("Dosya başarıyla yazıldı.");
+            } catch (IOException e) {
+                System.out.println("Dosya yazılırken bir hata oluştu.");
+                e.printStackTrace();
+            }
+        }else{
+            System.out.println("Rakam mevcut");
+        }
+    }
+    public Boolean checkRandomNumIsHere(String randNum){
+        String rndNumIsFind = null;
+        Boolean numIsHere = false;
+        try {
+            File myFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt");
+            Scanner myReader = new Scanner(myFile);
+            String rN = randNum;
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                if((data.equals(rN))){
+                    numIsHere = true;
+                    break;
+                }
+                else
+                    numIsHere = false;
+                System.out.println("Data===> " + data);
+            }
+            myReader.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Dosya bulunamadı.");
+            e.printStackTrace();
+        }
+        return numIsHere;
+    }
+    public Boolean checkDateIsFinishInTxt(String startDateTimeStr){
+        Boolean dateIsFinish = false;
+        try {
+            File myFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt");
+            Scanner myReader = new Scanner(myFile);
+            String dF = startDateTimeStr;
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                if(!data.equals("")) {
+                    String[] parts = data.split("_");
+                    String afterUnderSc = parts[1];
+                    if ((parts[1].equals(dF))) {
+                        dateIsFinish = true;
+                        removeLineOfTxt(data);
+                        break;
+                    } else
+                        dateIsFinish = false;
+                    System.out.println("Data===> " + data);
+                }
+            }
+            myReader.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Dosya bulunamadı.");
+            e.printStackTrace();
+        }
+        return dateIsFinish;
+    }
+
+    public void removeLineOfTxt(String str){
+        try {
+            File inputFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt");
+            File tempFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/temp.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String lineToRemove = str;
+            String currentLine;
+
+            while((currentLine = reader.readLine()) != null) {
+                // check if the line contains the string to be removed
+                if(currentLine.contains(lineToRemove)) continue;
+                writer.write(currentLine + System.getProperty("line.separator"));
+            }
+            writer.close();
+            reader.close();
+            boolean successful = tempFile.renameTo(inputFile);
+            if (!successful) {
+                System.out.println("Dosya silinemedi.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

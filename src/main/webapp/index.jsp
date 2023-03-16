@@ -1,4 +1,5 @@
-<%@ page import="com.bya.Helper" %><%--
+<%@ page import="com.bya.Helper" %>
+<%@ page import="java.net.URLDecoder" %><%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
@@ -192,9 +193,12 @@
 
                 String firstNameCo = null;
                 String lastNameCo = null;
+                String firstNameWithSpaceCo = null;
+                String lastNamWithSpaceCo = null;
                 String appointDayCo = null;
                 String appointTimeCo = null;
                 String locNameCo = null;
+                String appointIdCo = null;
 
 
                 cookies = request.getCookies();
@@ -203,10 +207,10 @@
                     for (int i = 0; i < cookies.length; i++) {
                         cookie = cookies[i];
                         if(cookie.getName().equals("firN")){
-                            firstNameCo = cookie.getValue();
+                            firstNameCo = URLDecoder.decode(cookie.getValue(), "UTF-8");
                         }
                         if(cookie.getName().equals("lasN")){
-                            lastNameCo = cookie.getValue();
+                            lastNameCo = URLDecoder.decode(cookie.getValue(), "UTF-8");
                         }
                         if(cookie.getName().equals("appD")){
                             appointDayCo = cookie.getValue();
@@ -217,20 +221,31 @@
                         if (cookie.getName().equals("locN")){
                             locNameCo = cookie.getValue();
                         }
+                        if (cookie.getName().equals("appId")){
+                            appointIdCo = cookie.getValue();
+                        }
                     }
                 }
                 if(firstNameCo != null && lastNameCo != null && appointDayCo != null && appointTimeCo != null && locNameCo != null){
                     Helper helper = new Helper();
+                    firstNameWithSpaceCo =firstNameCo.replace("-", " ");
+                    lastNamWithSpaceCo = lastNameCo.replace("-", " ");
+
+//                    String rds = String.valueOf(helper.randNum());
+//                    helper.insertRandomNumToTxt(rds, "dsafasf");
             %>
 
 
             <ol class="list-group list-group-numbered mt-5">
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
-                        <div class="fw-bold"><%out.println(firstNameCo + " " + lastNameCo);%></div>
+                        <div class="fw-bold"><%out.println(firstNameWithSpaceCo + " " + lastNamWithSpaceCo);%></div>
                         <%out.println("Ayın " + appointDayCo + helper.monthEki(Integer.parseInt(appointDayCo)) ); %> <br><%out.println(" Saat " + appointTimeCo);%>
                     </div>
-                    <span class="badge bg-primary rounded-pill"><%out.println(locNameCo);%></span>
+                    <span class="badge bg-primary rounded-pill"><%out.println(appointIdCo);%></span>
+                    <br>
+                    <span class="badge bg-success rounded-pill"><%out.println(locNameCo);%></span>
+
                 </li>
 
             </ol>

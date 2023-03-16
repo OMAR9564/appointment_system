@@ -23,6 +23,7 @@
 <%@ page import="com.google.api.client.util.DateTime" %>
 <%@ page import="java.util.Timer" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <%
     final String appointmentMade;
@@ -36,8 +37,8 @@
     String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
     String appointDay = request.getParameter("selected-dayIn");
     String appointTime = request.getParameter("selected-hour");
-    String custName = request.getParameter("cust-name");
-    String custSurname = request.getParameter("cust-surname");
+    String custName = new String(request.getParameter("cust-name").getBytes("ISO-8859-9"), "UTF-8");
+    String custSurname = new String(request.getParameter("cust-surname").getBytes("ISO-8859-9"), "UTF-8");
     String custPhone = request.getParameter("cust-phone");
     String doctorName = request.getParameter("doctor-name");
     String locName = request.getParameter("loc-name");
@@ -70,23 +71,39 @@
         int errorCount = calendarService.getErrorCount();
         if(errorCount == 0){
             try{
-                Cookie firstNameCo = new Cookie("firN", custName);
-                Cookie lastNameCo = new Cookie("lasN", custSurname);
+                String rndNum = null;
+                String custNameWithOutSpace = custName.replace(" ", "-");
+                String custSurnameWithOutSpace = custSurname.replace(" ", "-");
+
+                rndNum = String.valueOf(helper.randNum());
+
+
+                Cookie firstNameCo = new Cookie("firN", URLEncoder.encode(custNameWithOutSpace, "UTF-8"));
+                Cookie lastNameCo = new Cookie("lasN", URLEncoder.encode(custSurnameWithOutSpace, "UTF-8"));
                 Cookie appointDayCo = new Cookie("appD", appointDay);
                 Cookie appointTimeCo = new Cookie("appT", appointTime);
                 Cookie locNameCo = new Cookie("locN", locName);
+                Cookie appointIdCo = new Cookie("appId", rndNum);
+
 
                 firstNameCo.setMaxAge(((int)dateInSec));
                 lastNameCo.setMaxAge(((int)dateInSec));
                 appointDayCo.setMaxAge(((int)dateInSec));
                 appointTimeCo.setMaxAge(((int)dateInSec));
                 locNameCo.setMaxAge(((int)dateInSec));
+                appointIdCo.setMaxAge(((int)dateInSec));
+
 
                 response.addCookie( firstNameCo );
                 response.addCookie( lastNameCo );
                 response.addCookie( appointDayCo );
                 response.addCookie( appointTimeCo );
                 response.addCookie( locNameCo );
+                response.addCookie( appointIdCo );
+
+                helper.checkDateIsFinishInTxt(startDateTimeStr);
+                helper.insertRandomNumToTxt(rndNum, startDateTimeStr);
+
 
             }catch(Exception e){
                 System.out.println(e);
