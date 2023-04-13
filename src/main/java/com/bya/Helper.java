@@ -1,15 +1,17 @@
 package com.bya;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+
+import com.google.gson.Gson;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Helper {
 
@@ -243,5 +245,27 @@ public class Helper {
             e.printStackTrace();
         }
     }
+
+    public void JsonFileWriter() {
+        ConSql conSql = new ConSql();
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        String query = "SELECT `hour` FROM `appointments` WHERE `date`= \"2023-03-17\"";
+        Gson gson = new Gson();
+        String jsonString = "";
+        try (FileWriter fileWriter = new FileWriter("myArray.json")) {
+            sqlInfo = conSql.readHourData(query);
+            String[] hourArray = new String[sqlInfo.size()];
+            for(int i = 0; i < sqlInfo.size(); i++){
+                hourArray[i] = sqlInfo.get(i).getAppHour();
+            }
+            jsonString = gson.toJson(hourArray);
+            fileWriter.write(jsonString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

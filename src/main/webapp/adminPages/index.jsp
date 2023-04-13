@@ -1,4 +1,9 @@
-<%--
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="com.bya.ConSql" %>
+<%@ page import="com.bya.GetInfo" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %><%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
@@ -7,7 +12,18 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
 
+  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  LocalDate today = LocalDate.now();
+  String strToday = today.format(formatter);
+  strToday = "2023-03-17";
+  ConSql conSql = new ConSql();
+  int count = 0;
+  ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+
+  sqlInfo = conSql.readData("SELECT * FROM appointments Where `date` = '" +strToday+"'");
+%>
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -91,10 +107,10 @@
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-cart"></i>
+                      <i class="bi bi-person"></i>
                     </div>
                     <div class="ps-3">
-                        <h6><%out.println(((String)session.getAttribute("ReverasionCount")));%></h6>
+                        <h6><%out.println(sqlInfo.size());%></h6>
 
                     </div>
                   </div>
@@ -141,28 +157,28 @@
                       </tr>
                     </thead>
                     <tbody>
+                    <%
+                        for(int i = 0; i < sqlInfo.size(); i++){
+                          sqlInfo.get(i).getCustNameSurname();
+                          sqlInfo.get(i).getCustNameSurname();
+                          sqlInfo.get(i).getCustNameSurname();
+                          sqlInfo.get(i).getCustNameSurname();
+                    %>
+                    <tr>
+                      <th class="pt-3">#<%out.println(i+1);%></th>
+                      <td><%out.println(sqlInfo.get(i).getCustNameSurname());%></td>
+                      <td><%out.println(sqlInfo.get(i).getAppHour());%></td>
+                      <td><%out.println(sqlInfo.get(i).getCustPhone());%></td>
+                      <td><%out.println(sqlInfo.get(i).getAppHour());%></td>
+                      <td><button type="button" class="btn btn-info">Info</button></td>
+                      <td><button type="button" class="btn btn-danger">Danger</button></td>
 
-                      <tr>
-                        <th class="pt-3">#1</th>
-                        <td>OMAR ALFAROUK</td>
-                        <td>12:00-13:00</td>
-                        <td>5385028957</td>
-                        <td>LOYA</td>
-                        <td><button type="button" class="btn btn-info">Info</button></td>
-                        <td><button type="button" class="btn btn-danger">Danger</button></td>
 
+                    </tr>
+                    <%
+                      }
+                    %>
 
-                      </tr>
-                      <tr>
-                        <th class="pt-3">#2</th>
-                        <td>KAITO KID</td>
-                        <td>13:00-14:00</td>
-                        <td>5385028957</td>
-                        <td>ONLINE</td>
-                        <td><button type="button" class="btn btn-info">Info</button></td>
-                        <td><button type="button" class="btn btn-danger">Danger</button></td>
-
-                      </tr>
                     </tbody>
                   </table>
 
@@ -174,6 +190,9 @@
                 </div>
                 <div class = "col-7">
                   <button class="btn btn-secondary btn-lg" type="button" style="padding:30px;">Tüm Randevular</button>
+                </div>
+                <div class = "col-7 mt-4">
+                  <button class="btn btn-info btn-lg" type="button" style="padding:30px;">Sayfa Ayarlari</button>
                 </div>
 
               </div>

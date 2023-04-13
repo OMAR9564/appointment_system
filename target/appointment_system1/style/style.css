@@ -173,6 +173,11 @@ body {
 .today.disabled:hover{
     background-color: rgb(133, 146, 158, 0.5);
 }
+
+#error-message {
+    color: red;
+    margin-bottom: 10px;
+}
 /* Normal stil */
 @media (min-width: 992px) {
     /* Ana renkler */

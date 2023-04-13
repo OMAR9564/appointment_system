@@ -1,5 +1,8 @@
-<%@ page import="com.bya.Helper" %>
-<%@ page import="java.net.URLDecoder" %><%--
+        <%@ page import="com.bya.Helper" %>
+<%@ page import="java.net.URLDecoder" %>
+        <%@ page import="com.bya.ConSql" %>
+        <%@ page import="java.util.ArrayList" %>
+        <%@ page import="com.bya.GetInfo" %><%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
@@ -20,21 +23,20 @@
     String appointmentMadeHeader = "Randevunuz Alindi.";
     String appointmentNotMadeHeader = "Bir Hata Olustu!!";
 
-
-        requestStr = request.getParameter("message");
-        if(requestStr != null && requestStr.equals("true")) {
-            appointmentMade = true;
-        }
-        else {
-            appointmentMade = false;
-        }
+    String locNameCompany = "Loya";
+    String locNameOnline = "Online";
+    String locName = "";
 
 
+    requestStr = request.getParameter("message");
+    if (requestStr != null && requestStr.equals("true")) {
+        appointmentMade = true;
+    } else {
+        appointmentMade = false;
+    }
 
 
-
-
-        %>
+%>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Psikoloji Uzmanı Randevu Sistemi</title>
@@ -64,7 +66,6 @@
                 <label for="name-input">Adınız:</label>
                 <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required>
             </div>
-
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
                 <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required>
@@ -86,8 +87,8 @@
                 <label for="location-select">Yer:</label>
                 <select class="form-control" id="location-select">
                     <option value="" selected hidden>Seçin</option>
-                    <option value="loc1">Loya</option>
-                    <option value="loc2">Online</option>
+                    <option value="loc1"><%out.println(locNameCompany);%></option>
+                    <option value="loc2"><%out.println(locNameOnline);%></option>
                 </select>
             </div>
             <div class="calendar">
@@ -147,22 +148,20 @@
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="sucsess-modal">
                                 <%
-                                    if(appointmentMade){
+                                    if (appointmentMade) {
                                         out.println(appointmentMadeHeader);
-                                    }
-                                    else{
+                                    } else {
                                         out.println(appointmentNotMadeHeader);
                                     }
-                            %>
+                                %>
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <%
-                                if(appointmentMade){
+                                if (appointmentMade) {
                                     out.println(appointmentMadeStr);
-                                }
-                                else{
+                                } else {
                                     out.println(appointmentNotMadeStr);
                                 }
                             %>
@@ -175,19 +174,21 @@
             </div>
 
 
-            <div class="row">
+            <div class="row row-cols-4" style="margin-right: 11px;padding-top: 5px;">
                 <div class = "col-10">
-                    <div class=" form-floating mt-2">
+                    <div class=" form-floating mt-2" style="padding-right: 0px;">
                         <input type="text" class="form-control" id="floatingInputGrid" placeholder="xxx-xxx">
                         <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
                     </div>
                 </div>
-                <div class = "col-2">
+                <div class = "col-2" style="padding-top: 5px;padding-left: -1px;padding-right: 15px;margin-right: 0px;">
                     <button  type="button" class="btn btn-info mt-2 btn-lg">Info</button>
                 </div>
             </div>
 
             <%
+                Helper helper = new Helper();
+                helper.JsonFileWriter();
                 Cookie cookie = null;
                 Cookie[] cookies = null;
 
@@ -203,36 +204,42 @@
 
                 cookies = request.getCookies();
 
-                if( cookies != null ) {
+                if (cookies != null) {
                     for (int i = 0; i < cookies.length; i++) {
                         cookie = cookies[i];
-                        if(cookie.getName().equals("firN")){
+                        if (cookie.getName().equals("firN")) {
                             firstNameCo = URLDecoder.decode(cookie.getValue(), "UTF-8");
                         }
-                        if(cookie.getName().equals("lasN")){
+                        if (cookie.getName().equals("lasN")) {
                             lastNameCo = URLDecoder.decode(cookie.getValue(), "UTF-8");
                         }
-                        if(cookie.getName().equals("appD")){
+                        if (cookie.getName().equals("appD")) {
                             appointDayCo = cookie.getValue();
                         }
-                        if (cookie.getName().equals("appT")){
+                        if (cookie.getName().equals("appT")) {
                             appointTimeCo = cookie.getValue();
                         }
-                        if (cookie.getName().equals("locN")){
+                        if (cookie.getName().equals("locN")) {
                             locNameCo = cookie.getValue();
                         }
-                        if (cookie.getName().equals("appId")){
+                        if (cookie.getName().equals("appId")) {
                             appointIdCo = cookie.getValue();
                         }
                     }
                 }
-                if(firstNameCo != null && lastNameCo != null && appointDayCo != null && appointTimeCo != null && locNameCo != null){
-                    Helper helper = new Helper();
-                    firstNameWithSpaceCo =firstNameCo.replace("-", " ");
+                if (firstNameCo != null && lastNameCo != null && appointDayCo != null && appointTimeCo != null && locNameCo != null) {
+                    helper = new Helper();
+                    firstNameWithSpaceCo = firstNameCo.replace("-", " ");
                     lastNamWithSpaceCo = lastNameCo.replace("-", " ");
 
 //                    String rds = String.valueOf(helper.randNum());
 //                    helper.insertRandomNumToTxt(rds, "dsafasf");
+                    if (locNameCo.equals("loc1")) {
+                        locName = locNameCompany;
+                    }
+                    if (locNameCo.equals("loc2")) {
+                        locName = locNameOnline;
+                    }
             %>
 
 
@@ -240,11 +247,12 @@
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold"><%out.println(firstNameWithSpaceCo + " " + lastNamWithSpaceCo);%></div>
-                        <%out.println("Ayın " + appointDayCo + helper.monthEki(Integer.parseInt(appointDayCo)) ); %> <br><%out.println(" Saat " + appointTimeCo);%>
+                        <%out.println("Ayın " + appointDayCo + helper.monthEki(Integer.parseInt(appointDayCo))); %> <br>
+                        <%out.println(" Saat " + appointTimeCo);%>
                     </div>
-                    <span class="badge bg-primary rounded-pill"><%out.println(appointIdCo);%></span>
+                    <span class="badge bg-primary rounded-pill me-2"><%out.println(appointIdCo);%></span>
                     <br>
-                    <span class="badge bg-success rounded-pill"><%out.println(locNameCo);%></span>
+                    <span class="badge bg-success rounded-pill"><%out.println(locName);%></span>
 
                 </li>
 
@@ -254,6 +262,35 @@
 
         </div>
     </div>
+</div>
+<ul id="saatler" style="display: none;">
+    <%
+        ConSql conSql = new ConSql();
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        sqlInfo = conSql.readHourData("SELECT `hour` FROM `appointments` WHERE `date`= \"2023-03-18\"");
+        String[] hours = {"09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00"};
+
+        for (int i = 0; i < sqlInfo.size(); i++) {
+            String appHour = sqlInfo.get(i).getAppHour();
+
+            for (int j = 0; j < hours.length; j++) {
+                if (appHour.equals(hours[j])) {
+                    hours[j] = null;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < hours.length; i++) {
+            if (hours[i] != null) {
+    %>
+    <li><%= hours[i] %></li>
+    <%
+            }
+        }
+    %>
+</ul>
+
 
 </div>
 <script src="js/script.js"></script>
@@ -388,6 +425,29 @@
     } else {
         nextMonthBtn.style.display = "block";
     }
+
+
+        const inputField = document.getElementById('input-field');
+        const submitButton = document.getElementById('submit-button');
+        const outputContainer = document.getElementById('output-container');
+        const errorMessage = document.getElementById('error-message');
+
+        function checkInput() {
+            const input = inputField.value.trim();
+            if (/[^A-Za-z\s]/.test(input)) {
+                errorMessage.textContent = "Metin yalnızca harfler ve boşluklar içermelidir.";
+            } else {
+                errorMessage.textContent = "";
+                outputContainer.innerHTML = "<p>Girilen metin: " + input + "</p>";
+            }
+        }
+
+        inputField.addEventListener('input', checkInput);
+
+
+
+
+
 
 
 </script>

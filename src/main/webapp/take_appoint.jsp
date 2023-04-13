@@ -3,7 +3,6 @@
 <%@page import="com.google.api.services.calendar.model.CalendarListEntry"%>--%>
 <%@page import="java.security.GeneralSecurityException"%>
 <%@page import="java.io.IOException"%>
-<%@page import="com.bya.CalendarService"%>
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.util.List"%>
 <%--<%@page import="com.google.api.services.calendar.model.CalendarListEntry"%>
@@ -24,6 +23,8 @@
 <%@ page import="java.util.Timer" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.net.URLEncoder" %>
+<%@ page import="com.bya.GetInfo" %>
+<%@ page import="com.bya.*" %>
 
 <%
     final String appointmentMade;
@@ -32,6 +33,8 @@
 
 
     Helper helper = new Helper();
+    GetInfo getInfo = new GetInfo();
+    ConSql conSql = new ConSql();
 
     String appointYear = request.getParameter("selected-year");
     String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
@@ -49,100 +52,93 @@
     String startHour = helper.hourUnUtc(startEndHours[0]);
     String endHour = helper.hourUnUtc(startEndHours[1]);
 
+
+
+
+
     String title = custName + " " + custSurname;
     String description = custPhone + "-" + locName;
     String  location= locName;
     String startDateTimeStr = appointYear + "-" + numOfMonth + "-" + appointDay + "T" + startHour + ":00";
     String endDateTimeStr = appointYear + "-" + numOfMonth + "-" + appointDay + "T" + endHour + ":00";
 
-//    LocalDateTime startDateTime = LocalDateTime.parse(startDateTimeStr);
-//    LocalDateTime endDateTime = LocalDateTime.parse(endDateTimeStr);
-
-
     dateInSec = helper.dateToSec(startDateTimeStr);
 
 
+    CalendarService calendarService = new CalendarService();
+    calendarService.resetErrorCount();
+
+    int errorCount = calendarService.getErrorCount();
+
+    try{
+        String rndNum = null;
+        String custNameWithOutSpace = custName.replace(" ", "-");
+        String custSurnameWithOutSpace = custSurname.replace(" ", "-");
+        String date = null;
+
+        rndNum = String.valueOf(helper.randNum());
 
 
-        CalendarService calendarService = new CalendarService();
-        calendarService.resetErrorCount();
+        Cookie firstNameCo = new Cookie("firN", URLEncoder.encode(custNameWithOutSpace, "UTF-8"));
+        Cookie lastNameCo = new Cookie("lasN", URLEncoder.encode(custSurnameWithOutSpace, "UTF-8"));
+        Cookie appointDayCo = new Cookie("appD", appointDay);
+        Cookie appointTimeCo = new Cookie("appT", appointTime);
+        Cookie locNameCo = new Cookie("locN", locName);
+        Cookie appointIdCo = new Cookie("appId", rndNum);
+
+
+        firstNameCo.setMaxAge(((int)dateInSec));
+        lastNameCo.setMaxAge(((int)dateInSec));
+        appointDayCo.setMaxAge(((int)dateInSec));
+        appointTimeCo.setMaxAge(((int)dateInSec));
+        locNameCo.setMaxAge(((int)dateInSec));
+        appointIdCo.setMaxAge(((int)dateInSec));
+
+
+        response.addCookie( firstNameCo );
+        response.addCookie( lastNameCo );
+        response.addCookie( appointDayCo );
+        response.addCookie( appointTimeCo );
+        response.addCookie( locNameCo );
+        response.addCookie( appointIdCo );
+
+        helper.checkDateIsFinishInTxt(startDateTimeStr);
+        helper.insertRandomNumToTxt(rndNum, startDateTimeStr);
+
+        date = appointYear + "-" + numOfMonth + "-" + appointDay;
+        //set sql setters
+        getInfo.setCustName(custName);
+        getInfo.setCustSurname(custSurname);
+        getInfo.setCustPhone(custPhone);
+        getInfo.setDoctorName(doctorName);
+        getInfo.setAppLocation(locName);
+        getInfo.setTempId(rndNum);
+        getInfo.setAppDate(date);
+        getInfo.setAppHour(appointTime);
+
+        conSql.insertData(custName, custSurname, custPhone, doctorName, locName, rndNum, date, appointTime);
+
+
+
         calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
 
-        int errorCount = calendarService.getErrorCount();
-        if(errorCount == 0){
-            try{
-                String rndNum = null;
-                String custNameWithOutSpace = custName.replace(" ", "-");
-                String custSurnameWithOutSpace = custSurname.replace(" ", "-");
-
-                rndNum = String.valueOf(helper.randNum());
-
-
-                Cookie firstNameCo = new Cookie("firN", URLEncoder.encode(custNameWithOutSpace, "UTF-8"));
-                Cookie lastNameCo = new Cookie("lasN", URLEncoder.encode(custSurnameWithOutSpace, "UTF-8"));
-                Cookie appointDayCo = new Cookie("appD", appointDay);
-                Cookie appointTimeCo = new Cookie("appT", appointTime);
-                Cookie locNameCo = new Cookie("locN", locName);
-                Cookie appointIdCo = new Cookie("appId", rndNum);
-
-
-                firstNameCo.setMaxAge(((int)dateInSec));
-                lastNameCo.setMaxAge(((int)dateInSec));
-                appointDayCo.setMaxAge(((int)dateInSec));
-                appointTimeCo.setMaxAge(((int)dateInSec));
-                locNameCo.setMaxAge(((int)dateInSec));
-                appointIdCo.setMaxAge(((int)dateInSec));
-
-
-                response.addCookie( firstNameCo );
-                response.addCookie( lastNameCo );
-                response.addCookie( appointDayCo );
-                response.addCookie( appointTimeCo );
-                response.addCookie( locNameCo );
-                response.addCookie( appointIdCo );
-
-                helper.checkDateIsFinishInTxt(startDateTimeStr);
-                helper.insertRandomNumToTxt(rndNum, startDateTimeStr);
-
-
-            }catch(Exception e){
-                System.out.println(e);
-                errorCount += 1;
-            }
-
-        }
-        if(errorCount == 0) {
-            appointmentMade = "true";
-            response.sendRedirect("index.jsp?message=" + appointmentMade);
-
-        }
-        else {
-            appointmentMade = "false";
-            response.sendRedirect("index.jsp?message=" + appointmentMade);
-
-        }
+    }catch(Exception e){
+        System.out.println(e);
+        errorCount += 1;
+    }
 
 
 
-//    try{
-//                CalendarService calendarService = new CalendarService();
-//
-//    if(calendarService.getCalendarList().size()<0){
-//        out.println("Takvim listesi bos");
-//    }else{
-//        for(int i = 0; i < calendarService.getCalendarList().size(); i++){
-//            out.println(calendarService.getCalendarList().get(i));
-//        }
-//    }
-//    }catch(IOException | GeneralSecurityException e){
-//        out.println("\nTakvim listesi islerken bir hata oluştu: " + e.getMessage());
-//    }
+    if(errorCount == 0) {
+        appointmentMade = "true";
+        response.sendRedirect("index.jsp?message=" + appointmentMade);
 
+    }
+    else {
+        appointmentMade = "false";
+        response.sendRedirect("index.jsp?message=" + appointmentMade);
 
-
-
-
-
+    }
 
 %>
 <html>
