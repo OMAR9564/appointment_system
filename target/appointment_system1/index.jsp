@@ -2,7 +2,10 @@
 <%@ page import="java.net.URLDecoder" %>
 <%@ page import="com.bya.ConSql" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.bya.GetInfo" %><%--
+<%@ page import="com.bya.GetInfo" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="java.util.HashSet" %>
+<%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
@@ -81,6 +84,14 @@
                     <option value="" selected  hidden>Seçin</option>
                     <option value="doktor1" >Doktor 1</option>
                     <option value="doktor2">Doktor 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="apptype-select">Randevu tipi seçin:</label>
+                <select class="form-control" id="apptype-select">
+                    <option value="" selected  hidden>Seçin</option>
+                    <option value="appType1">Bireysel Randevusu</option>
+                    <option value="appType2">Çift Randevusu</option>
                 </select>
             </div>
             <div class="form-group">
@@ -296,14 +307,14 @@
 <script src="js/script.js"></script>
 <script>
 
-        <% if (requestStr != null && requestStr.length() > 1) { %>
-                clickButton();
-        <% } %>
+    <% if (requestStr != null && requestStr.length() > 1) { %>
+    clickButton();
+    <% } %>
 
-        function clickButton() {
-            var myButton = document.getElementById("sucsessModalBtn");
-            myButton.click();
-        }
+    function clickButton() {
+        var myButton = document.getElementById("sucsessModalBtn");
+        myButton.click();
+    }
 
     const custnNameIn = document.getElementById('name-input');
     const custnSurnameIn = document.getElementById('surname-input');
@@ -427,22 +438,22 @@
     }
 
 
-        const inputField = document.getElementById('input-field');
-        const submitButton = document.getElementById('submit-button');
-        const outputContainer = document.getElementById('output-container');
-        const errorMessage = document.getElementById('error-message');
+    const inputField = document.getElementById('input-field');
+    const submitButton = document.getElementById('submit-button');
+    const outputContainer = document.getElementById('output-container');
+    const errorMessage = document.getElementById('error-message');
 
-        function checkInput() {
-            const input = inputField.value.trim();
-            if (/[^A-Za-z\s]/.test(input)) {
-                errorMessage.textContent = "Metin yalnızca harfler ve boşluklar içermelidir.";
-            } else {
-                errorMessage.textContent = "";
-                outputContainer.innerHTML = "<p>Girilen metin: " + input + "</p>";
-            }
+    function checkInput() {
+        const input = inputField.value.trim();
+        if (/[^A-Za-z\s]/.test(input)) {
+            errorMessage.textContent = "Metin yalnızca harfler ve boşluklar içermelidir.";
+        } else {
+            errorMessage.textContent = "";
+            outputContainer.innerHTML = "<p>Girilen metin: " + input + "</p>";
         }
+    }
 
-        inputField.addEventListener('input', checkInput);
+    inputField.addEventListener('input', checkInput);
 
 
 

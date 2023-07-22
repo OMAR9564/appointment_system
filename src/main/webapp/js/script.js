@@ -256,4 +256,3 @@ function getMonthName(monthIndex) {
     ];
     return monthNames[monthIndex];
 }
-
