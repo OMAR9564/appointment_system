@@ -1,6 +1,7 @@
 package com.bya;
 
 public class GetInfo {
+    int custId = 0;
     String custName = "";
     String custSurname = "";
     String custNameSurname = "";
@@ -15,6 +16,13 @@ public class GetInfo {
     String availableDate = "";
     String locations = "";
 
+    public int getCustId() {
+        return custId;
+    }
+
+    public void setCustId(int custId) {
+        this.custId = custId;
+    }
 
     public String getCustName() {
         return custName;

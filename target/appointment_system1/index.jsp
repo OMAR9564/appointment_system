@@ -1,8 +1,8 @@
-        <%@ page import="com.bya.Helper" %>
+<%@ page import="com.bya.Helper" %>
 <%@ page import="java.net.URLDecoder" %>
-        <%@ page import="com.bya.ConSql" %>
-        <%@ page import="java.util.ArrayList" %>
-        <%@ page import="com.bya.GetInfo" %><%--
+<%@ page import="com.bya.ConSql" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.bya.GetInfo" %><%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023

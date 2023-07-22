@@ -123,7 +123,7 @@
         calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
 
     }catch(Exception e){
-        System.out.println(e);
+        //System.out.println(e);
         errorCount += 1;
     }
 

@@ -116,7 +116,7 @@ public class ConSql {
         // bağlantı bilgileri
         String url = "jdbc:mysql://localhost:3306/appointment_system";
         String username = "root";
-        String password = "root";
+        String password = "";
         Connection conn = null;
 
         try {
@@ -130,6 +130,39 @@ public class ConSql {
         }
 
         return conn;
+    }
+
+    public ArrayList<GetInfo> getAppointmentData(String query) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setCustId(rs.getInt("id"));
+                temp.setCustNameSurname(rs.getString("nameSurname"));
+                temp.setCustPhone(rs.getString("phone"));
+                temp.setDoctorName(rs.getString("doctorName"));
+                temp.setAppLocation(rs.getString("location"));
+                temp.setAppDate(rs.getString("date"));
+                temp.setAppHour(rs.getString("hour"));
+
+                sqlInfo.add(temp);
+
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return sqlInfo;
     }
 
 }
