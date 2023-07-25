@@ -19,6 +19,9 @@
 <%
     Boolean appointmentMade = null;
     String requestStr = null;
+/*
+    String selectedDate = null;
+*/
 
     String appointmentMadeStr = "Randevunuz Basirili Bir Sekilde Alindi.";
     String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
@@ -125,7 +128,10 @@
         </div>
         <div class="col-md-6">
             <div class="hours">
-                <h3 id="selected-date"></h3>
+                <h3 id="selected-date">
+
+
+                </h3>
 
                 <h2 id="selected-day"></h2>
                 <div class="hour-buttons"></div>
@@ -203,6 +209,8 @@
                 Cookie cookie = null;
                 Cookie[] cookies = null;
 
+                String omarfaruk = null;
+
                 String firstNameCo = null;
                 String lastNameCo = null;
                 String firstNameWithSpaceCo = null;
@@ -275,31 +283,7 @@
     </div>
 </div>
 <ul id="saatler" style="display: none;">
-    <%
-        ConSql conSql = new ConSql();
-        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
-        sqlInfo = conSql.readHourData("SELECT `hour` FROM `appointments` WHERE `date`= \"2023-03-18\"");
-        String[] hours = {"09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00"};
-
-        for (int i = 0; i < sqlInfo.size(); i++) {
-            String appHour = sqlInfo.get(i).getAppHour();
-
-            for (int j = 0; j < hours.length; j++) {
-                if (appHour.equals(hours[j])) {
-                    hours[j] = null;
-                    break;
-                }
-            }
-        }
-
-        for (int i = 0; i < hours.length; i++) {
-            if (hours[i] != null) {
-    %>
-    <li><%= hours[i] %></li>
-    <%
-            }
-        }
-    %>
+    
 </ul>
 
 

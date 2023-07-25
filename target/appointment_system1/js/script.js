@@ -119,6 +119,10 @@ function selectDay(event) {
     const selectedDayStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}`;
     document.querySelector("#selected-date").innerHTML = selectedDayStr;
 
+
+
+
+
 // Clear any existing hour buttons from the container
     hourButtonsContainer.innerHTML = "";
 
@@ -175,8 +179,41 @@ function selectDay(event) {
 
 
     }
+
+    function formatDate(inputDate) {
+        const date = new Date(inputDate);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`;
+    }
+    const formattedDate  = formatDate(selectedDate);
+
+    console.log("omer" + formattedDate)
+    getHoursFromServer();
+    function getHoursFromServer() {
+        var xhttp = new XMLHttpRequest();
+        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate);
+        xhttp.open("GET", url, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                var hoursList = JSON.parse(this.responseText);
+                var hoursContainer = document.getElementById("saatler");
+                hoursContainer.innerHTML = ""; // Temizleme
+
+                for (var i = 0; i < hoursList.length; i++) {
+                    var hourItem = document.createElement("li");
+                    hourItem.textContent = hoursList[i].appHour;
+                    hoursContainer.appendChild(hourItem);
+                }
+            }
+        };
+
+    }
     document.querySelector("#calendar").addEventListener("click", () => {
         // Clear the selected date and time
+
         document.querySelector("#selected-year").value = "";
         document.querySelector("#selected-month").value = "";
         document.querySelector("#selected-dayIn").value = "";
@@ -186,6 +223,7 @@ function selectDay(event) {
 
     hourButtons.forEach(function (button) {
         button.addEventListener("click", function () {
+
             const activeHourEl = document.querySelector(".hour-button.active");
             if (activeHourEl) {
                 activeHourEl.classList.remove("active");
