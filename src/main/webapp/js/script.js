@@ -10,7 +10,6 @@ const prevMonthBtn = document.querySelector("#prev-month-btn");
 const nextMonthBtn = document.querySelector("#next-month-btn");
 const selectedDayEl = document.querySelector("#selected-day");
 const hourButtonsContainer = document.querySelector(".hour-buttons");
-
 // Add event listeners to previous and next month buttons
 prevMonthBtn.addEventListener("click", showPrevMonth);
 nextMonthBtn.addEventListener("click", showNextMonth);
@@ -30,7 +29,7 @@ function showMonth(month, year) {
     const numDays = getNumDaysInMonth(month, year);
 
     // Get the index of the first day of the month (0-6, Sun-Sat)
-    const firstDayIndex = new Date(year, month, 0).getDay();
+    const firstDayIndex = new Date(year, month, 1).getDay();
 
     // Add empty day elements for days before the first day of the month
     for (let i = 0; i < firstDayIndex; i++) {
@@ -52,7 +51,8 @@ function showMonth(month, year) {
 
         }
         else {
-            dayEl.addEventListener("click", selectDay);
+            dayEl.addEventListener("click", (event) => selectDay(event));
+
         }
         daysContainer.appendChild(dayEl);
     }
@@ -99,16 +99,14 @@ let selectedHour = null;
 
 
 
-
-function selectDay(event) {
-    const saatlerListesi = document.getElementById('saatler');
-    const hours = Array.from(saatlerListesi.children).map(li => li.textContent);
+    function selectDay(event) {
     // const hours = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00"];
     // Remove the active class from any previously selected day
     const activeDayEl = document.querySelector(".day.active");
     if (activeDayEl) {
         activeDayEl.classList.remove("active");
     }
+
 
 // Add the active class to the selected day
     const selectedDayEl = event ? event.target : document.querySelector(`.day:not(.empty):nth-child(${currentDate.getDate() + firstDayIndex})`);
@@ -118,67 +116,97 @@ function selectDay(event) {
     const selectedDate = new Date(currentYear, currentMonth, selectedDayEl.innerHTML);
     const selectedDayStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}`;
     document.querySelector("#selected-date").innerHTML = selectedDayStr;
+    const formattedDate  = formatDate(selectedDate);
+
+    var hours = []; // Boş bir dizi oluşturun
+
+    var xhttp = new XMLHttpRequest();
+    var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate);
+    xhttp.open("GET", url, true);
+    xhttp.send();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            var hoursList = JSON.parse(this.responseText);
+            var hoursContainer = document.getElementById("saatler");
+            hoursContainer.innerHTML = ""; // Temizleme
+
+            for (var i = 0; i < hoursList.length; i++) {
+                var hourItem = document.createElement("li");
+                hourItem.textContent = hoursList[i].appHour;
+                hoursContainer.appendChild(hourItem);
+                console.log(hoursList[i]);
+                // hourlist'e saatleri ekleyelim
+                hours.push(hoursList[i].appHour);
+
+            }
+            console.log(hours);
+        }
+        console.log(hours.length);
+        for (let i = 0; i < hours.length; i++) {
+            console.log("om");
+            const hourButtonEl = document.createElement("button");
+            hourButtonEl.classList.add("hour-button");
+            hourButtonEl.innerHTML = hours[i];
+            hourButtonsContainer.appendChild(hourButtonEl);
+
+            // Add event listener to select the hour
+            hourButtonEl.addEventListener("click", () => {
+
+                const selectedHour = hours[i];
+                const selectedDateTime = new Date(currentYear, currentMonth, selectedDayEl.innerHTML, selectedHour);
+                const selectedDateTimeStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}, ${selectedHour}`;
+                const selectedYear = `${currentYear}`;
+                const selectedMonth = `${getMonthName(currentMonth)}`;
+                document.querySelector("#selected-date").innerHTML = selectedDateTimeStr;
 
 
 
+
+                // Set the selected date and time to the hidden input element
+                document.querySelector("#selected-year").value = selectedYear;
+                document.querySelector("#selected-month").value = selectedMonth;
+                document.querySelector("#selected-dayIn").value = selectedDayEl.innerHTML;
+                document.querySelector("#selected-hour").value = selectedHour;
+
+                // Remove the active class from any previously selected hour
+                const activeHourEl = document.querySelector(".hour-button.active");
+                if (activeHourEl) {
+                    activeHourEl.classList.remove("active");
+                }
+
+                // Add the active class to the selected hour
+                hourButtonEl.classList.add("active");
+
+                // Show the "randevu al" button
+                const randevuAlBtn = document.querySelector("#schedule-appointment");
+
+                // Check if all input fields are not empty before showing the button
+                const yearInput = document.querySelector("#selected-year").value;
+                const monthInput = document.querySelector("#selected-month").value;
+                const dayInput = document.querySelector("#selected-dayIn").value;
+                const hourInput = document.querySelector("#selected-hour").value;
+                const nameInput = document.querySelector("#name-input").value;
+                const surnameInput = document.querySelector("#surname-input").value;
+
+
+                if (yearInput !== "" && monthInput !== "" && dayInput !== "" && hourInput !== "" && nameInput !== "" && surnameInput !== "") {
+                    randevuAlBtn.style.display = "inline";
+                } else {
+                    randevuAlBtn.style.display = "none";
+                }
+
+            });
+
+
+        }
+    };
 
 
 // Clear any existing hour buttons from the container
     hourButtonsContainer.innerHTML = "";
 
+
 // Add hour buttons for each hour of the selected day
-    for (let i = 0; i < hours.length; i++) {
-        const hourButtonEl = document.createElement("button");
-        hourButtonEl.classList.add("hour-button");
-        hourButtonEl.innerHTML = hours[i];
-        hourButtonsContainer.appendChild(hourButtonEl);
-
-        // Add event listener to select the hour
-        hourButtonEl.addEventListener("click", () => {
-            const selectedHour = hours[i];
-            const selectedDateTime = new Date(currentYear, currentMonth, selectedDayEl.innerHTML, selectedHour);
-            const selectedDateTimeStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}, ${selectedHour}`;
-            const selectedYear = `${currentYear}`;
-            const selectedMonth = `${getMonthName(currentMonth)}`;
-            document.querySelector("#selected-date").innerHTML = selectedDateTimeStr;
-
-            // Set the selected date and time to the hidden input element
-            document.querySelector("#selected-year").value = selectedYear;
-            document.querySelector("#selected-month").value = selectedMonth;
-            document.querySelector("#selected-dayIn").value = selectedDayEl.innerHTML;
-            document.querySelector("#selected-hour").value = selectedHour;
-
-            // Remove the active class from any previously selected hour
-            const activeHourEl = document.querySelector(".hour-button.active");
-            if (activeHourEl) {
-                activeHourEl.classList.remove("active");
-            }
-
-            // Add the active class to the selected hour
-            hourButtonEl.classList.add("active");
-
-            // Show the "randevu al" button
-            const randevuAlBtn = document.querySelector("#schedule-appointment");
-
-            // Check if all input fields are not empty before showing the button
-            const yearInput = document.querySelector("#selected-year").value;
-            const monthInput = document.querySelector("#selected-month").value;
-            const dayInput = document.querySelector("#selected-dayIn").value;
-            const hourInput = document.querySelector("#selected-hour").value;
-            const nameInput = document.querySelector("#name-input").value;
-            const surnameInput = document.querySelector("#surname-input").value;
-
-
-            if (yearInput !== "" && monthInput !== "" && dayInput !== "" && hourInput !== "" && nameInput !== "" && surnameInput !== "") {
-                randevuAlBtn.style.display = "inline";
-            } else {
-                randevuAlBtn.style.display = "none";
-            }
-
-        });
-
-
-    }
 
     function formatDate(inputDate) {
         const date = new Date(inputDate);
@@ -187,10 +215,8 @@ function selectDay(event) {
         const year = date.getFullYear();
         return `${year}-${month}-${day}`;
     }
-    const formattedDate  = formatDate(selectedDate);
 
-    console.log("omer" + formattedDate)
-    getHoursFromServer();
+    console.log("omer")
     function getHoursFromServer() {
         var xhttp = new XMLHttpRequest();
         var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate);
@@ -206,11 +232,15 @@ function selectDay(event) {
                     var hourItem = document.createElement("li");
                     hourItem.textContent = hoursList[i].appHour;
                     hoursContainer.appendChild(hourItem);
+
+                    // hourlist'e saatleri ekleyelim
+                    hours.push(hoursList[i].appHour);
                 }
             }
         };
 
     }
+
     document.querySelector("#calendar").addEventListener("click", () => {
         // Clear the selected date and time
 
