@@ -24,26 +24,24 @@
     ConSql conSql = new ConSql();
     ArrayList<GetInfo> availableHours = conSql.readHourData(query);
 
-    String query1 = "SELECT hour FROM appointments WHERE = '"+selectedOption+"'";
-    ArrayList<GetInfo> dateHours = conSql.readHourData(query1);
 
     String[] omer = null;
 
      out.println("[");
     for (int i = 0; i < availableHours.size(); i++) {
-        String[] splitHour = null;
-        String dateHour = null;
         String hour =  availableHours.get(i).getAppHour();
-        
-        dateHour = dateHours.get(i).getAppHour();
-        splitHour = hour.split("-");
+        // get hours from appiontments table
 
 
 
-        out.println("{\"appHour\": \"" + hour + "\"}");
-        if (i < availableHours.size() - 1) {
-            out.println(",");
-        }
+            out.println("{\"appHour\": \"" + hour + "\"}");
+            if (i < availableHours.size() - 1) {
+                out.println(",");
+            }
+
+
+
+
     }
     out.println("]");
 %>
