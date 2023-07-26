@@ -20,7 +20,7 @@ try {
     List<String> availableHours = new ArrayList<>();
     for (GetInfo allHour : allHours) {
         String allTemp = allHour.getAppHour();
-        boolean found = false;
+        boolean isAvailable = true;
 
         for (GetInfo appHour : appHours) {
             String appTemp = appHour.getAppHour();
@@ -28,13 +28,20 @@ try {
             String[] splitTemp = allTemp.split("-");
             String[] splitAppTemp = appTemp.split("-");
 
-            if (splitTemp[0].equals(splitAppTemp[0])) {
-                found = true;
+            String startAll = splitTemp[0];
+            String endAll = splitTemp[1];
+            String startApp = splitAppTemp[0];
+            String endApp = splitAppTemp[1];
+
+            // Check for overlapping time slots
+            if ((startAll.compareTo(startApp) >= 0 && startAll.compareTo(endApp) < 0)
+                || (endAll.compareTo(startApp) > 0 && endAll.compareTo(endApp) <= 0)) {
+                isAvailable = false;
                 break;
             }
         }
 
-        if (!found) {
+        if (isAvailable) {
             availableHours.add(allTemp);
         }
     }

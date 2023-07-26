@@ -52,7 +52,16 @@ public class ConSql {
             }
         }
     }
+    public void executeUpdate(String query) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
 
+        conn = getDatabaseConnection(); // veritabanı bağlantısı oluşturma metodu
+
+
+        pstmt = conn.prepareStatement(query);
+        pstmt.executeUpdate();
+    }
     public ArrayList<GetInfo> readData(String query) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
