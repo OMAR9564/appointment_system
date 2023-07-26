@@ -14,6 +14,16 @@ const hourButtonsContainer = document.querySelector(".hour-buttons");
 prevMonthBtn.addEventListener("click", showPrevMonth);
 nextMonthBtn.addEventListener("click", showNextMonth);
 
+let selectedOption = null
+function saveSelectedOption() {
+    selectedOption = document.getElementById("apptype-select").value;
+
+    // Burada seçilen seçeneği kullanarak istediğiniz işlemi yapabilirsiniz,
+    // örneğin bir API'ye gönderebilir veya bir veritabanına kaydedebilirsiniz.
+    // Şu anda sadece konsola yazdırıyorum:
+    console.log("Seçilen seçenek:", selectedOption);
+}    document.getElementById("apptype-select").addEventListener("change", saveSelectedOption);
+
 // Show the current month's calendar
 showMonth(currentMonth, currentYear);
 
@@ -97,9 +107,11 @@ function showNextMonth() {
 let selectedDate = null;
 let selectedHour = null;
 
+function getHoursFromServer(){
 
+}
 
-    function selectDay(event) {
+function selectDay(event) {
     // const hours = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00"];
     // Remove the active class from any previously selected day
     const activeDayEl = document.querySelector(".day.active");
@@ -121,7 +133,7 @@ let selectedHour = null;
     var hours = []; // Boş bir dizi oluşturun
 
     var xhttp = new XMLHttpRequest();
-    var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate);
+    var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate) + "&selectedOption=" + encodeURIComponent(selectedOption);
     xhttp.open("GET", url, true);
     xhttp.send();
     xhttp.onreadystatechange = function() {

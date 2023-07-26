@@ -13,9 +13,14 @@
 <%@ page import="java.util.List" %>
 <%
     String selectedDate = request.getParameter("selectedDate");
+    String selectedOption = request.getParameter("selectedOption");
 
     // Assuming your MySQL query to get available hours based on selectedDate
-    String query = "SELECT `hour` FROM `appointments` WHERE `date` = '"+selectedDate+"' ";
+    String query = "SELECT ah.hour\n" +
+                    "FROM availableHours AS ah\n" +
+                    "LEFT JOIN appointments AS a \n" +
+                    "ON ah.hour = a.hour AND a.date = '"+selectedDate+"'\n" +
+                    "WHERE ah.type = '"+selectedOption+"' AND a.hour IS NULL;\n";
     ConSql conSql = new ConSql();
     ArrayList<GetInfo> availableHours = conSql.readHourData(query);
 

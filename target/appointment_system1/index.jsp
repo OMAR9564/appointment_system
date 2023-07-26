@@ -93,8 +93,8 @@
                 <label for="apptype-select">Randevu tipi seçin:</label>
                 <select class="form-control" id="apptype-select">
                     <option value="" selected  hidden>Seçin</option>
-                    <option value="appType1">Bireysel Randevusu</option>
-                    <option value="appType2">Çift Randevusu</option>
+                    <option value="single">Bireysel Randevusu</option>
+                    <option value="couple">Çift Randevusu</option>
                 </select>
             </div>
             <div class="form-group">
