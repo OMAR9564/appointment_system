@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: omerfaruk
-  Date: 25.07.2023
-  Time: 18:56
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" contentType="application/json; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.bya.ConSql" %>
 <%@ page import="java.util.ArrayList" %>
@@ -12,37 +5,52 @@
 <%@ page import="com.bya.GetInfo" %>
 <%@ page import="java.util.List" %>
 <%
+try {
     String selectedDate = request.getParameter("selectedDate");
     String selectedOption = request.getParameter("selectedOption");
 
     // Assuming your MySQL query to get available hours based on selectedDate
-    String query = "SELECT ah.hour\n" +
-                    "FROM availableHours AS ah\n" +
-                    "LEFT JOIN appointments AS a \n" +
-                    "ON ah.hour = a.hour AND a.date = '"+selectedDate+"'\n" +
-                    "WHERE ah.type = '"+selectedOption+"' AND a.hour IS NULL;\n";
+    String appHoursQuery = "SELECT hour FROM appointments WHERE date = '" + selectedDate + "'";
+    String allHoursQuery = "SELECT hour FROM availableHours WHERE type = '" + selectedOption + "'";
+
     ConSql conSql = new ConSql();
-    ArrayList<GetInfo> availableHours = conSql.readHourData(query);
+    ArrayList<GetInfo> allHours = conSql.readHourData(allHoursQuery);
+    ArrayList<GetInfo> appHours = conSql.readHourData(appHoursQuery);
 
+    List<String> availableHours = new ArrayList<>();
+    for (GetInfo allHour : allHours) {
+        String allTemp = allHour.getAppHour();
+        boolean found = false;
 
-    String[] omer = null;
+        for (GetInfo appHour : appHours) {
+            String appTemp = appHour.getAppHour();
 
-     out.println("[");
-    for (int i = 0; i < availableHours.size(); i++) {
-        String hour =  availableHours.get(i).getAppHour();
-        // get hours from appiontments table
+            String[] splitTemp = allTemp.split("-");
+            String[] splitAppTemp = appTemp.split("-");
 
-
-
-            out.println("{\"appHour\": \"" + hour + "\"}");
-            if (i < availableHours.size() - 1) {
-                out.println(",");
+            if (splitTemp[0].equals(splitAppTemp[0])) {
+                found = true;
+                break;
             }
+        }
 
-
-
-
+        if (!found) {
+            availableHours.add(allTemp);
+        }
     }
-    out.println("]");
-%>
 
+    // Generate JSON response
+    StringBuilder jsonResponse = new StringBuilder("[");
+    for (int i = 0; i < availableHours.size(); i++) {
+        jsonResponse.append("{\"appHour\": \"").append(availableHours.get(i)).append("\"}");
+        if (i < availableHours.size() - 1) {
+            jsonResponse.append(",");
+        }
+    }
+    jsonResponse.append("]");
+    out.println(jsonResponse.toString());
+} catch (Exception e) {
+    // Handle exceptions appropriately (e.g., log the error, return an error JSON, etc.)
+    out.println("[]"); // Return an empty JSON array as a response if an error occurs
+}
+%>
