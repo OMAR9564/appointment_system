@@ -266,6 +266,25 @@ public class Helper {
             throw new RuntimeException(e);
         }
     }
+    // Helper function to calculate the time difference in minutes between two HH:mm formatted times
+    public int timeToMinutes(String time) {
+        String[] timeArray = time.split(":");
+        int hours = Integer.parseInt(timeArray[0]);
+        int minutes = Integer.parseInt(timeArray[1]);
 
+        return hours * 60 + minutes;
+    }
 
+    public static void customSort(List<String> timeSlots) {
+        for (int i = 0; i < timeSlots.size() - 1; i++) {
+            for (int j = i + 1; j < timeSlots.size(); j++) {
+                if (timeSlots.get(i).compareTo(timeSlots.get(j)) > 0) {
+                    // Swap the time slots if they are in the wrong order
+                    String temp = timeSlots.get(i);
+                    timeSlots.set(i, timeSlots.get(j));
+                    timeSlots.set(j, temp);
+                }
+            }
+        }
+    }
 }

@@ -3,7 +3,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.IOException" %>
 <%@ page import="com.bya.GetInfo" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.List" %><%@ page import="com.bya.Helper"%>
 <%
 try {
     String selectedDate = request.getParameter("selectedDate");
@@ -46,11 +46,40 @@ try {
         }
     }
 
+    // Calculate the working hours
+    String openingHour = "9"; // Opening hour is 9:00
+    String closingHour = "18"; // Closing hour is 18:00
+
+    // Convert the working hours to minutes for easier manipulation
+    int openingMinutes = Integer.parseInt(openingHour) * 60;
+    int closingMinutes = Integer.parseInt(closingHour) * 60;
+
+    List<String> adjustedHours = new ArrayList<>();
+    for (String hour : availableHours) {
+        String[] splitHour = hour.split("-");
+        String startHour = splitHour[0];
+        String endHour = splitHour[1];
+
+        int startMinutes = Integer.parseInt(startHour.split(":")[0]) * 60 + Integer.parseInt(startHour.split(":")[1]);
+        int endMinutes = Integer.parseInt(endHour.split(":")[0]) * 60 + Integer.parseInt(endHour.split(":")[1]);
+
+        // Adjust the time slot if there's a 30-minute gap
+        if (endMinutes - startMinutes == 30) {
+            endMinutes += 30;
+            endHour = String.format("%02d:%02d", endMinutes / 60, endMinutes % 60);
+        }
+
+        // Add the adjusted time slot to the list
+        adjustedHours.add(startHour + "-" + endHour);
+    }
+    Helper.customSort(adjustedHours);
+    // Sort the adjusted hours in ascending order
+
     // Generate JSON response
     StringBuilder jsonResponse = new StringBuilder("[");
-    for (int i = 0; i < availableHours.size(); i++) {
-        jsonResponse.append("{\"appHour\": \"").append(availableHours.get(i)).append("\"}");
-        if (i < availableHours.size() - 1) {
+    for (int i = 0; i < adjustedHours.size(); i++) {
+        jsonResponse.append("{\"appHour\": \"").append(adjustedHours.get(i)).append("\"}");
+        if (i < adjustedHours.size() - 1) {
             jsonResponse.append(",");
         }
     }
