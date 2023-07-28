@@ -116,7 +116,10 @@
         getInfo.setAppDate(date);
         getInfo.setAppHour(appointTime);
 
-        conSql.insertData(custName, custSurname, custPhone, doctorName, locName, rndNum, date, appointTime);
+        String appointStartHour = appointTime.split("-")[0];
+        String appointEndHour = appointTime.split("-")[1];
+
+        conSql.insertData(custName, custSurname, custPhone, doctorName, locName, rndNum, date, appointStartHour, appointEndHour);
 
 
 

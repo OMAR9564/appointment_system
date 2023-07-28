@@ -79,7 +79,7 @@ try {
     }
 
     for (int i = 0; i < avalibaleHourCount ; i++){
-
+        // Control hours if out of closing time
         if(((Integer.parseInt(closingHour) <= Integer.parseInt(tempEndHour.split(":")[0]) )
         && Integer.parseInt(tempEndHour.split(":")[0]) >= Integer.parseInt(closingHour))
         || (Integer.parseInt(tempEndHour.split(":")[0]) == Integer.parseInt(closingHour) - 1)
@@ -109,10 +109,11 @@ try {
             int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
             int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
 
-// app          / normal
-// 1020 - 1080 / 990 - 1080
-//1020 <= 990 && 990 < 1080
-            if (tempAppStartHourWithMuniteToMunite <= tempStartHourWithMuniteToMunite && tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
+            // app          / normal
+            // 1020 - 1080 / 990 - 1080
+            //1050 <= 990 && 990 < 1080
+            if (tempAppStartHourWithMuniteToMunite <= tempStartHourWithMuniteToMunite
+            && tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
                 tempStartHour = tempAppStartHour;
                 tempEndHour = tempAppEndHour;
 
@@ -124,8 +125,9 @@ try {
 
                 break;
             }
-//1020 <= 1080 && 1080 < 1080
-            if (tempAppStartHourWithMuniteToMunite <= tempEndtHourWithMuniteToMunite && tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite){
+            //1050 <= 1080 && 1080 < 1080
+            if (tempAppStartHourWithMuniteToMunite <= tempEndtHourWithMuniteToMunite + 30
+            && tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite){
                 tempStartHour = tempAppStartHour;
                 tempEndHour = tempAppEndHour;
                 tempSplitStartHour = tempStartHour.split(":");
@@ -137,7 +139,10 @@ try {
                 break;
             }
         }
-        if(i == 0 && Integer.parseInt(tempEndHour.split(":")[1]) != 30){
+        if (tempEndtHourToMunite >= closingMinutes) {
+            break;
+        }
+        if(i == 0 && ((Integer.parseInt(tempEndHour.split(":")[1]) != 30) || (Integer.parseInt(tempEndHour.split(":")[1]) == 30))  ){
                 if (Integer.parseInt(tempStartHour.split(":")[0]) <= 9){
                 tempStartHour = "0" + tempStartHour;
                 }
@@ -147,6 +152,7 @@ try {
                 adjustedHours.add(tempStartHour + "-" + tempEndHour);
                 continue;
             }
+
         //Control to what the next time
         if(tempSplitStartHour[1].equals("30") && tempSplitEndHour[1].equals("00")){
                  if (selectedOption.equals("single")){
@@ -201,12 +207,7 @@ try {
                     tempEndHour = tempEndHour + ":30";
                 }
             }
-            if (Integer.parseInt(tempStartHour.split(":")[0]) <= 9){
-                tempStartHour = "0" + tempStartHour;
-            }
-            if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9){
-                tempEndHour = "0" + tempEndHour;
-            }
+        
             adjustedHours.add(tempStartHour + "-" + tempEndHour);
 
 }
