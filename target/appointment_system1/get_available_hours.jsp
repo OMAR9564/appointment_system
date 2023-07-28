@@ -39,7 +39,7 @@ try {
 
     int avalibaleHourCount = (closingMinutes - openingMinutes) / 60;
 
-    int j = 0;
+
 
     double finalStartHour = 0.0;
     double finalEndHour = 0.0;
@@ -78,9 +78,12 @@ try {
         }
     }
 
-    for (int i = 0; i < avalibaleHourCount - 1; i++){
+    for (int i = 0; i < avalibaleHourCount ; i++){
 
-        if(Integer.parseInt(tempEndHour.split(":")[0]) ==  Integer.parseInt(closingHour)){
+        if(((Integer.parseInt(closingHour) <= Integer.parseInt(tempEndHour.split(":")[0]) )
+        && Integer.parseInt(tempEndHour.split(":")[0]) >= Integer.parseInt(closingHour))
+        || (Integer.parseInt(tempEndHour.split(":")[0]) == Integer.parseInt(closingHour) - 1)
+        && (Integer.parseInt(tempEndHour.split(":")[1]) == 30)){
             break;
         }
 
@@ -95,7 +98,7 @@ try {
             int tempEndtHourWithMuniteToMunite = tempEndtHourToMunite + Integer.parseInt(tempSplitEndHour[1]) ;
 
 
-        for ( ; j < appStartHours.size(); j++){
+        for (int j = 0; j < appStartHours.size(); j++){
             String tempAppStartHour =  appStartHours.get(j).getAppHour();
             String tempAppEndHour =  appEndHours.get(j).getAppHour();
             String[] tempAppSplitStartHour = tempAppStartHour.split(":");
@@ -106,9 +109,9 @@ try {
             int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
             int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
 
-
-
-
+// app          / normal
+// 1020 - 1080 / 990 - 1080
+//1020 <= 990 && 990 < 1080
             if (tempAppStartHourWithMuniteToMunite <= tempStartHourWithMuniteToMunite && tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
                 tempStartHour = tempAppStartHour;
                 tempEndHour = tempAppEndHour;
@@ -121,9 +124,16 @@ try {
 
                 break;
             }
-            if (tempAppStartHourWithMuniteToMunite <= tempEndtHourWithMuniteToMunite && tempEndtHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
+//1020 <= 1080 && 1080 < 1080
+            if (tempAppStartHourWithMuniteToMunite <= tempEndtHourWithMuniteToMunite && tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite){
                 tempStartHour = tempAppStartHour;
                 tempEndHour = tempAppEndHour;
+                tempSplitStartHour = tempStartHour.split(":");
+                tempSplitEndHour = tempEndHour.split(":");
+
+                tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
+                tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
+
                 break;
             }
         }
