@@ -108,7 +108,7 @@ public class ConSql {
 
             while (rs.next()) {
                 GetInfo temp = new GetInfo();
-                temp.setAppHour(rs.getString("hour"));
+                temp.setAppHour(rs.getString(1));
                 sqlInfo.add(temp);
 
             }
