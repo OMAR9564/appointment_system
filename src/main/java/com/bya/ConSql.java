@@ -94,7 +94,7 @@ public class ConSql {
     }
 
 
-    public ArrayList<GetInfo> readHourData(String query) throws SQLException {
+    public ArrayList<GetInfo> readHourData(String query, String date) throws SQLException {
 //        sqlQuery = SELECT `hour` FROM `appointments` WHERE `date`= "2023-03-17";
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
@@ -105,6 +105,7 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
+            stmt.setString(1, date);
 
             rs = stmt.executeQuery();
 

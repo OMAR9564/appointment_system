@@ -9,15 +9,12 @@ try {
     String selectedDate = request.getParameter("selectedDate");
     String selectedOption = request.getParameter("selectedOption");
 
-    // Assuming your MySQL query to get available hours based on selectedDate
-    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = '" + selectedDate + "'";
-    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = '" + selectedDate + "'";
-
+    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
+    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
 
     ConSql conSql = new ConSql();
-    ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery);
-    ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery);
-
+    ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, selectedDate);
+    ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, selectedDate);
 
 
      // Calculate the working hours
@@ -30,15 +27,7 @@ try {
     int openingMinutes = Integer.parseInt(openingHour) * 60;
     int closingMinutes = Integer.parseInt(closingHour) * 60;
 
-    int startHourGlobal = openingMinutes;
-    int endHourGlobal = closingMinutes;
-
-    boolean hourIsUnderNine = false;
-
     int avalibaleHourCount = (closingMinutes - openingMinutes) / 60;
-
-    double finalStartHour = 0.0;
-    double finalEndHour = 0.0;
 
     List<String> adjustedHours = new ArrayList<>();
 
@@ -72,7 +61,6 @@ try {
         && (Integer.parseInt(tempEndHour.split(":")[1]) == 30)){
             break;
         }
-
             String[] tempSplitStartHour = tempStartHour.split(":");
 
             String[] tempSplitEndHour = tempEndHour.split(":");
@@ -83,24 +71,20 @@ try {
             int tempStartHourWithMuniteToMunite = tempStartHourToMunite + Integer.parseInt(tempSplitStartHour[1]) ;
             int tempEndtHourWithMuniteToMunite = tempEndtHourToMunite + Integer.parseInt(tempSplitEndHour[1]) ;
 
-
-
             // add 0 if start or hour under 9 clock
         if(i == 0 && ((Integer.parseInt(tempEndHour.split(":")[1]) != 30)
         || (Integer.parseInt(tempEndHour.split(":")[1]) == 30))  ){
 
-                if ((Integer.parseInt(tempStartHour.split(":")[0]) <= 9)
-                && (tempStartHour.split(":")[0]).charAt(0) != '0'){
-                tempStartHour = "0" + tempStartHour;
-                }
+            if ((Integer.parseInt(tempStartHour.split(":")[0]) <= 9)
+            && (tempStartHour.split(":")[0]).charAt(0) != '0'){
+            tempStartHour = "0" + tempStartHour;
+            }
 
-                if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9
-                && (tempEndHour.split(":")[0]).charAt(0) != '0'){
-                    tempEndHour = "0" + tempEndHour;
-                }
-
+            if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9
+            && (tempEndHour.split(":")[0]).charAt(0) != '0'){
+                tempEndHour = "0" + tempEndHour;
+            }
         }
-
         for (int j = 0; j < appStartHours.size(); j++){
             String tempAppStartHour =  appStartHours.get(j).getAppHour();
             String tempAppEndHour =  appEndHours.get(j).getAppHour();
@@ -112,53 +96,37 @@ try {
             int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
             int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
 
-
             if (tempAppStartHourWithMuniteToMunite <= tempStartHourWithMuniteToMunite
             && tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
-                if ((tempAppStartHourWithMuniteToMunite <= 570)){
-                    hourIsUnderNine = true;
-                    continue;
-                }
-                else {
-                    tempStartHour = tempAppStartHour;
-                    tempEndHour = tempAppEndHour;
 
-                    tempSplitStartHour = tempStartHour.split(":");
-                    tempSplitEndHour = tempEndHour.split(":");
+                tempStartHour = tempAppStartHour;
+                tempEndHour = tempAppEndHour;
 
-                    tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
-                    tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
-                    break;
-                }
+                tempSplitStartHour = tempStartHour.split(":");
+                tempSplitEndHour = tempEndHour.split(":");
+
+                tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
+                tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
+                break;
             }
 
             else if (tempAppStartHourWithMuniteToMunite < tempEndtHourWithMuniteToMunite
             && tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite){
-                if ((tempAppStartHourWithMuniteToMunite <= 570)){
-                    continue;
-                }
-                else {
-                    tempStartHour = tempAppStartHour;
-                    tempEndHour = tempAppEndHour;
-                    tempSplitStartHour = tempStartHour.split(":");
-                    tempSplitEndHour = tempEndHour.split(":");
 
-                    tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
-                    tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
-                    break;
-                }
+                tempStartHour = tempAppStartHour;
+                tempEndHour = tempAppEndHour;
+                tempSplitStartHour = tempStartHour.split(":");
+                tempSplitEndHour = tempEndHour.split(":");
+
+                tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
+                tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
+                break;
             }
-
         }
         //control if endHour under closing hour
         if (tempEndtHourToMunite >= closingMinutes) {
             break;
         }
-        //for first hour not repeat
-        /*if (hourIsUnderNine){
-            hourIsUnderNine = false;
-            continue;
-        }*/
 
         if (i == 0){
             int _counter = 0;
@@ -181,7 +149,6 @@ try {
                     _counter++;
                     continue;
                 }
-
             }
             if(_counter == 0){
                 adjustedHours.add(tempStartHour + "-" + tempEndHour);
@@ -189,9 +156,7 @@ try {
             }
         }
 
-
         //Control to what the next time
-
         if(tempSplitStartHour[1].equals("30") && tempSplitEndHour[1].equals("00")){
              if (selectedOption.equals("single")){
                 tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 2);
@@ -245,22 +210,16 @@ try {
                 tempEndHour = tempEndHour + ":30";
             }
         }
-
-/*if (hourIsInApp){
-            continue;
-        }*/
-
 ///
-            String[] _tempSplitStartHour = tempStartHour.split(":");
+        String[] _tempSplitStartHour = tempStartHour.split(":");
+        String[] _tempSplitEndHour = tempEndHour.split(":");
 
-            String[] _tempSplitEndHour = tempEndHour.split(":");
+        int _tempStartHourToMunite = Integer.parseInt(_tempSplitStartHour[0]) * 60;
+        int _tempEndtHourToMunite = Integer.parseInt(_tempSplitEndHour[0]) * 60;
 
-            int _tempStartHourToMunite = Integer.parseInt(_tempSplitStartHour[0]) * 60;
-            int _tempEndtHourToMunite = Integer.parseInt(_tempSplitEndHour[0]) * 60;
-
-            int _tempStartHourWithMuniteToMunite = _tempStartHourToMunite + Integer.parseInt(_tempSplitStartHour[1]) ;
-            int _tempEndtHourWithMuniteToMunite = _tempEndtHourToMunite + Integer.parseInt(_tempSplitEndHour[1]) ;
-            int counter = 0;
+        int _tempStartHourWithMuniteToMunite = _tempStartHourToMunite + Integer.parseInt(_tempSplitStartHour[1]) ;
+        int _tempEndtHourWithMuniteToMunite = _tempEndtHourToMunite + Integer.parseInt(_tempSplitEndHour[1]) ;
+        int counter = 0;
         for (int j = 0; j < appStartHours.size(); j++){
             String tempAppStartHour =  appStartHours.get(j).getAppHour();
             String tempAppEndHour =  appEndHours.get(j).getAppHour();
@@ -272,30 +231,22 @@ try {
             int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
             int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
 
-
             if ((tempAppStartHourWithMuniteToMunite <= _tempStartHourWithMuniteToMunite
             && _tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite)
             || tempAppStartHourWithMuniteToMunite < _tempEndtHourWithMuniteToMunite
-            && _tempEndtHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
+            && _tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite){
                 counter++;
                 continue;
             }
-
         }
         if(counter == 0 ){
-
                 adjustedHours.add(tempStartHour + "-" + tempEndHour);
-
         }
-
-
 ///
 
 }
-    // Add the adjusted time slot to the list
-
-    Helper.customSort(adjustedHours);
     // Sort the adjusted hours in ascending order
+    Helper.customSort(adjustedHours);
 
     // Generate JSON response
     StringBuilder jsonResponse = new StringBuilder("[");
@@ -313,4 +264,3 @@ try {
     out.println("[]"); // Return an empty JSON array as a response if an error occurs
 }
 %>
-

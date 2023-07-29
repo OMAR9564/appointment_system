@@ -246,34 +246,7 @@ public class Helper {
         }
     }
 
-    public void JsonFileWriter() {
-        ConSql conSql = new ConSql();
-        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
-        String query = "SELECT `hour` FROM `appointments` WHERE `date`= \"2023-03-17\"";
-        Gson gson = new Gson();
-        String jsonString = "";
-        try (FileWriter fileWriter = new FileWriter("myArray.json")) {
-            sqlInfo = conSql.readHourData(query);
-            String[] hourArray = new String[sqlInfo.size()];
-            for(int i = 0; i < sqlInfo.size(); i++){
-                hourArray[i] = sqlInfo.get(i).getAppHour();
-            }
-            jsonString = gson.toJson(hourArray);
-            fileWriter.write(jsonString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    // Helper function to calculate the time difference in minutes between two HH:mm formatted times
-    public int timeToMinutes(String time) {
-        String[] timeArray = time.split(":");
-        int hours = Integer.parseInt(timeArray[0]);
-        int minutes = Integer.parseInt(timeArray[1]);
 
-        return hours * 60 + minutes;
-    }
 
     public static void customSort(List<String> timeSlots) {
         for (int i = 0; i < timeSlots.size() - 1; i++) {
@@ -287,4 +260,34 @@ public class Helper {
             }
         }
     }
+
+/*    public boolean isHourInDB(int startHourWithMuniteToMunite, int endHourWithMuniteToMunite,
+                              int counter, int appStartHourCount, ArrayList<GetInfo> appStartHours,
+                              ArrayList<GetInfo> appEndHours){
+
+        for (int j = 0; j < appStartHourCount; j++) {
+            String tempAppStartHour = appStartHours.get(j).getAppHour();
+            String tempAppEndHour = appEndHours.get(j).getAppHour();
+            String[] tempAppSplitStartHour = tempAppStartHour.split(":");
+            String[] tempAppSplitEndHour = tempAppEndHour.split(":");
+            int tempAppStartHourToMunite = Integer.parseInt(tempAppSplitStartHour[0]) * 60;
+            int tempAppEndtHourToMunite = Integer.parseInt(tempAppSplitEndHour[0]) * 60;
+
+            int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
+            int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
+
+
+            if ((tempAppStartHourWithMuniteToMunite <= startHourWithMuniteToMunite
+                    && startHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite)
+                    || tempAppStartHourWithMuniteToMunite < endHourWithMuniteToMunite
+                    && endHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite) {
+                counter++;
+                continue;
+            }
+            if (counter == 0){
+                return t
+            }
+        }
+        return false;
+    }*/
 }
