@@ -13,10 +13,8 @@ try {
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = '" + selectedDate + "'";
     String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = '" + selectedDate + "'";
 
-    //String allHoursQuery = "SELECT hour FROM availableHours WHERE type = '" + selectedOption + "'";
 
     ConSql conSql = new ConSql();
-    //ArrayList<GetInfo> allHours = conSql.readHourData(allHoursQuery);
     ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery);
     ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery);
 
@@ -39,22 +37,11 @@ try {
 
     int avalibaleHourCount = (closingMinutes - openingMinutes) / 60;
 
-
-
     double finalStartHour = 0.0;
     double finalEndHour = 0.0;
 
     List<String> adjustedHours = new ArrayList<>();
 
-/*    if (selectedOption.equals("single")){
-        addMunites = 60;
-    }else if (selectedOption.equals("couple")){
-        addMunites = 90;
-    }*/
-
-    /*if (Integer.parseInt(openingHour) <= 9){
-        openingHour = "0" + openingHour;
-    }*/
     String tempStartHour =  openingHour + ":" + openingMunite;
     String tempEndHour =  "";
 
@@ -77,7 +64,6 @@ try {
 
         }
     }
-    int j = 0;
     for (int i = 0; i < avalibaleHourCount ; i++){
         // Control hours if out of closing time
         if(((Integer.parseInt(closingHour) <= Integer.parseInt(tempEndHour.split(":")[0]) )
@@ -98,7 +84,24 @@ try {
             int tempEndtHourWithMuniteToMunite = tempEndtHourToMunite + Integer.parseInt(tempSplitEndHour[1]) ;
 
 
-        for (; j < appStartHours.size(); j++){
+
+            // add 0 if start or hour under 9 clock
+        if(i == 0 && ((Integer.parseInt(tempEndHour.split(":")[1]) != 30)
+        || (Integer.parseInt(tempEndHour.split(":")[1]) == 30))  ){
+
+                if ((Integer.parseInt(tempStartHour.split(":")[0]) <= 9)
+                && (tempStartHour.split(":")[0]).charAt(0) != '0'){
+                tempStartHour = "0" + tempStartHour;
+                }
+
+                if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9
+                && (tempEndHour.split(":")[0]).charAt(0) != '0'){
+                    tempEndHour = "0" + tempEndHour;
+                }
+
+        }
+
+        for (int j = 0; j < appStartHours.size(); j++){
             String tempAppStartHour =  appStartHours.get(j).getAppHour();
             String tempAppEndHour =  appEndHours.get(j).getAppHour();
             String[] tempAppSplitStartHour = tempAppStartHour.split(":");
@@ -109,9 +112,7 @@ try {
             int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
             int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
 
-            // app          / normal
-            // 1020 - 1080 / 990 - 1080
-            //1050 <= 990 && 990 < 1080
+
             if (tempAppStartHourWithMuniteToMunite <= tempStartHourWithMuniteToMunite
             && tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
                 if ((tempAppStartHourWithMuniteToMunite <= 570)){
@@ -127,12 +128,11 @@ try {
 
                     tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
                     tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
-
                     break;
                 }
             }
-            //1050 <= 1080 && 1080 < 1080
-            if (tempAppStartHourWithMuniteToMunite <= tempEndtHourWithMuniteToMunite + 30
+
+            else if (tempAppStartHourWithMuniteToMunite < tempEndtHourWithMuniteToMunite
             && tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite){
                 if ((tempAppStartHourWithMuniteToMunite <= 570)){
                     continue;
@@ -145,93 +145,151 @@ try {
 
                     tempStartHourToMunite = Integer.parseInt(tempSplitStartHour[0]) * 60;
                     tempEndtHourToMunite = Integer.parseInt(tempSplitEndHour[0]) * 60;
-
                     break;
                 }
             }
+
         }
         //control if endHour under closing hour
         if (tempEndtHourToMunite >= closingMinutes) {
             break;
         }
         //for first hour not repeat
-        if (hourIsUnderNine){
+        /*if (hourIsUnderNine){
             hourIsUnderNine = false;
             continue;
-        }
-        // add 0 if start or hour under 9 clock
-        if(i == 0 && ((Integer.parseInt(tempEndHour.split(":")[1]) != 30)
-        || (Integer.parseInt(tempEndHour.split(":")[1]) == 30))  ){
+        }*/
 
-                if ((Integer.parseInt(tempStartHour.split(":")[0]) <= 9)
-                && (tempStartHour.split(":")[0]).charAt(0) != '0'){
-                tempStartHour = "0" + tempStartHour;
+        if (i == 0){
+            int _counter = 0;
+            for (int j = 0; j < appStartHours.size(); j++){
+                String tempAppStartHour =  appStartHours.get(j).getAppHour();
+                String tempAppEndHour =  appEndHours.get(j).getAppHour();
+                String[] tempAppSplitStartHour = tempAppStartHour.split(":");
+                String[] tempAppSplitEndHour = tempAppEndHour.split(":");
+                int tempAppStartHourToMunite = Integer.parseInt(tempAppSplitStartHour[0]) * 60;
+                int tempAppEndtHourToMunite = Integer.parseInt(tempAppSplitEndHour[0]) * 60;
+
+                int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
+                int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
+
+
+                if ((tempAppStartHourWithMuniteToMunite <= tempStartHourWithMuniteToMunite
+                && tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite)
+                || tempAppStartHourWithMuniteToMunite < tempEndtHourWithMuniteToMunite
+                && tempEndtHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
+                    _counter++;
+                    continue;
                 }
 
-                if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9
-                && (tempEndHour.split(":")[0]).charAt(0) != '0'){
-                    tempEndHour = "0" + tempEndHour;
-                }
+            }
+            if(_counter == 0){
                 adjustedHours.add(tempStartHour + "-" + tempEndHour);
                 continue;
             }
+        }
+
 
         //Control to what the next time
+
         if(tempSplitStartHour[1].equals("30") && tempSplitEndHour[1].equals("00")){
-                 if (selectedOption.equals("single")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 2);
-                    tempStartHour = tempStartHour + ":00";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
-                    tempEndHour = tempEndHour + ":00";
-                }else if (selectedOption.equals("couple")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 2);
-                    tempStartHour = tempStartHour + ":00";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
-                    tempEndHour = tempEndHour + ":30";
-                }
-
-            }else if(tempSplitStartHour[1].equals("30") && tempSplitEndHour[1].equals("30")){
-                if (selectedOption.equals("single")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
-                    tempStartHour = tempStartHour + ":30";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite / 60) + 1);
-                    tempEndHour = tempEndHour + ":30";
-                }else if (selectedOption.equals("couple")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
-                    tempStartHour = tempStartHour + ":30";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite / 60) + 2);
-                    tempEndHour = tempEndHour + ":00";
-
-                }
-            }
-            else if(tempSplitStartHour[1].equals("00") && tempSplitEndHour[1].equals("30")){
-                if (selectedOption.equals("single")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
-                    tempStartHour = tempStartHour + ":30";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
-                    tempEndHour = tempEndHour + ":30";
-                }else if (selectedOption.equals("couple")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
-                    tempStartHour = tempStartHour + ":30";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 2);
-                    tempEndHour = tempEndHour + ":00";
-                }
-            }
-            else if(tempSplitStartHour[1].equals("00") && tempSplitEndHour[1].equals("00")){
-                if (selectedOption.equals("single")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
-                    tempStartHour = tempStartHour + ":00";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
-                    tempEndHour = tempEndHour + ":00";
-                }else if (selectedOption.equals("couple")){
-                    tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
-                    tempStartHour = tempStartHour + ":00";
-                    tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
-                    tempEndHour = tempEndHour + ":30";
-                }
+             if (selectedOption.equals("single")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 2);
+                tempStartHour = tempStartHour + ":00";
+                tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
+                tempEndHour = tempEndHour + ":00";
+            }else if (selectedOption.equals("couple")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 2);
+                tempStartHour = tempStartHour + ":00";
+                tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
+                tempEndHour = tempEndHour + ":30";
             }
 
-            adjustedHours.add(tempStartHour + "-" + tempEndHour);
+        }else if(tempSplitStartHour[1].equals("30") && tempSplitEndHour[1].equals("30")){
+            if (selectedOption.equals("single")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
+                tempStartHour = tempStartHour + ":30";
+                tempEndHour = Integer.toString((tempEndtHourToMunite / 60) + 1);
+                tempEndHour = tempEndHour + ":30";
+            }else if (selectedOption.equals("couple")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
+                tempStartHour = tempStartHour + ":30";
+                tempEndHour = Integer.toString((tempEndtHourToMunite / 60) + 2);
+                tempEndHour = tempEndHour + ":00";
+
+            }
+        }
+        else if(tempSplitStartHour[1].equals("00") && tempSplitEndHour[1].equals("30")){
+            if (selectedOption.equals("single")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
+                tempStartHour = tempStartHour + ":30";
+                tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
+                tempEndHour = tempEndHour + ":30";
+            }else if (selectedOption.equals("couple")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
+                tempStartHour = tempStartHour + ":30";
+                tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 2);
+                tempEndHour = tempEndHour + ":00";
+            }
+        }
+        else if(tempSplitStartHour[1].equals("00") && tempSplitEndHour[1].equals("00")){
+            if (selectedOption.equals("single")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
+                tempStartHour = tempStartHour + ":00";
+                tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
+                tempEndHour = tempEndHour + ":00";
+            }else if (selectedOption.equals("couple")){
+                tempStartHour = Integer.toString((tempStartHourToMunite / 60) + 1);
+                tempStartHour = tempStartHour + ":00";
+                tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
+                tempEndHour = tempEndHour + ":30";
+            }
+        }
+
+/*if (hourIsInApp){
+            continue;
+        }*/
+
+///
+            String[] _tempSplitStartHour = tempStartHour.split(":");
+
+            String[] _tempSplitEndHour = tempEndHour.split(":");
+
+            int _tempStartHourToMunite = Integer.parseInt(_tempSplitStartHour[0]) * 60;
+            int _tempEndtHourToMunite = Integer.parseInt(_tempSplitEndHour[0]) * 60;
+
+            int _tempStartHourWithMuniteToMunite = _tempStartHourToMunite + Integer.parseInt(_tempSplitStartHour[1]) ;
+            int _tempEndtHourWithMuniteToMunite = _tempEndtHourToMunite + Integer.parseInt(_tempSplitEndHour[1]) ;
+            int counter = 0;
+        for (int j = 0; j < appStartHours.size(); j++){
+            String tempAppStartHour =  appStartHours.get(j).getAppHour();
+            String tempAppEndHour =  appEndHours.get(j).getAppHour();
+            String[] tempAppSplitStartHour = tempAppStartHour.split(":");
+            String[] tempAppSplitEndHour = tempAppEndHour.split(":");
+            int tempAppStartHourToMunite = Integer.parseInt(tempAppSplitStartHour[0]) * 60;
+            int tempAppEndtHourToMunite = Integer.parseInt(tempAppSplitEndHour[0]) * 60;
+
+            int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
+            int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
+
+
+            if ((tempAppStartHourWithMuniteToMunite <= _tempStartHourWithMuniteToMunite
+            && _tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite)
+            || tempAppStartHourWithMuniteToMunite < _tempEndtHourWithMuniteToMunite
+            && _tempEndtHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite){
+                counter++;
+                continue;
+            }
+
+        }
+        if(counter == 0 ){
+
+                adjustedHours.add(tempStartHour + "-" + tempEndHour);
+
+        }
+
+
+///
 
 }
     // Add the adjusted time slot to the list
@@ -255,3 +313,4 @@ try {
     out.println("[]"); // Return an empty JSON array as a response if an error occurs
 }
 %>
+
