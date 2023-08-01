@@ -53,6 +53,13 @@ function showMonth(month, year) {
         const dayEl = document.createElement("div");
         dayEl.classList.add("day");
         dayEl.innerHTML = i;
+
+        const date = new Date(year, month, i);
+        if (!isDateInCurrentMonth(date)) {
+            dayEl.classList.add("disabled"); // Add the "disabled" class to non-current month days
+            dayEl.style.pointerEvents = "none"; // Disable pointer events for non-current month days
+        }
+
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
             dayEl.classList.add("today"); // Add the "today" class to the current day element
         }
@@ -92,6 +99,11 @@ function showPrevMonth() {
         currentMonth--;
     }
     showMonth(currentMonth, currentYear);
+}
+//filtering days to only this month and the next 30 days
+function isDateInCurrentMonth(date) {
+    const currentDate = new Date();
+    return date.getMonth() === currentDate.getMonth() && date >= currentDate;
 }
 
 // Function to show the next month's calendar
@@ -332,4 +344,66 @@ function getMonthName(monthIndex) {
         "Aralık"
     ];
     return monthNames[monthIndex];
+}
+function checkAndToggleClass() {
+    const inputElement = document.getElementById("specialCharsInput");
+    const specialCharsWarning = document.getElementById("specialCharsWarning");
+
+    // Kullanmak istemediğiniz özel karakterleri belirtin (örneğin @ ve !)
+    const forbiddenChars = ["@", "!"];
+
+    const inputValue = inputElement.value;
+
+    for (let i = 0; i < inputValue.length; i++) {
+        if (forbiddenChars.includes(inputValue[i])) {
+            specialCharsWarning.style.display = "block";
+            inputElement.classList.add("specialCharsFound"); // Özel karakter bulunursa belirli bir sınıfı ekliyoruz
+            return; // Eğer özel karakter bulunduysa, fonksiyonu sonlandırıyoruz.
+        }
+    }
+
+    // Eğer özel karakter yoksa uyarıyı gizliyoruz ve sınıfı kaldırıyoruz.
+    specialCharsWarning.style.display = "none";
+    inputElement.classList.remove("specialCharsFound");
+}
+
+function blockSpecialChars() {
+    const inputElement = document.getElementById("name-input");
+    const forbiddenChars = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
+        "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~", "€", "‚",
+        "ƒ", "„", "…", "†", "‡", "ˆ", "‰", "Š", "‹", "Œ", "Ž", "‘", "’", "“", "”", "•", "–",
+        "—", "˜", "™", "š", "›", "œ", "ž", "Ÿ", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©",
+        "ª", "«", "¬", "®", "¯", "°", "±", "²", "³", "´", "µ", "¶", "·", "¸", "¹", "º", "»",
+        "¼", "½", "¾", "¿", "×", "÷", "×", "÷", "¿"]; // Kullanmak istemediğiniz özel karakterleri belirtin
+
+    let inputValue = inputElement.value;
+    let updatedValue = "";
+
+    for (let i = 0; i < inputValue.length; i++) {
+        if (!forbiddenChars.includes(inputValue[i])) {
+            updatedValue += inputValue[i];
+        }
+    }
+
+    inputElement.value = updatedValue;
+}
+function blockSpecialChars1() {
+    const inputElement = document.getElementById("surname-input");
+    const forbiddenChars = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
+        "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~", "€", "‚",
+        "ƒ", "„", "…", "†", "‡", "ˆ", "‰", "Š", "‹", "Œ", "Ž", "‘", "’", "“", "”", "•", "–",
+        "—", "˜", "™", "š", "›", "œ", "ž", "Ÿ", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©",
+        "ª", "«", "¬", "®", "¯", "°", "±", "²", "³", "´", "µ", "¶", "·", "¸", "¹", "º", "»",
+        "¼", "½", "¾", "¿", "×", "÷", "×", "÷", "¿"]; // Kullanmak istemediğiniz özel karakterleri belirtin
+
+    let inputValue = inputElement.value;
+    let updatedValue = "";
+
+    for (let i = 0; i < inputValue.length; i++) {
+        if (!forbiddenChars.includes(inputValue[i])) {
+            updatedValue += inputValue[i];
+        }
+    }
+
+    inputElement.value = updatedValue;
 }

@@ -12,16 +12,22 @@ try {
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
     String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
     String settingsQuery = "SELECT `openingHour`, `closingHour` FROM `settings`";
+    String dailyOCHourQuery = "SELECT `openingHour`, `closingHour` FROM `dailyOCHour` WHERE day = ?";
 
     ConSql conSql = new ConSql();
     ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, selectedDate);
     ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, selectedDate);
     ArrayList<GetInfo> openingClosingHours = conSql.getOpeningClosingHours(settingsQuery);
-
+    ArrayList<GetInfo> dailyOCHours = conSql.getDailyOpeningClosingHours(dailyOCHourQuery, selectedDate);
 
      // Calculate the working hours
     String openingTime = openingClosingHours.get(0).getOpeningHour();
     String closingTime = openingClosingHours.get(0).getClosingHour();
+
+    if (dailyOCHours.size() != 0){
+        openingTime = dailyOCHours.get(0).getOpeningHour();
+        closingTime = dailyOCHours.get(0).getClosingHour();
+    }
 
     String openingHour = "9"; // Opening hour is 9:00
     String closingHour = "18"; // Closing hour is 18:00
@@ -82,20 +88,7 @@ try {
             int tempStartHourWithMuniteToMunite = tempStartHourToMunite + Integer.parseInt(tempSplitStartHour[1]) ;
             int tempEndtHourWithMuniteToMunite = tempEndtHourToMunite + Integer.parseInt(tempSplitEndHour[1]) ;
 
-            // add 0 if start or hour under 9 clock
-        if(i == 0 && ((Integer.parseInt(tempEndHour.split(":")[1]) != 30)
-        || (Integer.parseInt(tempEndHour.split(":")[1]) == 30))  ){
 
-            if ((Integer.parseInt(tempStartHour.split(":")[0]) <= 9)
-            && (tempStartHour.split(":")[0]).charAt(0) != '0'){
-            tempStartHour = "0" + tempStartHour;
-            }
-
-            if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9
-            && (tempEndHour.split(":")[0]).charAt(0) != '0'){
-                tempEndHour = "0" + tempEndHour;
-            }
-        }
         for (int j = 0; j < appStartHours.size(); j++){
             String tempAppStartHour =  appStartHours.get(j).getAppHour();
             String tempAppEndHour =  appEndHours.get(j).getAppHour();
@@ -219,6 +212,21 @@ try {
                 tempStartHour = tempStartHour + ":00";
                 tempEndHour = Integer.toString((tempEndtHourToMunite  / 60) + 1);
                 tempEndHour = tempEndHour + ":30";
+            }
+        }
+
+            // add 0 if start or hour under 9 clock
+        if( ((Integer.parseInt(tempEndHour.split(":")[1]) != 30)
+        || (Integer.parseInt(tempEndHour.split(":")[1]) == 30))  ){
+
+            if ((Integer.parseInt(tempStartHour.split(":")[0]) <= 9)
+            && (tempStartHour.split(":")[0]).charAt(0) != '0'){
+            tempStartHour = "0" + tempStartHour;
+            }
+
+            if (Integer.parseInt(tempEndHour.split(":")[0]) <= 9
+            && (tempEndHour.split(":")[0]).charAt(0) != '0'){
+                tempEndHour = "0" + tempEndHour;
             }
         }
 ///

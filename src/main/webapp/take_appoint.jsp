@@ -47,6 +47,7 @@
     String custPhone = request.getParameter("cust-phone");
     String doctorName = request.getParameter("doctor-name");
     String locName = request.getParameter("loc-name");
+    String intervalType = request.getParameter("interval-type");
 
     // check if there is no zero at the beginning of the day
     appointDay = helper.checkZeroIfdayOfDate(appointDay);
@@ -131,7 +132,8 @@
         String appointStartHour = appointTime.split("-")[0];
         String appointEndHour = appointTime.split("-")[1];
 
-        conSql.insertData(custName, custSurname, custPhone, doctorName, locName, rndNum, date, appointStartHour, appointEndHour);
+        conSql.insertData(custName, custSurname, custPhone, doctorName, locName
+                            , rndNum, date, appointStartHour, appointEndHour, intervalType);
 
         location = dbLocationName.get(0).getName();
 

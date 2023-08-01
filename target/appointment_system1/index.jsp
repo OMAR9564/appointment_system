@@ -26,6 +26,8 @@
     ArrayList<GetInfo> doctorInfo = new ArrayList<>();
     ArrayList<GetInfo> rezervationInfo = new ArrayList<>();
     ArrayList<GetInfo> companyName = new ArrayList<>();
+    ArrayList<GetInfo> messageBody = new ArrayList<>();
+    ArrayList<GetInfo> messageTitle = new ArrayList<>();
 
 
 
@@ -33,22 +35,26 @@
     String doctorsQuery = "SELECT * FROM `doctorInfo`";
     String rezervationQuery = "SELECT * FROM `reservationInfo`";
     String companyNameQuery = "SELECT companyName FROM settings";
+    String appointMessageBody = "SELECT appointMessageBody FROM settings";
+    String appointMessageTitle = "SELECT appointMessageTitle FROM settings";
+
 
     ConSql conSql = new ConSql();
     locationNames= conSql.getInfos(locationsQuery);
     doctorInfo = conSql.getInfos(doctorsQuery);
     rezervationInfo = conSql.getRezervationInfos(rezervationQuery);
-    companyName = conSql.getCompanyName(companyNameQuery);
-
-    String appointmentMadeStr = "Randevunuz Basirili Bir Sekilde Alindi.";
+    companyName = conSql.getSettingName(companyNameQuery);
+    messageBody = conSql.getSettingName(appointMessageBody);
+    messageTitle = conSql.getSettingName(appointMessageTitle);
+    String appointmentMadeStr = messageBody.get(0).getName();
     String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
 
-    String appointmentMadeHeader = "Randevunuz Alindi.";
+    String appointmentMadeHeader = messageTitle.get(0).getName();
     String appointmentNotMadeHeader = "Bir Hata Olustu!!";
 
     String locName = "";
 
-    String companyNameTitle = companyName.get(0).getCompanyName();
+    String companyNameTitle = companyName.get(0).getName();
 
 
     requestStr = request.getParameter("message");
@@ -87,11 +93,11 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="name-input">Adınız:</label>
-                <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required>
+                <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required oninput="blockSpecialChars()">
             </div>
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
-                <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required>
+                <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required oninput="blockSpecialChars1()">
             </div>
             <div class="form-group">
                 <label for="phone-input">Telefon Numaranız:</label>
@@ -183,6 +189,8 @@
                     <input type="hidden" id="cust-phone" name="cust-phone" value="">
                     <input type="hidden" id="doctor-name" name="doctor-name" value="">
                     <input type="hidden" id="loc-name" name="loc-name" value="">
+                    <input type="hidden" id="interval-type" name="interval-type" value="">
+
 
                     <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment" name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
 
@@ -437,6 +445,13 @@
         // Değerin başka bir input öğesine atanması
         document.getElementById("loc-name").value = selectedValue;
     };
+    document.getElementById("apptype-select").onchange = function() {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("interval-type").value = selectedValue;
+    };
 
 
     //Önceki ve bugün tarihler için gri renkli bir arka plan
@@ -448,6 +463,7 @@
             day.classList.add("past");
         }
     });
+
 
     //Önceki aylara geçiş butonunu gizlemek
     if (currentMonth === 0) {
