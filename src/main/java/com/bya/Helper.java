@@ -246,8 +246,6 @@ public class Helper {
         }
     }
 
-
-
     public static void customSort(List<String> timeSlots) {
         for (int i = 0; i < timeSlots.size() - 1; i++) {
             for (int j = i + 1; j < timeSlots.size(); j++) {
@@ -261,33 +259,14 @@ public class Helper {
         }
     }
 
-/*    public boolean isHourInDB(int startHourWithMuniteToMunite, int endHourWithMuniteToMunite,
-                              int counter, int appStartHourCount, ArrayList<GetInfo> appStartHours,
-                              ArrayList<GetInfo> appEndHours){
-
-        for (int j = 0; j < appStartHourCount; j++) {
-            String tempAppStartHour = appStartHours.get(j).getAppHour();
-            String tempAppEndHour = appEndHours.get(j).getAppHour();
-            String[] tempAppSplitStartHour = tempAppStartHour.split(":");
-            String[] tempAppSplitEndHour = tempAppEndHour.split(":");
-            int tempAppStartHourToMunite = Integer.parseInt(tempAppSplitStartHour[0]) * 60;
-            int tempAppEndtHourToMunite = Integer.parseInt(tempAppSplitEndHour[0]) * 60;
-
-            int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
-            int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
-
-
-            if ((tempAppStartHourWithMuniteToMunite <= startHourWithMuniteToMunite
-                    && startHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite)
-                    || tempAppStartHourWithMuniteToMunite < endHourWithMuniteToMunite
-                    && endHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite) {
-                counter++;
-                continue;
-            }
-            if (counter == 0){
-                return t
-            }
+    // check if there is no zero at the beginning of the day
+    public static String checkZeroIfdayOfDate(String day){
+        int stringLength = day.length();
+        String result = "" ;
+        if(stringLength == 1){
+            result = "0" + day;
         }
-        return false;
-    }*/
+        return result;
+    }
+
 }

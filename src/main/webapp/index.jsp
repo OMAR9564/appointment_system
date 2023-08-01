@@ -22,6 +22,19 @@
 /*
     String selectedDate = null;
 */
+    ArrayList<GetInfo> locationNames = new ArrayList<>();
+    ArrayList<GetInfo> doctorInfo = new ArrayList<>();
+    ArrayList<GetInfo> rezervationInfo = new ArrayList<>();
+
+
+    String locationsQuery = "SELECT * FROM locationInfo";
+    String doctorsQuery = "SELECT * FROM `doctorInfo`";
+    String rezervationQuery = "SELECT * FROM `reservationInfo`";
+
+    ConSql conSql = new ConSql();
+    locationNames= conSql.getInfos(locationsQuery);
+    doctorInfo = conSql.getInfos(doctorsQuery);
+    rezervationInfo = conSql.getRezervationInfos(rezervationQuery);
 
     String appointmentMadeStr = "Randevunuz Basirili Bir Sekilde Alindi.";
     String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
@@ -29,8 +42,6 @@
     String appointmentMadeHeader = "Randevunuz Alindi.";
     String appointmentNotMadeHeader = "Bir Hata Olustu!!";
 
-    String locNameCompany = "Loya";
-    String locNameOnline = "Online";
     String locName = "";
 
 
@@ -85,24 +96,44 @@
                 <label for="doctor-select">Doktor seçin:</label>
                 <select class="form-control" id="doctor-select">
                     <option value="" selected  hidden>Seçin</option>
-                    <option value="doktor1" >Doktor 1</option>
-                    <option value="doktor2">Doktor 2</option>
+                    <%
+                        for (int i = 0; i < doctorInfo.size(); i++){
+                    %>
+                    <option value= <% out.println("doctor"+doctorInfo.get(i).getId());%> >
+                        <%out.println(doctorInfo.get(i).getName());%>
+                    </option>
+                    <%
+                        }
+                    %>
                 </select>
             </div>
             <div class="form-group">
                 <label for="apptype-select">Randevu tipi seçin:</label>
                 <select class="form-control" id="apptype-select">
                     <option value="" selected  hidden>Seçin</option>
-                    <option value="single">Bireysel Randevusu</option>
-                    <option value="couple">Çift Randevusu</option>
+                    <%
+                        for (int i = 0; i < rezervationInfo.size(); i++){
+                    %>
+                    <option value = <%out.println((rezervationInfo.get(i).getRezervationNameTag()));%>>
+                        <%out.println(rezervationInfo.get(i).getRezervationName());%>
+                    </option>
+                    <%}%>
                 </select>
             </div>
+
             <div class="form-group">
                 <label for="location-select">Yer:</label>
                 <select class="form-control" id="location-select">
                     <option value="" selected hidden>Seçin</option>
-                    <option value="loc1"><%out.println(locNameCompany);%></option>
-                    <option value="loc2"><%out.println(locNameOnline);%></option>
+                    <%
+                        for (int i = 0; i < locationNames.size(); i++){
+                    %>
+                    <option value= <%out.println("loc"+(locationNames.get(i).getId()));%> >
+                        <%out.println(locationNames.get(i).getName());%>
+                    </option>
+                    <%
+                        }
+                    %>
                 </select>
             </div>
             <div class="calendar">
@@ -253,11 +284,15 @@
 
 //                    String rds = String.valueOf(helper.randNum());
 //                    helper.insertRandomNumToTxt(rds, "dsafasf");
-                    if (locNameCo.equals("loc1")) {
-                        locName = locNameCompany;
-                    }
-                    if (locNameCo.equals("loc2")) {
-                        locName = locNameOnline;
+                    for (int i = 0; i < locationNames.size(); i++) {
+                        if (locNameCo.equals("loc"+locationNames.get(i).getId())) {
+                            locName = locationNames.get(i).getName();
+
+                        }
+                        i++;
+                        if (locNameCo.equals("loc"+locationNames.get(i).getId())) {
+                            locName = locationNames.get(i).getName();
+                        }
                     }
             %>
 

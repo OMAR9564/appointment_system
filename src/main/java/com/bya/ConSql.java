@@ -58,7 +58,7 @@ public class ConSql {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
-        conn = getDatabaseConnection(); // veritabanı bağlantısı oluşturma metodu
+        conn = getDatabaseConnection();
 
 
         pstmt = conn.prepareStatement(query);
@@ -159,7 +159,7 @@ public class ConSql {
 
             while (rs.next()) {
                 GetInfo temp = new GetInfo();
-                temp.setCustId(rs.getInt("id"));
+                temp.setId(rs.getInt("id"));
                 temp.setCustNameSurname(rs.getString("nameSurname"));
                 temp.setCustPhone(rs.getString("phone"));
                 temp.setDoctorName(rs.getString("doctorName"));
@@ -169,6 +169,90 @@ public class ConSql {
 
                 sqlInfo.add(temp);
 
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return sqlInfo;
+    }
+    public ArrayList<GetInfo> getInfos(String query) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setId(rs.getInt("id"));
+                temp.setName(rs.getString("name"));
+
+                sqlInfo.add(temp);
+
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return sqlInfo;
+    }
+    public ArrayList<GetInfo> getRezervationInfos(String query) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setId(rs.getInt("id"));
+                temp.setRezervationName(rs.getString("name"));
+                temp.setRezervationInterval(rs.getString("hourInterval"));
+                temp.setRezervationNameTag(rs.getString("tagName"));
+
+
+                sqlInfo.add(temp);
+
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return sqlInfo;
+    }
+
+    public ArrayList<GetInfo> getOpeningClosingHours(String query) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setOpeningHour(rs.getString("openingHour"));
+                temp.setClosingHour(rs.getString("closingHour"));
+
+                sqlInfo.add(temp);
             }
             conn.close();
         }catch (Exception e){

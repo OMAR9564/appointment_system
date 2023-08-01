@@ -136,7 +136,7 @@
                                     <%
 
                                         for (int i = 0; i < Integer.parseInt((String) session.getAttribute("appointmentCount")); i++) {
-                                            session.setAttribute("custId", Integer.toString(info.get(i).getCustId()));
+                                            session.setAttribute("custId", Integer.toString(info.get(i).getId()));
                                             session.setAttribute("custNameSurname", info.get(i).getCustNameSurname());
                                             session.setAttribute("CustPhone", info.get(i).getCustPhone());
                                             session.setAttribute("DoctorName", info.get(i).getDoctorName());

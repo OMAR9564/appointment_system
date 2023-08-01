@@ -11,21 +11,32 @@ try {
 
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
     String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
+    String settingsQuery = "SELECT `openingHour`, `closingHour` FROM `settings`";
 
     ConSql conSql = new ConSql();
     ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, selectedDate);
     ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, selectedDate);
+    ArrayList<GetInfo> openingClosingHours = conSql.getOpeningClosingHours(settingsQuery);
 
 
      // Calculate the working hours
+    String openingTime = openingClosingHours.get(0).getOpeningHour();
+    String closingTime = openingClosingHours.get(0).getClosingHour();
+
     String openingHour = "9"; // Opening hour is 9:00
     String closingHour = "18"; // Closing hour is 18:00
     String openingMunite = "00";
     String closingMunite = "00";
 
+    openingHour = openingTime.split(":")[0];
+    openingMunite = openingTime.split(":")[1];
+
+    closingHour = closingTime.split(":")[0];
+    closingMunite = closingTime.split(":")[1];
+
     // Convert the working hours to minutes for easier manipulation
-    int openingMinutes = Integer.parseInt(openingHour) * 60;
-    int closingMinutes = Integer.parseInt(closingHour) * 60;
+    int openingMinutes = (Integer.parseInt(openingHour) * 60) + Integer.parseInt(openingMunite);
+    int closingMinutes = Integer.parseInt(closingHour) * 60 + Integer.parseInt(closingMunite);
 
     int avalibaleHourCount = (closingMinutes - openingMinutes) / 60;
 

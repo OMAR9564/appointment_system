@@ -1,7 +1,13 @@
 package com.bya;
 
 public class GetInfo {
-    int custId = 0;
+    int id = 0;
+    String name = "" ;
+    String rezervationName = "" ;
+    String rezervationInterval = "" ;
+    String rezervationNameTag = "" ;
+    String openingHour = "";
+    String closingHour = "";
     String custName = "";
     String custSurname = "";
     String custNameSurname = "";
@@ -16,12 +22,20 @@ public class GetInfo {
     String availableDate = "";
     String locations = "";
 
-    public int getCustId() {
-        return custId;
+    public int getId() {
+        return id;
     }
 
-    public void setCustId(int custId) {
-        this.custId = custId;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCustName() {
@@ -126,6 +140,46 @@ public class GetInfo {
 
     public void setLocations(String locations) {
         this.locations = locations;
+    }
+
+    public String getRezervationName() {
+        return rezervationName;
+    }
+
+    public void setRezervationName(String rezervationName) {
+        this.rezervationName = rezervationName;
+    }
+
+    public String getRezervationInterval() {
+        return rezervationInterval;
+    }
+
+    public void setRezervationInterval(String rezervationInterval) {
+        this.rezervationInterval = rezervationInterval;
+    }
+
+    public String getRezervationNameTag() {
+        return rezervationNameTag;
+    }
+
+    public void setRezervationNameTag(String rezervationNameTag) {
+        this.rezervationNameTag = rezervationNameTag;
+    }
+
+    public String getOpeningHour() {
+        return openingHour;
+    }
+
+    public void setOpeningHour(String openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    public String getClosingHour() {
+        return closingHour;
+    }
+
+    public void setClosingHour(String closingHour) {
+        this.closingHour = closingHour;
     }
 
 }

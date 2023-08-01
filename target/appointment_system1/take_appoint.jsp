@@ -105,6 +105,8 @@
         helper.checkDateIsFinishInTxt(startDateTimeStr);
         helper.insertRandomNumToTxt(rndNum, startDateTimeStr);
 
+        appointDay = helper.checkZeroIfdayOfDate(appointDay);
+
         date = appointYear + "-" + numOfMonth + "-" + appointDay;
         //set sql setters
         getInfo.setCustName(custName);
