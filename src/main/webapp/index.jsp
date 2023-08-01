@@ -25,16 +25,20 @@
     ArrayList<GetInfo> locationNames = new ArrayList<>();
     ArrayList<GetInfo> doctorInfo = new ArrayList<>();
     ArrayList<GetInfo> rezervationInfo = new ArrayList<>();
+    ArrayList<GetInfo> companyName = new ArrayList<>();
+
 
 
     String locationsQuery = "SELECT * FROM locationInfo";
     String doctorsQuery = "SELECT * FROM `doctorInfo`";
     String rezervationQuery = "SELECT * FROM `reservationInfo`";
+    String companyNameQuery = "SELECT companyName FROM settings";
 
     ConSql conSql = new ConSql();
     locationNames= conSql.getInfos(locationsQuery);
     doctorInfo = conSql.getInfos(doctorsQuery);
     rezervationInfo = conSql.getRezervationInfos(rezervationQuery);
+    companyName = conSql.getCompanyName(companyNameQuery);
 
     String appointmentMadeStr = "Randevunuz Basirili Bir Sekilde Alindi.";
     String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
@@ -43,6 +47,8 @@
     String appointmentNotMadeHeader = "Bir Hata Olustu!!";
 
     String locName = "";
+
+    String companyNameTitle = companyName.get(0).getCompanyName();
 
 
     requestStr = request.getParameter("message");
@@ -56,7 +62,7 @@
 %>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Psikoloji Uzmanı Randevu Sistemi</title>
+    <title><%out.println(companyNameTitle);%></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style/style.css">
@@ -74,6 +80,7 @@
 <div class="container">
     <div class="row mt-4" >
         <div class="col-md-12 text-center">
+            <h1><%out.println(companyNameTitle);%></h1>
             <h2> Randevu Alma Sistemi</h2>
         </div>
     </div>
@@ -285,12 +292,13 @@
 //                    String rds = String.valueOf(helper.randNum());
 //                    helper.insertRandomNumToTxt(rds, "dsafasf");
                     for (int i = 0; i < locationNames.size(); i++) {
-                        if (locNameCo.equals("loc"+locationNames.get(i).getId())) {
+
+                        if (locNameCo.equals(Integer.toString(locationNames.get(i).getId()))) {
                             locName = locationNames.get(i).getName();
 
                         }
                         i++;
-                        if (locNameCo.equals("loc"+locationNames.get(i).getId())) {
+                        if (locNameCo.equals(Integer.toString(locationNames.get(i).getId()))) {
                             locName = locationNames.get(i).getName();
                         }
                     }

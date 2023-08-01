@@ -36,6 +36,8 @@
     GetInfo getInfo = new GetInfo();
     ConSql conSql = new ConSql();
 
+    String locationQuery = "SELECT * FROM locationInfo WHERE id = ?";
+
     String appointYear = request.getParameter("selected-year");
     String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
     String appointDay = request.getParameter("selected-dayIn");
@@ -45,6 +47,14 @@
     String custPhone = request.getParameter("cust-phone");
     String doctorName = request.getParameter("doctor-name");
     String locName = request.getParameter("loc-name");
+
+    // check if there is no zero at the beginning of the day
+    appointDay = helper.checkZeroIfdayOfDate(appointDay);
+
+    locName = helper.removeWord(locName ,"loc");
+    doctorName = helper.removeWord(doctorName ,"doctor");
+
+    ArrayList<GetInfo> dbLocationName = conSql.getInfos(locationQuery, locName);
 
 
     String numOfMonth = helper.monthNameToNum(appointMonth);
@@ -57,8 +67,8 @@
 
 
     String title = custName + " " + custSurname;
-    String description = custPhone + "-" + locName;
-    String  location= locName;
+    String description = custPhone + " - " + locName;
+    String  location = locName;
     String startDateTimeStr = appointYear + "-" + numOfMonth + "-" + appointDay + "T" + startHour + ":00";
     String endDateTimeStr = appointYear + "-" + numOfMonth + "-" + appointDay + "T" + endHour + ":00";
 
@@ -105,9 +115,9 @@
         helper.checkDateIsFinishInTxt(startDateTimeStr);
         helper.insertRandomNumToTxt(rndNum, startDateTimeStr);
 
-        appointDay = helper.checkZeroIfdayOfDate(appointDay);
 
         date = appointYear + "-" + numOfMonth + "-" + appointDay;
+
         //set sql setters
         getInfo.setCustName(custName);
         getInfo.setCustSurname(custSurname);
@@ -123,7 +133,7 @@
 
         conSql.insertData(custName, custSurname, custPhone, doctorName, locName, rndNum, date, appointStartHour, appointEndHour);
 
-
+        location = dbLocationName.get(0).getName();
 
         calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
 

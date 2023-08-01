@@ -8,6 +8,7 @@ public class GetInfo {
     String rezervationNameTag = "" ;
     String openingHour = "";
     String closingHour = "";
+    String companyName = "";
     String custName = "";
     String custSurname = "";
     String custNameSurname = "";
@@ -180,6 +181,13 @@ public class GetInfo {
 
     public void setClosingHour(String closingHour) {
         this.closingHour = closingHour;
+    }
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
 }

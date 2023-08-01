@@ -8,9 +8,6 @@ public class ConSql {
     public void insertData(String name, String surname, String phone,
                            String doktorName, String appLocation,
                            String tempId, String appDate, String appStartHour, String appEndHour) {
-        String nameSurname = null;
-        nameSurname = name + " " + surname;
-
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -19,17 +16,18 @@ public class ConSql {
 
             conn = getDatabaseConnection(); // veritabanı bağlantısı oluşturma metodu
 
-            String sql = "INSERT INTO `appointments`(`nameSurname`, `phone`, `doctorName`, `location`, `tempId`, `date`, `startHour`, `EndHour`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`, `locationId`, `tempId`, `date`, `startHour`, `EndHour`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
 
-            pstmt.setString(1, nameSurname);
-            pstmt.setString(2, phone);
-            pstmt.setString(3, doktorName);
-            pstmt.setString(4, appLocation);
-            pstmt.setString(5, tempId);
-            pstmt.setString(6, appDate);
-            pstmt.setString(7, appStartHour);
-            pstmt.setString(8, appEndHour);
+            pstmt.setString(1, name);
+            pstmt.setString(2, surname);
+            pstmt.setString(3, phone);
+            pstmt.setString(4, doktorName);
+            pstmt.setString(5, appLocation);
+            pstmt.setString(6, tempId);
+            pstmt.setString(7, appDate);
+            pstmt.setString(8, appStartHour);
+            pstmt.setString(9, appEndHour);
 
 
 
@@ -176,7 +174,7 @@ public class ConSql {
         }
         return sqlInfo;
     }
-    public ArrayList<GetInfo> getInfos(String query) throws SQLException {
+    public ArrayList<GetInfo> getInfos(String query, String... params) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
             Connection conn = null;
@@ -186,6 +184,9 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
+            if(params.length != 0){
+                stmt.setString(1, params[0]);
+            }
 
             rs = stmt.executeQuery();
 
@@ -252,6 +253,30 @@ public class ConSql {
                 temp.setOpeningHour(rs.getString("openingHour"));
                 temp.setClosingHour(rs.getString("closingHour"));
 
+                sqlInfo.add(temp);
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return sqlInfo;
+    }
+    public ArrayList<GetInfo> getCompanyName(String query) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setCompanyName(rs.getString("companyName"));
                 sqlInfo.add(temp);
             }
             conn.close();

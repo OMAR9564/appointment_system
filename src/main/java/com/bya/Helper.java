@@ -139,7 +139,7 @@ public class Helper {
         long diffInSec = (diffInMilliSec / 1000) + plusUtc;
         System.out.println(diffInSec);
 
-            return diffInSec;
+        return diffInSec;
 
 
     }
@@ -169,7 +169,10 @@ public class Helper {
         String rndNumIsFind = null;
         Boolean numIsHere = false;
         try {
-            File myFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt");
+            File myFile = new File("rndNums.txt");
+            if (!myFile.exists()) {
+                myFile.createNewFile();
+            }
             Scanner myReader = new Scanner(myFile);
             String rN = randNum;
             while (myReader.hasNextLine()) {
@@ -187,13 +190,18 @@ public class Helper {
         } catch (FileNotFoundException e) {
             System.out.println("Dosya bulunamadı.");
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return numIsHere;
     }
     public Boolean checkDateIsFinishInTxt(String startDateTimeStr){
         Boolean dateIsFinish = false;
         try {
-            File myFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt");
+            File myFile = new File("rndNums.txt");
+            if (!myFile.exists()) {
+                myFile.createNewFile();
+            }
             Scanner myReader = new Scanner(myFile);
             String dF = startDateTimeStr;
             while (myReader.hasNextLine()) {
@@ -215,14 +223,16 @@ public class Helper {
         } catch (FileNotFoundException e) {
             System.out.println("Dosya bulunamadı.");
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return dateIsFinish;
     }
 
     public void removeLineOfTxt(String str){
         try {
-            File inputFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/rndNums.txt");
-            File tempFile = new File("/Users/omerfaruk/Documents/My_GitHub/appointment_system/src/main/resources/temp.txt");
+            File inputFile = new File("rndNums.txt");
+            File tempFile = new File("temp.txt");
 
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
@@ -246,6 +256,8 @@ public class Helper {
         }
     }
 
+
+
     public static void customSort(List<String> timeSlots) {
         for (int i = 0; i < timeSlots.size() - 1; i++) {
             for (int j = i + 1; j < timeSlots.size(); j++) {
@@ -267,6 +279,10 @@ public class Helper {
             result = "0" + day;
         }
         return result;
+    }
+
+    public static String removeWord(String originalString, String wordToRemove) {
+        return originalString.replace(wordToRemove, "");
     }
 
 }
