@@ -41,6 +41,14 @@ function showMonth(month, year) {
     // Get the index of the first day of the month (0-6, Sun-Sat)
     const firstDayIndex = new Date(year, month, 1).getDay();
 
+    // Günleri içeren bir dizi
+    let specialDays = [];
+
+    loadJSON(function(text){
+        specialDays = parseInt(text.grayedOutDays);
+        console.log(typeof (specialDays));
+    });
+
     // Add empty day elements for days before the first day of the month
     for (let i = 1; i < firstDayIndex; i++) {
         const emptyDayEl = document.createElement("div");
@@ -58,6 +66,11 @@ function showMonth(month, year) {
         if (!isDateInCurrentMonth(date)) {
             dayEl.classList.add("disabled"); // Add the "disabled" class to non-current month days
             dayEl.style.pointerEvents = "none"; // Disable pointer events for non-current month days
+        }
+        const dayOfWeek = getDayOfWeek(year, month, i);
+        if (specialDays.includes(dayOfWeek)) {
+            dayEl.classList.add("disabled"); // Add the "grayed-out" class to Sundays (0) and Mondays (1)
+            dayEl.style.pointerEvents = "none"; // Disable pointer events for Sundays and Mondays
         }
 
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
@@ -238,29 +251,7 @@ function selectDay(event) {
     }
 
     console.log("omer")
-    function getHoursFromServer() {
-        var xhttp = new XMLHttpRequest();
-        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate);
-        xhttp.open("GET", url, true);
-        xhttp.send();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                var hoursList = JSON.parse(this.responseText);
-                var hoursContainer = document.getElementById("saatler");
-                hoursContainer.innerHTML = ""; // Temizleme
 
-                for (var i = 0; i < hoursList.length; i++) {
-                    var hourItem = document.createElement("li");
-                    hourItem.textContent = hoursList[i].appHour;
-                    hoursContainer.appendChild(hourItem);
-
-                    // hourlist'e saatleri ekleyelim
-                    hours.push(hoursList[i].appHour);
-                }
-            }
-        };
-
-    }
 
     document.querySelector("#calendar").addEventListener("click", () => {
         // Clear the selected date and time
@@ -407,3 +398,21 @@ function blockSpecialChars1() {
 
     inputElement.value = updatedValue;
 }
+function getDayOfWeek(year, month, day) {
+    const date = new Date(year, month, day);
+    return date.getDay();
+}
+
+function loadJSON(callback) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open("GET", "days.json", true); // Buradaki yol "days.json" olarak ayarlanmıştır.
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState === 4 && xobj.status === 200) {
+            callback(JSON.parse(xobj.responseText));
+        }
+    };
+    xobj.send(null);
+}
+
+
