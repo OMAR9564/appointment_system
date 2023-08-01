@@ -80,7 +80,6 @@
 <div class="container">
     <div class="row mt-4" >
         <div class="col-md-12 text-center">
-            <h1><%out.println(companyNameTitle);%></h1>
             <h2> Randevu Alma Sistemi</h2>
         </div>
     </div>

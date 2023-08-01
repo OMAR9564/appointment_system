@@ -42,7 +42,7 @@ function showMonth(month, year) {
     const firstDayIndex = new Date(year, month, 1).getDay();
 
     // Add empty day elements for days before the first day of the month
-    for (let i = 0; i < firstDayIndex; i++) {
+    for (let i = 1; i < firstDayIndex; i++) {
         const emptyDayEl = document.createElement("div");
         emptyDayEl.classList.add("day");
         daysContainer.appendChild(emptyDayEl);
