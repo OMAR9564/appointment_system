@@ -178,6 +178,7 @@
 
                 <h2 id="selected-day"></h2>
                 <div class="hour-buttons"></div>
+                <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız gerekir.</p>
 
                 <form method="post" action="/take_appoint.jsp" ID="form">
                     <input type="hidden" id="selected-year" name="selected-year" value="">
@@ -464,6 +465,18 @@
         }
     });
 
+    // Günleri içeren bir dizi
+    let specialDays = [];
+
+    fetch('days.json')
+        .then(response => response.json())
+        .then(data => {
+            specialDays = data.grayedOutDays;
+            console.log(specialDays[0]);
+        });
+
+
+
 
     //Önceki aylara geçiş butonunu gizlemek
     if (currentMonth === 0) {
@@ -496,9 +509,6 @@
     }
 
     inputField.addEventListener('input', checkInput);
-
-
-
 
 
 

@@ -41,6 +41,17 @@ function showMonth(month, year) {
     // Get the index of the first day of the month (0-6, Sun-Sat)
     const firstDayIndex = new Date(year, month, 1).getDay();
 
+    // Günleri içeren bir dizi
+    let specialDays = [];
+
+    fetch('days.json')
+        .then(response => response.json())
+        .then(data => {
+            specialDays = data.grayedOutDays;
+            console.log(specialDays[0]);
+        });
+
+
     // Add empty day elements for days before the first day of the month
     for (let i = 1; i < firstDayIndex; i++) {
         const emptyDayEl = document.createElement("div");
@@ -58,6 +69,11 @@ function showMonth(month, year) {
         if (!isDateInCurrentMonth(date)) {
             dayEl.classList.add("disabled"); // Add the "disabled" class to non-current month days
             dayEl.style.pointerEvents = "none"; // Disable pointer events for non-current month days
+        }
+        const dayOfWeek = getDayOfWeek(year, month, i);
+        if (specialDays.includes(dayOfWeek)) {
+            dayEl.classList.add("disabled"); // Pazar (0) ve Pazartesi (1) günlerini gri renkte göster
+            dayEl.style.pointerEvents = "none"; // Pazar ve Pazartesi günleri için etkileşimi devre dışı bırak
         }
 
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
@@ -200,6 +216,7 @@ function selectDay(event) {
 
                 // Show the "randevu al" button
                 const randevuAlBtn = document.querySelector("#schedule-appointment");
+                const warningMessage = document.getElementById("warning-message")
 
                 // Check if all input fields are not empty before showing the button
                 const yearInput = document.querySelector("#selected-year").value;
@@ -212,8 +229,14 @@ function selectDay(event) {
 
                 if (yearInput !== "" && monthInput !== "" && dayInput !== "" && hourInput !== "" && nameInput !== "" && surnameInput !== "") {
                     randevuAlBtn.style.display = "inline";
+                    console.log("om222er");
+
+                    warningMessage.style.display = "none";
+
                 } else {
                     randevuAlBtn.style.display = "none";
+                    console.log("om222er");
+                    warningMessage.style.display = "inline";
                 }
 
             });
@@ -238,29 +261,7 @@ function selectDay(event) {
     }
 
     console.log("omer")
-    function getHoursFromServer() {
-        var xhttp = new XMLHttpRequest();
-        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate);
-        xhttp.open("GET", url, true);
-        xhttp.send();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                var hoursList = JSON.parse(this.responseText);
-                var hoursContainer = document.getElementById("saatler");
-                hoursContainer.innerHTML = ""; // Temizleme
 
-                for (var i = 0; i < hoursList.length; i++) {
-                    var hourItem = document.createElement("li");
-                    hourItem.textContent = hoursList[i].appHour;
-                    hoursContainer.appendChild(hourItem);
-
-                    // hourlist'e saatleri ekleyelim
-                    hours.push(hoursList[i].appHour);
-                }
-            }
-        };
-
-    }
 
     document.querySelector("#calendar").addEventListener("click", () => {
         // Clear the selected date and time
@@ -407,3 +408,10 @@ function blockSpecialChars1() {
 
     inputElement.value = updatedValue;
 }
+function getDayOfWeek(year, month, day) {
+    const date = new Date(year, month, day);
+    return date.getDay();
+}
+
+
+

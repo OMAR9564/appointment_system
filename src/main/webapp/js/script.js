@@ -44,10 +44,13 @@ function showMonth(month, year) {
     // Günleri içeren bir dizi
     let specialDays = [];
 
-    loadJSON(function(text){
-        specialDays = parseInt(text.grayedOutDays);
-        console.log(typeof (specialDays));
-    });
+    fetch('days.json')
+        .then(response => response.json())
+        .then(data => {
+            specialDays = data.grayedOutDays;
+            console.log(specialDays[0]);
+        });
+
 
     // Add empty day elements for days before the first day of the month
     for (let i = 1; i < firstDayIndex; i++) {
@@ -69,8 +72,8 @@ function showMonth(month, year) {
         }
         const dayOfWeek = getDayOfWeek(year, month, i);
         if (specialDays.includes(dayOfWeek)) {
-            dayEl.classList.add("disabled"); // Add the "grayed-out" class to Sundays (0) and Mondays (1)
-            dayEl.style.pointerEvents = "none"; // Disable pointer events for Sundays and Mondays
+            dayEl.classList.add("disabled"); // Pazar (0) ve Pazartesi (1) günlerini gri renkte göster
+            dayEl.style.pointerEvents = "none"; // Pazar ve Pazartesi günleri için etkileşimi devre dışı bırak
         }
 
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
@@ -213,6 +216,7 @@ function selectDay(event) {
 
                 // Show the "randevu al" button
                 const randevuAlBtn = document.querySelector("#schedule-appointment");
+                const warningMessage = document.getElementById("warning-message")
 
                 // Check if all input fields are not empty before showing the button
                 const yearInput = document.querySelector("#selected-year").value;
@@ -225,8 +229,14 @@ function selectDay(event) {
 
                 if (yearInput !== "" && monthInput !== "" && dayInput !== "" && hourInput !== "" && nameInput !== "" && surnameInput !== "") {
                     randevuAlBtn.style.display = "inline";
+                    console.log("om222er");
+
+                    warningMessage.style.display = "none";
+
                 } else {
                     randevuAlBtn.style.display = "none";
+                    console.log("om222er");
+                    warningMessage.style.display = "inline";
                 }
 
             });
@@ -403,16 +413,5 @@ function getDayOfWeek(year, month, day) {
     return date.getDay();
 }
 
-function loadJSON(callback) {
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType("application/json");
-    xobj.open("GET", "days.json", true); // Buradaki yol "days.json" olarak ayarlanmıştır.
-    xobj.onreadystatechange = function () {
-        if (xobj.readyState === 4 && xobj.status === 200) {
-            callback(JSON.parse(xobj.responseText));
-        }
-    };
-    xobj.send(null);
-}
 
 

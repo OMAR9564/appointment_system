@@ -141,6 +141,9 @@ body {
     background-color: #0069d9;
     border-color: #0062cc;
 }
+#warning-message {
+    display: none;
+}
 #appointment-button {
     margin: 0 auto;
     background-color: #007bff;
