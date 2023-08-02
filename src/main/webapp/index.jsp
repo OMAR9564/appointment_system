@@ -19,6 +19,7 @@
 <%
     Boolean appointmentMade = null;
     String requestStr = null;
+    String discroption = null;
 /*
     String selectedDate = null;
 */
@@ -58,9 +59,16 @@
 
 
     requestStr = request.getParameter("message");
+    discroption = request.getParameter("dic");
+    if (discroption == null) {
+        discroption = ""; // Varsayılan değeri boş bir dize olarak atadık
+    }
     if (requestStr != null && requestStr.equals("true")) {
         appointmentMade = true;
     } else {
+        if(discroption.length() != 0){
+            appointmentNotMadeStr = discroption;
+        }
         appointmentMade = false;
     }
 
@@ -180,7 +188,7 @@
                 <div class="hour-buttons"></div>
                 <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız gerekir.</p>
 
-                <form method="post" action="/take_appoint.jsp" ID="form">
+                <form method="post" onsubmit="return validateForm()" action="/take_appoint.jsp" id="form">
                     <input type="hidden" id="selected-year" name="selected-year" value="">
                     <input type="hidden" id="selected-month" name="selected-month" value="">
                     <input type="hidden" id="selected-dayIn" name="selected-dayIn" value="">

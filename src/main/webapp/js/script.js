@@ -153,7 +153,10 @@ function selectDay(event) {
     const selectedDate = new Date(currentYear, currentMonth, selectedDayEl.innerHTML);
     const selectedDayStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}`;
     document.querySelector("#selected-date").innerHTML = selectedDayStr;
+    const warningMessage = document.getElementById("warning-message")
     const formattedDate  = formatDate(selectedDate);
+    const intervalType = document.getElementById("interval-type");
+
 
     var hours = []; // Boş bir dizi oluşturun
 
@@ -176,7 +179,21 @@ function selectDay(event) {
                 hours.push(hoursList[i].appHour);
 
             }
-            console.log(hours);
+            console.log(intervalType.value);
+            if(hours.length === 0 && intervalType.value !== ""){
+                let temp = "Maalesef, bugün için uygun randevu seçeneği bulunmamaktadır. Lütfen başka bir tarih seçmeyi deneyin.";
+                warningMessage.textContent = temp;
+                warningMessage.style.display = "inline";
+
+            }else if ((hours.length === 0 && intervalType.value === "")){
+                let temp = "Önce gerekli bilgileri doldurmanız gerekir.";
+                warningMessage.textContent = temp;
+                warningMessage.style.display = "inline";
+
+            }
+            else{
+                warningMessage.style.display = "none";
+            }
         }
         console.log(hours.length);
         for (let i = 0; i < hours.length; i++) {
@@ -216,7 +233,6 @@ function selectDay(event) {
 
                 // Show the "randevu al" button
                 const randevuAlBtn = document.querySelector("#schedule-appointment");
-                const warningMessage = document.getElementById("warning-message")
 
                 // Check if all input fields are not empty before showing the button
                 const yearInput = document.querySelector("#selected-year").value;
@@ -235,6 +251,9 @@ function selectDay(event) {
 
                 } else {
                     randevuAlBtn.style.display = "none";
+
+                    let temp = "Önce gerekli bilgileri doldurmanız gerekir.";
+                    warningMessage.textContent = temp;
                     console.log("om222er");
                     warningMessage.style.display = "inline";
                 }
@@ -370,7 +389,7 @@ function checkAndToggleClass() {
 
 function blockSpecialChars() {
     const inputElement = document.getElementById("name-input");
-    const forbiddenChars = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
+    const forbiddenChars = [ '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
         "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~", "€", "‚",
         "ƒ", "„", "…", "†", "‡", "ˆ", "‰", "Š", "‹", "Œ", "Ž", "‘", "’", "“", "”", "•", "–",
         "—", "˜", "™", "š", "›", "œ", "ž", "Ÿ", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©",
@@ -413,5 +432,42 @@ function getDayOfWeek(year, month, day) {
     return date.getDay();
 }
 
+// tum inpurlari ozel karakterleri kontrolu konrolu
+var containsSpecialChars = /[!''#$%&'()*+-./:;<=>?@[\\]^_`{|}~€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×÷×÷¿]+/;
 
+function validateForm() {
+    var selectedYear = document.getElementById("selected-year").value;
+    var selectedMonth = document.getElementById("selected-month").value;
+    var selectedDayIn = document.getElementById("selected-dayIn").value;
+    var custName = document.getElementById("cust-name").value;
+    var custSurname = document.getElementById("cust-surname").value;
+    var doctorName = document.getElementById("doctor-name").value;
+    var locName = document.getElementById("loc-name").value;
+    var intervalType = document.getElementById("interval-type").value;
 
+    if (checkForSpecialChars(selectedYear) || checkForSpecialChars(selectedMonth)
+        || checkForSpecialChars(selectedDayIn) || checkForSpecialChars(custName)
+        || checkForSpecialChars(custSurname) || checkForSpecialChars(doctorName)
+        || checkForSpecialChars(locName) || checkForSpecialChars(intervalType)) {
+        var temp = "Lütfen özel karakter kullanmayın.";
+        var warningMessage = document.getElementById("warning-message");
+        warningMessage.style.display = "inline";
+        warningMessage.textContent = temp;
+        return false;
+    } else {
+        var warningMessage = document.getElementById("warning-message");
+        warningMessage.style.display = "none";
+    }
+
+    return true; // Form gönderilir
+}
+
+function checkForSpecialChars(inputValue) {
+    const specialChars = "!''#$%&'*+./;<=>?@[\\]^_`{|}~€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×÷×÷¿";
+    for (const c of inputValue) {
+        if (specialChars.indexOf(c) !== -1) {
+            return true;
+        }
+    }
+    return false;
+}

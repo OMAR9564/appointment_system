@@ -285,4 +285,15 @@ public class Helper {
         return originalString.replace(wordToRemove, "");
     }
 
+    //check all input frim spetioal chars
+    public boolean checkForSpecialChars(String inputValue) {
+        String specialChars = "!''#$%&'*+./;<=>?@[\\\\]^_`{|}~€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×÷×÷¿";
+        for (char c : inputValue.toCharArray()) {
+            if (specialChars.indexOf(c) != -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
