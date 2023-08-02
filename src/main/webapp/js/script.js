@@ -471,3 +471,22 @@ function checkForSpecialChars(inputValue) {
     }
     return false;
 }
+// Şifreleme işlemi
+function encryptData(data, key) {
+    const encoder = new TextEncoder();
+    const encodedData = encoder.encode(data);
+
+    return crypto.subtle.importKey("raw", encoder.encode(key), "AES-CBC", false, ["encrypt"])
+        .then(key => {
+            const iv = crypto.getRandomValues(new Uint8Array(16));
+            return crypto.subtle.encrypt({ name: "AES-CBC", iv }, key, encodedData);
+        })
+        .then(encryptedData => {
+            // Şifrelenmiş veriyi ve IV'yi birleştirin
+            const encryptedDataWithIV = new Uint8Array(encryptedData.byteLength + 16);
+            encryptedDataWithIV.set(new Uint8Array(encryptedData), 0);
+            encryptedDataWithIV.set(iv, encryptedData.byteLength);
+
+            return encryptedDataWithIV;
+        });
+}

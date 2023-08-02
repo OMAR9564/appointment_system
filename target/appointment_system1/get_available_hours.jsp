@@ -6,8 +6,14 @@
 <%@ page import="java.util.List" %><%@ page import="com.bya.Helper"%>
 <%
 try {
+
     String selectedDate = request.getParameter("selectedDate");
     String selectedOption = request.getParameter("selectedOption");
+
+    //check if clock in clock pattern
+    if (Helper.StringPatternCheck(selectedDate)){
+
+
 
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
     String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
@@ -264,6 +270,7 @@ try {
 ///
 
 }
+
     // Sort the adjusted hours in ascending order
     Helper.customSort(adjustedHours);
 
@@ -278,7 +285,7 @@ try {
     jsonResponse.append("]");
     out.println(jsonResponse.toString());
 
-} catch (Exception e) {
+}} catch (Exception e) {
     // Handle exceptions appropriately (e.g., log the error, return an error JSON, etc.)
     out.println("[]"); // Return an empty JSON array as a response if an error occurs
 }

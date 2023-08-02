@@ -12,6 +12,8 @@ import java.util.*;
 import com.google.gson.Gson;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Helper {
 
@@ -295,5 +297,24 @@ public class Helper {
         }
         return true;
     }
+//check if clock in clock pattern
+    public static boolean StringPatternCheck(String input) {
+        // Kullanmak istediğimiz pattern'i tanımlayalım
+        String pattern = "\\d\\d\\d\\d-\\d\\d-\\d\\d";
+
+        // Pattern'i derleyelim
+        Pattern regex = Pattern.compile(pattern);
+
+        // String ile pattern'i eşleştirelim
+        Matcher matcher = regex.matcher(input);
+
+        // Eğer pattern ile tam eşleşme varsa, yani gelen string istediğimiz formatta ise
+        if (matcher.matches()) {
+            return true;
+            // İstediğiniz işlemi yapabilirsiniz
+        }
+        return false;
+    }
+
 
 }
