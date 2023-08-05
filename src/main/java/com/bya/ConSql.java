@@ -216,6 +216,7 @@ public class ConSql {
         }
         return sqlInfo;
     }
+    //
     public ArrayList<GetInfo> getRezervationInfos(String query, String... params) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
