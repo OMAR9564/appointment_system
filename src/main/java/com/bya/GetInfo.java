@@ -18,6 +18,11 @@ public class GetInfo {
     String tempId = "";
     String appDate = "";
     String appHour = "";
+    String appStartHour = "";
+    String appEndHour = "";
+
+
+
     String nameOfPage = "";
     String availableHours = "";
     String availableDate = "";
@@ -189,5 +194,19 @@ public class GetInfo {
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
     }
+    public String getAppStartHour() {
+        return appStartHour;
+    }
 
+    public void setAppStartHour(String appStartHour) {
+        this.appStartHour = appStartHour;
+    }
+
+    public String getAppEndHour() {
+        return appEndHour;
+    }
+
+    public void setAppEndHour(String appEndHour) {
+        this.appEndHour = appEndHour;
+    }
 }

@@ -17,7 +17,6 @@
   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   LocalDate today = LocalDate.now();
   String strToday = today.format(formatter);
-  strToday = "2023-03-17";
   ConSql conSql = new ConSql();
   int count = 0;
   ArrayList<GetInfo> sqlInfo = new ArrayList<>();

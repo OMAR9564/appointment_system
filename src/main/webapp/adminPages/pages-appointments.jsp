@@ -12,13 +12,46 @@
     //    if((((String)session.getAttribute("adminName")).length() > 1)){
     if (true) {
 
-//    customers data
         ArrayList<GetInfo> info = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM `appointments`";
+        ArrayList<GetInfo> locInfo = new ArrayList<>();
+        ArrayList<GetInfo> docInfo = new ArrayList<>();
+        ArrayList<GetInfo> revInfo = new ArrayList<>();
+        ArrayList<GetInfo> revNameInfo = new ArrayList<>();
+
+
+        String sqlQuery = "SELECT * FROM `appointments` ORDER BY `appointments`.`date` DESC ";
+        String locQuery = "SELECT * FROM `locationInfo`";
+        String docQuery = "SELECT * FROM `doctorInfo`";
+        String reservationQuery = "SELECT * FROM `reservationInfo`";
+        String reverationNameQuery = "SELECT * FROM `reservationInfo` WHERE `tagName` = ?";
+
         ConSql consql = new ConSql();
         info = consql.getAppointmentData(sqlQuery);
-
+        locInfo = consql.getInfos(locQuery);
+        docInfo = consql.getInfos(docQuery);
+        revInfo = consql.getRezervationInfos(reservationQuery);
         session.setAttribute("appointmentCount", Integer.toString(info.size()));
+
+        String requestStr = null;
+        String discroption = null;
+        Boolean appointmentMade = null;
+        String appointmentNotMadeStr = "";
+        String messageHeader = "Işlemi sonucu";
+
+        requestStr = request.getParameter("message");
+        discroption = request.getParameter("dic");
+
+        if (discroption == null) {
+            discroption = "";
+        }
+        if (requestStr != null && requestStr.equals("true")) {
+            appointmentMade = true;
+        } else {
+            if (discroption.length() != 0) {
+                appointmentNotMadeStr = discroption;
+            }
+            appointmentMade = false;
+        }
 
 
 %>
@@ -29,7 +62,7 @@
 <head>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Pages / Customers - Admin Page</title>
+    <title>Sayfalar / Randevular - Admin Page</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -51,7 +84,6 @@
     <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
 
@@ -127,7 +159,10 @@
                                         <th scope="col">Doktor Adı</th>
                                         <th scope="col">Yer</th>
                                         <th scope="col">Tarih</th>
-                                        <th scope="col">Saat</th>
+                                        <th scope="col">Baslangic Saati</th>
+                                        <th scope="col">Bitis Saati</th>
+                                        <th scope="col">Randevu Turu</th>
+
                                         <th scope="col">Düzenle</th>
                                         <th scope="col">Sil</th>
                                     </tr>
@@ -136,13 +171,22 @@
                                     <%
 
                                         for (int i = 0; i < Integer.parseInt((String) session.getAttribute("appointmentCount")); i++) {
+                                            revNameInfo = consql.getRezervationInfos(reverationNameQuery, info.get(i).getRezervationInterval());
                                             session.setAttribute("custId", Integer.toString(info.get(i).getId()));
+                                            session.setAttribute("custName", info.get(i).getCustName());
+                                            session.setAttribute("custSurname", info.get(i).getCustSurname());
                                             session.setAttribute("custNameSurname", info.get(i).getCustNameSurname());
                                             session.setAttribute("CustPhone", info.get(i).getCustPhone());
                                             session.setAttribute("DoctorName", info.get(i).getDoctorName());
                                             session.setAttribute("AppLocation", info.get(i).getAppLocation());
                                             session.setAttribute("AppDate", info.get(i).getAppDate());
-                                            session.setAttribute("AppHour", info.get(i).getAppHour());
+                                            session.setAttribute("AppStartHour", info.get(i).getAppStartHour());
+                                            session.setAttribute("AppEndHour", info.get(i).getAppEndHour());
+                                            session.setAttribute("AppIntervalValue", info.get(i).getRezervationInterval());
+
+                                            session.setAttribute("AppInterval", revNameInfo.get(0).getRezervationName());
+
+
 
                                     %>
                                     <tr>
@@ -157,18 +201,28 @@
                                         <td><span class="badge" style="color:black; font-size: 12px;"><%
                                             out.println((String) session.getAttribute("AppDate"));%></span></td>
                                         <td><span class="badge" style="color:black; font-size: 12px;"><%
-                                            out.println((String) session.getAttribute("AppHour"));%></span></td>
+                                            out.println((String) session.getAttribute("AppStartHour"));%></span></td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("AppEndHour"));%></span></td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("AppInterval"));%></span></td>
 
                                         <td>
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                                     data-bs-target="#editModal"
                                                     data-bs-id="<%out.println(Integer.parseInt((String)session.getAttribute("custId")));%>"
-                                                    data-bs-name="<%out.println((String)session.getAttribute("custNameSurname"));%>"
+                                                    data-bs-nameSurname="<%out.println((String)session.getAttribute("custNameSurname"));%>"
+                                                    data-bs-name="<%out.println((String)session.getAttribute("custName"));%>"
+                                                    data-bs-surname="<%out.println((String)session.getAttribute("custSurname"));%>"
+
                                                     data-bs-phone="<%out.println((String)session.getAttribute("CustPhone"));%>"
                                                     data-bs-date="<%out.println((String)session.getAttribute("AppDate"));%>"
-                                                    data-bs-hour="<%out.println((String)session.getAttribute("AppHour"));%>"
                                                     data-bs-doktorName="<%out.println((String)session.getAttribute("DoctorName"));%>"
-                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation"));%>">
+                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation"));%>"
+                                                    data-bs-interval="<%out.println((String)session.getAttribute("AppIntervalValue"));%>"
+                                                    data-bs-startHour="<%out.println((String)session.getAttribute("AppStartHour"));%>"
+                                                    data-bs-endHour="<%out.println((String)session.getAttribute("AppEndHour"));%>">
+
                                                 <i class="bi bi-info-circle"></i></button>
                                         </td>
                                         <td>
@@ -196,42 +250,108 @@
                                                     <input type="text" class=" idInput" name="id" hidden>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
-                                                            <label for="name" class="col-form-label">Adı Soyadı:</label>
+                                                            <label for="name" class="col-form-label">Adı:</label>
                                                             <input type="text" class="form-control nameInput"
                                                                    name="name" id="name">
                                                         </div>
-                                                        <input type="text" value="customerEdit" name="iam" hidden>
+                                                        <input type="text" value="appointmentEdit" name="iam" hidden>
+                                                        <input type="text" value="pages-appointments.jsp" name="page"
+                                                               hidden>
+
+                                                        <input type="text" value="pages-appointments.jsp" name="page"
+                                                               hidden>
 
                                                         <div class="mb-3 col-md-6 ms-auto">
+                                                            <label for="surname" class="col-form-label">Soyadı:</label>
+                                                            <input type="text" class="form-control surnameInput"
+                                                                   name="surname" id="surname">
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="mb-3 col-md-6">
                                                             <label for="phone" class="col-form-label">Phone:</label>
                                                             <input type="text" class="form-control phoneInput"
                                                                    name="phone" id="phone">
                                                         </div>
-                                                    </div>
-
-                                                    <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label for="date" class="col-form-label">Tarih:</label>
                                                             <input type="date" class="form-control dateInput"
                                                                    name="date" id="date">
                                                         </div>
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="startHour" class="col-form-label">Baslangic
+                                                                Saati:</label>
+                                                            <input type="text" class="form-control startHourInput"
+                                                                   maxlength="5"
+                                                                   name="startHour" id="startHour">
+                                                        </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="hour" class="col-form-label">Saat:</label>
-                                                            <input type="text" class="form-control hourInput"
-                                                                   name="hour" id="hour">
+                                                            <label for="endHour" class="col-form-label">Bitis
+                                                                Saati:</label>
+                                                            <input type="text" class="form-control endHourInput"
+                                                                   maxlength="5"
+                                                                   name="endHour" id="endHour">
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label for="doktorName" class="col-form-label">Doktor
                                                                 Adı:</label>
-                                                            <input type="text" class="form-control doctorInput"
-                                                                   name="doktorName" id="doktorName">
+                                                            <select class="form-control doctorInput" name="doktorName"
+                                                                    id="doktorName">
+                                                                <option value="" selected hidden>Seçin</option>
+                                                                <%
+                                                                    for (int i = 0; i < docInfo.size(); i++) {
+                                                                %>
+                                                                <option value=<%out.println((docInfo.get(i).getId()));%>>
+                                                                    <%out.println(docInfo.get(i).getName());%>
+                                                                </option>
+                                                                <%
+                                                                    }
+                                                                %>
+                                                            </select>
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="location" class="col-form-label">Yer:</label>
-                                                            <input type="text" class="form-control locationInput"
-                                                                   name="location" id="location">
+                                                            <select class="form-control locationInput" name="location"
+                                                                    id="location">
+                                                                <option value="" selected hidden>Seçin</option>
+                                                                <%
+                                                                    for (int i = 0; i < locInfo.size(); i++) {
+                                                                %>
+                                                                <option value=<%out.println((locInfo.get(i).getId()));%>>
+                                                                    <%out.println(locInfo.get(i).getName());%>
+                                                                </option>
+                                                                <%
+                                                                    }
+                                                                %>
+                                                            </select>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="mb-3 col-md-6">
+                                                                <label for="interval" class="col-form-label">Randevu
+                                                                    Turu:</label>
+                                                                <select class="form-control intervalInput" name="interval"
+                                                                        id="interval" >
+                                                                    <option value="" selected hidden>Seçin</option>
+                                                                    <%
+                                                                        for (int i = 0; i < revInfo.size(); i++) {
+                                                                    %>
+                                                                    <option value=<%out.println((revInfo.get(i).getRezervationNameTag()));%>>
+                                                                        <%out.println(revInfo.get(i).getRezervationName());%>
+                                                                    </option>
+                                                                    <%
+                                                                        }
+                                                                    %>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -264,9 +384,10 @@
                                                 </div>
 
                                                 <form method="post" action="adminSqlCon.jsp">
-                                                    <input type="text" class="delIdInput" name="id" hidden>
-
-                                                    <input type="text" value="customerDelete" name="iam" hidden>
+                                                    <input type="text" class="delIdInput" name="id" id="id" hidden>
+                                                    <input type="text" value="pages-appointments.jsp" name="page"
+                                                           hidden>
+                                                    <input type="text" value="appoitnmentDelete" name="iam" hidden>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Kapat
@@ -300,7 +421,9 @@
                                                             <input type="text" class="form-control nameInput"
                                                                    name="name" id="name">
                                                         </div>
-                                                        <input type="text" value="customerEdit" name="iam" hidden>
+                                                        <input type="text" value="appointmentAdd" name="iam" hidden>
+                                                        <input type="text" value="pages-appointments.jsp" name="page"
+                                                               hidden>
 
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="phone" class="col-form-label">Phone:</label>
@@ -349,7 +472,47 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div><!-- End Recent Sales -->
+                                <!-- Button trigger modal -->
+                                <button type="button" id="sucsessModalBtn" class="btn btn-primary"
+                                        data-bs-toggle="modal" data-bs-target="#sucsessModal" hidden="hidden">
+                                    Launch demo modal
+                                </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="sucsessModal" tabindex="-1" aria-labelledby="sucsess-modal"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="sucsess-modal">
+                                                    <%
+                                                        if (appointmentMade) {
+                                                            out.println(messageHeader);
+                                                        } else {
+                                                            out.println(messageHeader);
+                                                        }
+                                                    %>
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <%
+                                                    if (appointmentMade) {
+                                                        out.println(discroption);
+                                                    } else {
+                                                        out.println(discroption);
+                                                    }
+                                                %>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Kapat
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -382,29 +545,40 @@
     exampleModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
         var name = button.getAttribute('data-bs-name');
+        var surname = button.getAttribute('data-bs-surname');
         var id = button.getAttribute('data-bs-id');
         var date = button.getAttribute('data-bs-date');
         var phone = button.getAttribute('data-bs-phone');
-        var hour = button.getAttribute('data-bs-hour');
         var doctorName = button.getAttribute('data-bs-doktorName');
         var location = button.getAttribute('data-bs-location');
+        var startHour = button.getAttribute('data-bs-startHour');
+        var endHour = button.getAttribute('data-bs-endHour');
+        var interval = button.getAttribute('data-bs-interval');
 
         var modalBodyInputName = exampleModal.querySelector('.modal-body .nameInput');
+        var modalBodyInputSurname = exampleModal.querySelector('.modal-body .surnameInput');
+
         var modalBodyInputId = exampleModal.querySelector('.modal-body .idInput');
         var modalBodyInputPhone = exampleModal.querySelector('.modal-body .phoneInput');
         var modalBodyInputDate = exampleModal.querySelector('.modal-body .dateInput');
-        var modalBodyInputHour = exampleModal.querySelector('.modal-body .hourInput');
         var modalBodyInputDoctor = exampleModal.querySelector('.modal-body .doctorInput');
         var modalBodyInputLocation = exampleModal.querySelector('.modal-body .locationInput');
+        var modalBodyInputInterval = exampleModal.querySelector('.modal-body .intervalInput');
+        var modalBodyInputStartHour = exampleModal.querySelector('.modal-body .startHourInput');
+        var modalBodyInputEndHour = exampleModal.querySelector('.modal-body .endHourInput');
 
 
         modalBodyInputName.value = name;
+        modalBodyInputSurname.value = surname;
+
         modalBodyInputId.value = id;
         modalBodyInputPhone.value = phone;
         modalBodyInputDate.value = date.trim();
-        modalBodyInputHour.value = hour;
-        modalBodyInputDoctor.value = doctorName;
-        modalBodyInputLocation.value = location;
+        modalBodyInputDoctor.value = doctorName.trim();
+        modalBodyInputLocation.value = location.trim();
+        modalBodyInputInterval.value = interval.trim();
+        modalBodyInputStartHour.value = startHour;
+        modalBodyInputEndHour.value = endHour;
 
 
     });
@@ -417,6 +591,30 @@
         var modalBodyInputDelId = deleteModal.querySelector('.modal-body .delIdInput');
         modalBodyInputDelId.value = delId;
 
+    });
+
+    <% if (requestStr != null && requestStr.length() > 1) { %>
+    clickButton();
+    <% } %>
+
+    function clickButton() {
+        var myButton = document.getElementById("sucsessModalBtn");
+        myButton.click();
+    }
+
+    const startHour = document.getElementById("startHour");
+    startHour.addEventListener("input", function () {
+        const value = this.value.replace(/[^0-9]/g, "");
+        if (value.length > 2) {
+            this.value = value.slice(0, 2) + ":" + value.slice(2);
+        }
+    });
+    const endHour = document.getElementById("endHour");
+    endHour.addEventListener("input", function () {
+        const value = this.value.replace(/[^0-9]/g, "");
+        if (value.length > 2) {
+            this.value = value.slice(0, 2) + ":" + value.slice(2);
+        }
     });
 
 </script>

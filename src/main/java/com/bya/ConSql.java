@@ -53,15 +53,27 @@ public class ConSql {
             }
         }
     }
-    public void executeUpdate(String query) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
 
-        conn = getDatabaseConnection();
+    public void executeQuery(String query, String... params){
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
 
+            conn = getDatabaseConnection();
 
-        pstmt = conn.prepareStatement(query);
-        pstmt.executeUpdate();
+            stmt = conn.prepareStatement(query);
+
+            for (int i = 0; i < params.length; i++){
+                stmt.setString(i+1, params[i]);
+            }
+
+            stmt.executeUpdate();
+
+            conn.close();
+        }catch (SQLException e){
+            System.err.println(e);
+        }
     }
     public ArrayList<GetInfo> readData(String query) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
@@ -78,10 +90,10 @@ public class ConSql {
 
             while (rs.next()) {
                 GetInfo temp = new GetInfo();
-                temp.setCustNameSurname(rs.getString("nameSurname"));
-                temp.setAppHour(rs.getString("hour"));
+                temp.setCustNameSurname(rs.getString("name"));
+                temp.setAppHour(rs.getString("startHour"));
                 temp.setCustPhone(rs.getString("phone"));
-                temp.setAppLocation(rs.getString("location"));
+                temp.setAppLocation(rs.getString("locationId"));
                 sqlInfo.add(temp);
 
             }
@@ -153,12 +165,17 @@ public class ConSql {
             while (rs.next()) {
                 GetInfo temp = new GetInfo();
                 temp.setId(rs.getInt("id"));
-                temp.setCustNameSurname(rs.getString("nameSurname"));
+                temp.setCustName(rs.getString("name"));
+                temp.setCustSurname(rs.getString("surname"));
+                temp.setCustNameSurname(temp.getCustName() + " " + temp.getCustSurname());
                 temp.setCustPhone(rs.getString("phone"));
-                temp.setDoctorName(rs.getString("doctorName"));
-                temp.setAppLocation(rs.getString("location"));
+                temp.setDoctorName(rs.getString("doctorId"));
+                temp.setAppLocation(rs.getString("locationId"));
                 temp.setAppDate(rs.getString("date"));
-                temp.setAppHour(rs.getString("hour"));
+                temp.setAppStartHour(rs.getString("startHour"));
+                temp.setAppEndHour(rs.getString("endHour"));
+                temp.setRezervationInterval(rs.getString("intervalId"));
+
 
                 sqlInfo.add(temp);
 
@@ -199,7 +216,7 @@ public class ConSql {
         }
         return sqlInfo;
     }
-    public ArrayList<GetInfo> getRezervationInfos(String query) throws SQLException {
+    public ArrayList<GetInfo> getRezervationInfos(String query, String... params) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
             Connection conn = null;
@@ -209,7 +226,9 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
-
+            if(params.length != 0){
+                stmt.setString(1, params[0]);
+            }
             rs = stmt.executeQuery();
 
             while (rs.next()) {
