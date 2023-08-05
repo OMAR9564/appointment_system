@@ -9,6 +9,9 @@ public class GetInfo {
     String openingHour = "";
     String closingHour = "";
     String companyName = "";
+    String appointMessageBody = "";
+    String appointMessageTitle = "";
+    String holiday = "";
     String custName = "";
     String custSurname = "";
     String custNameSurname = "";
@@ -20,9 +23,6 @@ public class GetInfo {
     String appHour = "";
     String appStartHour = "";
     String appEndHour = "";
-
-
-
     String nameOfPage = "";
     String availableHours = "";
     String availableDate = "";
@@ -208,5 +208,28 @@ public class GetInfo {
 
     public void setAppEndHour(String appEndHour) {
         this.appEndHour = appEndHour;
+    }
+    public String getAppointMessageBody() {
+        return appointMessageBody;
+    }
+
+    public void setAppointMessageBody(String appointMessageBody) {
+        this.appointMessageBody = appointMessageBody;
+    }
+
+    public String getAppointMessageTitle() {
+        return appointMessageTitle;
+    }
+
+    public void setAppointMessageTitle(String appointMessageTitle) {
+        this.appointMessageTitle = appointMessageTitle;
+    }
+
+    public String getHoliday() {
+        return holiday;
+    }
+
+    public void setHoliday(String holiday) {
+        this.holiday = holiday;
     }
 }

@@ -24,95 +24,126 @@
 
     String appointmentMade = "true";
     String messageOk = "";
+    if (pageName.equals("index.jsp") || pageName.equals("pages-appointments.jsp")) {
+        if (iam != null && iam.equals("appoitnmentDelete")) {
+            try {
 
-    if (iam != null && iam.equals("appoitnmentDelete")) {
-        try {
+                String deleteId = request.getParameter("id");
 
-            String deleteId = request.getParameter("id");
+                String deleteQuery = "DELETE FROM appointments WHERE id = ?";
 
-            String deleteQuery = "DELETE FROM appointments WHERE id = ?";
+                ConSql conSql = new ConSql();
 
-            ConSql conSql = new ConSql();
+                conSql.executeQuery(deleteQuery, deleteId);
 
-            conSql.executeQuery(deleteQuery, deleteId);
-
-            messageOk = "Kullanıcı başarılı bir şekilde silindi.";
-            appointmentMade = "true";
-            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
-
-
-        } catch (Exception e) {
-            appointmentMade = "false";
-            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
-
-            out.println("Bir hata oluştu: " + e.getMessage());
-        }
-    } else if (iam != null && iam.equals("appointmentEdit")) {
-        try {
-
-            String updateId = request.getParameter("id");
-            String name = request.getParameter("name");
-            String surname = request.getParameter("surname");
-            String phone = request.getParameter("phone");
-            String date = request.getParameter("date");
-            String interval = request.getParameter("interval");
-            String startHour = request.getParameter("startHour");
-            String endHour = request.getParameter("endHour");
-            String doktorName = request.getParameter("doktorName");
-            String location = request.getParameter("location");
-
-            String updateQuery = "UPDATE `appointments` SET `name`= ?,`surname`=?," +
-                                    "`phone`=?,`doctorId`=?,`locationId`=?," +
-                                    "`date`=?,`startHour`=?," +
-                                    "`endHour`=?,`intervalId`=? WHERE `id`=?";
-
-            ConSql conSql = new ConSql();
-
-            conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
-
-            messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
-            appointmentMade = "true";
-            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                messageOk = "Kullanıcı başarılı bir şekilde silindi.";
+                appointmentMade = "true";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
 
-        } catch (Exception e) {
-            appointmentMade = "false";
-            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+            } catch (Exception e) {
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
-            out.println("Bir hata oluştu: " + e.getMessage());
-        }
-    } else if (iam != null && iam.equals("appointmentAdd")) {
-        try {
+                out.println("Bir hata oluştu: " + e.getMessage());
+            }
+        } else if (iam != null && iam.equals("appointmentEdit")) {
+            try {
 
-            String name = request.getParameter("add-name");
-            String surname = request.getParameter("add-surname");
-            String phone = request.getParameter("add-phone");
-            String date = request.getParameter("add-date");
-            String interval = request.getParameter("add-interval");
-            String startHour = request.getParameter("add-startHour");
-            String endHour = request.getParameter("add-endHour");
-            String doktorName = request.getParameter("add-doktorName");
-            String location = request.getParameter("add-location");
+                String updateId = request.getParameter("id");
+                String name = request.getParameter("name");
+                String surname = request.getParameter("surname");
+                String phone = request.getParameter("phone");
+                String date = request.getParameter("date");
+                String interval = request.getParameter("interval");
+                String startHour = request.getParameter("startHour");
+                String endHour = request.getParameter("endHour");
+                String doktorName = request.getParameter("doktorName");
+                String location = request.getParameter("location");
 
-            String outputDateFormat = "yyyy-MM-dd";
+                String updateQuery = "UPDATE `appointments` SET `name`= ?,`surname`=?," +
+                        "`phone`=?,`doctorId`=?,`locationId`=?," +
+                        "`date`=?,`startHour`=?," +
+                        "`endHour`=?,`intervalId`=? WHERE `id`=?";
 
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat outputDateFormatter = new SimpleDateFormat(outputDateFormat);
+                ConSql conSql = new ConSql();
+
+                conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
+
+                messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+                appointmentMade = "true";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+
+            } catch (Exception e) {
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+                out.println("Bir hata oluştu: " + e.getMessage());
+            }
+        } else if (iam != null && iam.equals("appointmentAdd")) {
+            try {
+
+                String name = request.getParameter("add-name");
+                String surname = request.getParameter("add-surname");
+                String phone = request.getParameter("add-phone");
+                String date = request.getParameter("add-date");
+                String interval = request.getParameter("add-interval");
+                String startHour = request.getParameter("add-startHour");
+                String endHour = request.getParameter("add-endHour");
+                String doktorName = request.getParameter("add-doktorName");
+                String location = request.getParameter("add-location");
+
+                String outputDateFormat = "yyyy-MM-dd";
+
+                SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat outputDateFormatter = new SimpleDateFormat(outputDateFormat);
 
 
                 Date inputDate = inputDateFormat.parse(date);
                 String formattedDate = outputDateFormatter.format(inputDate);
 
 
-            String insertQuery = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`," +
-                    " `locationId`, `date`, `startHour`, `endHour`, `intervalId`) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String insertQuery = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`," +
+                        " `locationId`, `date`, `startHour`, `endHour`, `intervalId`) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                ConSql conSql = new ConSql();
+
+                conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
+
+                messageOk = "Kullanıcı başarılı bir şekilde Eklendi.";
+                appointmentMade = "true";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+
+            } catch (Exception e) {
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+                out.println("Bir hata oluştu: " + e.getMessage());
+            }
+        }
+    } else if (pageName.equals("settingsPage.jsp")) {
+        try {
+
+            String updateId = request.getParameter("id");
+            String companyName = new String(request.getParameter("companyName").getBytes("ISO-8859-9"), "UTF-8");
+            String holiday = request.getParameter("holiday");
+            String openingHour = request.getParameter("openingHour");
+            String closingHour = request.getParameter("closingHour");
+            String appointMessageBody = new String(request.getParameter("appointMessageBody").getBytes("ISO-8859-9"), "UTF-8");
+            String appointMessageTitle = new String(request.getParameter("appointMessageTitle").getBytes("ISO-8859-9"), "UTF-8");
+
+            String updateQuery = "UPDATE `settings` SET `companyName`=?," +
+                    "`openingHour`=?,`closingHour`=?,`appointMessageBody`=?," +
+                    "`appointMessageTitle`=?,`holiday`=? WHERE `id`=?";
 
             ConSql conSql = new ConSql();
 
-            conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
+            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, updateId);
 
-            messageOk = "Kullanıcı başarılı bir şekilde Eklendi.";
+            messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
             appointmentMade = "true";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 

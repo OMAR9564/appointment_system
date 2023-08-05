@@ -1,0 +1,392 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: omerfaruk
+  Date: 5.08.2023
+  Time: 17:51
+  To change this template use File | Settings | File Templates.
+--%>
+
+<%@ page import="com.bya.ConSql" %>
+<%@ page import="com.bya.GetInfo" %>
+<%@ page import="java.util.ArrayList" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%
+    //    if((((String)session.getAttribute("adminName")).length() > 1)){
+
+        String sqlQuery = "";
+
+
+        ArrayList<GetInfo> settingsInfo = new ArrayList<>();
+        ConSql consql = new ConSql();
+        sqlQuery = "SELECT * FROM settings";
+        settingsInfo = consql.getSettings(sqlQuery);
+
+        String requestStr = null;
+        String discroption = null;
+        Boolean appointmentMade = null;
+        String appointmentNotMadeStr = "";
+        String messageHeader = "Işlemi sonucu";
+
+        requestStr = request.getParameter("message");
+        discroption = request.getParameter("dic");
+
+        if (discroption == null) {
+            discroption = "";
+        }
+        if (requestStr != null && requestStr.equals("true")) {
+            appointmentMade = true;
+        } else {
+            if (discroption.length() != 0) {
+                appointmentNotMadeStr = discroption;
+            }
+            appointmentMade = false;
+        }
+
+
+
+%>
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Sayfalar / Ayarlar</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|
+  Nunito:300,300i,400,400i,600,600i,700,700i|
+  Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
+    <script>
+
+    </script>
+
+</head>
+
+<body>
+
+<jsp:include page="adminHeader.jsp" flush="true"/>
+
+<jsp:include page="adminSidebar.jsp" flush="true"/>
+
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Ayarlar</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.jsp">Ana Sayfa</a></li>
+                <li class="breadcrumb-item active"><a href="settingsPage.jsp">Ayarlar</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+
+            <!-- Left side columns -->
+            <div class="">
+                <div class="row">
+                    <!-- Recent Sales -->
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h5 class="card-title">Ayarlar
+                                        </h5>
+                                    </div>
+
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Firma Adı</th>
+                                        <th scope="col">Acilis Saati</th>
+                                        <th scope="col">Kapanis Saati</th>
+                                        <th scope="col">Basarili Uyari Metni</th>
+                                        <th scope="col">Basarili Uyari Basligi</th>
+                                        <th scope="col">Tatil Gunu</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%
+                                        session.setAttribute("custId", Integer.toString(settingsInfo.get(0).getId()));
+                                        session.setAttribute("companyName", settingsInfo.get(0).getCompanyName());
+                                        session.setAttribute("openingHour", settingsInfo.get(0).getOpeningHour());
+                                        session.setAttribute("closingHour", settingsInfo.get(0).getClosingHour());
+                                        session.setAttribute("appointMessageBody", settingsInfo.get(0).getAppointMessageBody());
+                                        session.setAttribute("appointMessageTitle", settingsInfo.get(0).getAppointMessageTitle());
+                                        session.setAttribute("holiday", settingsInfo.get(0).getHoliday());
+                                    %>
+                                    <tr>
+                                        <td><%out.println((String) session.getAttribute("companyName"));%></td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("openingHour"));%></span></td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("closingHour"));%></span></td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("appointMessageBody"));%></span>
+                                        </td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("appointMessageTitle"));%></span>
+                                        </td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("holiday"));%></span></td>
+
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <div class='col-md-2 ms-auto mt-3 d-grid gap-3 me-5 mb-3'>
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+                                            data-bs-id="<%out.println(Integer.parseInt((String)session.getAttribute("custId")));%>"
+                                            data-bs-companyName="<%out.println((String)session.getAttribute("companyName"));%>"
+                                            data-bs-openingHour="<%out.println((String)session.getAttribute("openingHour"));%>"
+                                            data-bs-closingHour="<%out.println((String)session.getAttribute("closingHour"));%>"
+
+                                            data-bs-appointMessageBody="<%out.println((String)session.getAttribute("appointMessageBody"));%>"
+                                            data-bs-appointMessageTitle="<%out.println((String)session.getAttribute("appointMessageTitle"));%>"
+                                            data-bs-holiday="<%out.println((String)session.getAttribute("holiday"));%>">
+                                        <i class="bi bi-info-circle"></i> Düzenle</button>
+                                        </div>
+                                </table>
+                                <!--edit modal-->
+                                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editModalLabel">Düzenle</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="adminSqlCon.jsp">
+                                                    <input type="text" class=" idInput" name="id" hidden>
+                                                    <div class="row">
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="companyName" class="col-form-label">Firma
+                                                                Adı:</label>
+                                                            <input type="text" class="form-control companyNameInput"
+                                                                   name="companyName" id="companyName">
+                                                        </div>
+                                                        <input type="text" value="settingsEdit" name="iam" hidden>
+                                                        <input type="text" value="settingsPage.jsp" name="page"
+                                                               hidden>
+
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="holiday" class="col-form-label">Tatil
+                                                                Gunu:</label>
+                                                            <input type="text" class="form-control holidayInput"
+                                                                   name="holiday" id="holiday">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="mb-3 col-md-6 ">
+                                                            <label for="openingHour" class="col-form-label">Acilis
+                                                                Saati:</label>
+                                                            <input type="text" class="form-control openingHourInput"
+                                                                   name="openingHour" id="openingHour" maxlength="5">
+                                                        </div>
+                                                        <div class="mb-3 col-md-6 ms-auto">
+                                                            <label for="closingHour" class="col-form-label">Kapanis
+                                                                Saati:</label>
+                                                            <input type="text" class="form-control closingHourInput"
+                                                                   name="closingHour" id="closingHour" maxlength="5">
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="appointMessageBody" class="col-form-label">Basarili
+                                                                Uyari Metni:</label>
+                                                            <input type="text"
+                                                                   class="form-control appointMessageBodyInput"
+                                                                   maxlength="5"
+                                                                   name="appointMessageBody" id="appointMessageBody">
+                                                        </div>
+                                                        <div class="mb-3 col-md-6 ms-auto">
+                                                            <label for="appointMessageTitle" class="col-form-label">Basarili
+                                                                Uyari Basligi: </label>
+                                                            <input type="text"
+                                                                   class="form-control appointMessageTitleInput"
+                                                                   maxlength="5"
+                                                                   name="appointMessageTitle" id="appointMessageTitle">
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Kapat
+                                                </button>
+                                                <input type="submit" class="btn btn-primary" value="Düzenle">
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Button trigger modal -->
+                            <button type="button" id="sucsessModalBtn" class="btn btn-primary"
+                                    data-bs-toggle="modal" data-bs-target="#sucsessModal" hidden="hidden">
+                                Launch demo modal
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="sucsessModal" tabindex="-1" aria-labelledby="sucsess-modal"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="sucsess-modal">
+                                                <%
+                                                    if (appointmentMade) {
+                                                        out.println(messageHeader);
+                                                    } else {
+                                                        out.println(messageHeader);
+                                                    }
+                                                %>
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <%
+                                                if (appointmentMade) {
+                                                    out.println(discroption);
+                                                } else {
+                                                    out.println(discroption);
+                                                }
+                                            %>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Kapat
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+<script>
+    `use strict`;
+    var exampleModal = document.getElementById('editModal');
+
+    exampleModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var companyName = button.getAttribute('data-bs-companyName');
+        var openingHour = button.getAttribute('data-bs-openingHour');
+        var id = button.getAttribute('data-bs-id');
+        var closingHour = button.getAttribute('data-bs-closingHour');
+        var appointMessageBody = button.getAttribute('data-bs-appointMessageBody');
+        var appointMessageTitle = button.getAttribute('data-bs-appointMessageTitle');
+        var holiday = button.getAttribute('data-bs-holiday');
+
+        var modalBodycompanyNameInput = exampleModal.querySelector('.modal-body .companyNameInput');
+        var modalBodyholidayInput = exampleModal.querySelector('.modal-body .holidayInput');
+        var modalBodyopeningHourInput = exampleModal.querySelector('.modal-body .openingHourInput');
+        var modalBodyclosingHourInput = exampleModal.querySelector('.modal-body .closingHourInput');
+        var modalBodyappointMessageBodyInput = exampleModal.querySelector('.modal-body .appointMessageBodyInput');
+        var modalBodyappointMessageTitleInput = exampleModal.querySelector('.modal-body .appointMessageTitleInput');
+        var modalBodyInputId = exampleModal.querySelector('.modal-body .idInput');
+
+
+        modalBodycompanyNameInput.value = companyName;
+        modalBodyholidayInput.value = holiday;
+        modalBodyInputId.value = id;
+        modalBodyopeningHourInput.value = openingHour;
+        modalBodyclosingHourInput.value = closingHour;
+        modalBodyappointMessageBodyInput.value = appointMessageBody;
+        modalBodyappointMessageTitleInput.value = appointMessageTitle;
+
+
+    });
+
+
+    <% if (requestStr != null && requestStr.length() > 1) { %>
+    clickButton();
+
+    <% } %>
+
+    function clickButton() {
+        var myButton = document.getElementById("sucsessModalBtn");
+        myButton.click();
+    }
+
+    const startHour = document.getElementById("openingHour");
+    startHour.addEventListener("input", function () {
+        const value = this.value.replace(/[^0-9]/g, "");
+        if (value.length > 2) {
+            this.value = value.slice(0, 2) + ":" + value.slice(2);
+        }
+    });
+    const endHour = document.getElementById("closingHour");
+    endHour.addEventListener("input", function () {
+        const value = this.value.replace(/[^0-9]/g, "");
+        if (value.length > 2) {
+            this.value = value.slice(0, 2) + ":" + value.slice(2);
+        }
+    });
+
+
+
+</script>
+
+
+</body>
+
+</html>

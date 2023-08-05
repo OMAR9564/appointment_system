@@ -157,7 +157,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.jsp">Ana Sayfa</a></li>
-                <li class="breadcrumb-item active"><a href="pages-appointments.jsp">Randevular</li>
+                <li class="breadcrumb-item active"><a href="pages-appointments.jsp">Randevular</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -228,6 +228,9 @@
                                             session.setAttribute("custSurname", info.get(i).getCustSurname());
                                             session.setAttribute("custNameSurname", info.get(i).getCustNameSurname());
                                             session.setAttribute("CustPhone", info.get(i).getCustPhone());
+                                            session.setAttribute("DoctorName1", info.get(i).getDoctorName());
+                                            session.setAttribute("AppLocation1", info.get(i).getAppLocation());
+
                                             session.setAttribute("DoctorName", docNameInfo.get(0).getName());
                                             session.setAttribute("AppLocation", locNameInfo.get(0).getName());
                                             session.setAttribute("AppDate", info.get(i).getAppDate());
@@ -283,8 +286,8 @@
 
                                                     data-bs-phone="<%out.println((String)session.getAttribute("CustPhone"));%>"
                                                     data-bs-date="<%out.println((String)session.getAttribute("AppDate"));%>"
-                                                    data-bs-doktorName="<%out.println((String)session.getAttribute("DoctorName"));%>"
-                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation"));%>"
+                                                    data-bs-doktorName="<%out.println((String)session.getAttribute("DoctorName1"));%>"
+                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation1"));%>"
                                                     data-bs-interval="<%out.println((String)session.getAttribute("AppIntervalValue"));%>"
                                                     data-bs-startHour="<%out.println((String)session.getAttribute("AppStartHour"));%>"
                                                     data-bs-endHour="<%out.println((String)session.getAttribute("AppEndHour"));%>">
@@ -719,16 +722,7 @@
 
 
     });
-    var deleteModal = document.getElementById('deleteModal');
 
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        console.log("omeroemroemreomreormeormeorm");
-        var delId = button.getAttribute('data-bs-idDel');
-        var modalBodyInputDelId = deleteModal.querySelector('.modal-body .delIdInput');
-        modalBodyInputDelId.value = delId;
-
-    });
 
     <% if (requestStr != null && requestStr.length() > 1) { %>
     clickButton();

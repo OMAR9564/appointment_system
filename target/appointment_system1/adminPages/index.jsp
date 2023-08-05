@@ -282,7 +282,7 @@
                                        name="name" id="name">
                               </div>
                               <input type="text" value="appointmentEdit" name="iam" hidden>
-                              <input type="text" value="pages-appointments.jsp" name="page"
+                              <input type="text" value="index.jsp" name="page"
                                      hidden>
 
                               <div class="mb-3 col-md-6 ms-auto">
@@ -409,7 +409,7 @@
 
                           <form method="post" action="adminSqlCon.jsp">
                             <input type="text" class="delIdInput" name="id" id="id" hidden>
-                            <input type="text" value="pages-appointments.jsp" name="page"
+                            <input type="text" value="index.jsp" name="page"
                                    hidden>
                             <input type="text" value="appoitnmentDelete" name="iam" hidden>
                             <div class="modal-footer">
@@ -468,6 +468,22 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="row align-items-start">
+                <div class = "col-5">
+                  <button class="btn btn-warning btn-lg" type="button" style="padding:30px;">Müsait Günler ve Saatler</button>
+                </div>
+                <div class = "col-7">
+                  <a href="pages-appointments.jsp">
+                    <button class="btn btn-secondary btn-lg" type="button" style="padding:30px;">Tüm Randevular</button>
+                  </a>
+                </div>
+                <div class = "col-7 mt-4">
+                  <a href="settingsPage.jsp">
+                    <button class="btn btn-info btn-lg" type="button" style="padding:30px;">Sayfa Ayarları</button>
+                  </a>
+                </div>
+
               </div>
             </div>
 
