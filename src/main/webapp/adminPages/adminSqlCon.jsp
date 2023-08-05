@@ -13,6 +13,9 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="com.bya.ConSql" %>
 <%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.ParseException" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
@@ -68,6 +71,48 @@
             conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
 
             messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+            appointmentMade = "true";
+            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+
+        } catch (Exception e) {
+            appointmentMade = "false";
+            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+            out.println("Bir hata oluştu: " + e.getMessage());
+        }
+    } else if (iam != null && iam.equals("appointmentAdd")) {
+        try {
+
+            String name = request.getParameter("add-name");
+            String surname = request.getParameter("add-surname");
+            String phone = request.getParameter("add-phone");
+            String date = request.getParameter("add-date");
+            String interval = request.getParameter("add-interval");
+            String startHour = request.getParameter("add-startHour");
+            String endHour = request.getParameter("add-endHour");
+            String doktorName = request.getParameter("add-doktorName");
+            String location = request.getParameter("add-location");
+
+            String outputDateFormat = "yyyy-MM-dd";
+
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat outputDateFormatter = new SimpleDateFormat(outputDateFormat);
+
+
+                Date inputDate = inputDateFormat.parse(date);
+                String formattedDate = outputDateFormatter.format(inputDate);
+
+
+            String insertQuery = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`," +
+                    " `locationId`, `date`, `startHour`, `endHour`, `intervalId`) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            ConSql conSql = new ConSql();
+
+            conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
+
+            messageOk = "Kullanıcı başarılı bir şekilde Eklendi.";
             appointmentMade = "true";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 

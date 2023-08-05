@@ -390,17 +390,12 @@
 
 
 
-    // Telefon numarası girdisini alın
     let phoneInput = document.getElementById("phone-input");
-
-    // Herhangi bir değişiklik olduğunda otomatik olarak formatlayın
     phoneInput.addEventListener("input", function() {
         let phone = phoneInput.value;
-
         // Rakamları temizle
         phone = phone.replace(/\D/g, '');
 
-        // Telefon numarasının formatını belirleyin
         let phoneFormatted = "";
         if (phone.length > 0) {
             phoneFormatted = "(";

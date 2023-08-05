@@ -149,7 +149,7 @@ public class ConSql {
 
         return conn;
     }
-    public ArrayList<GetInfo> getAppointmentData(String query) throws SQLException {
+    public ArrayList<GetInfo> getAppointmentData(String query, String... params) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
             Connection conn = null;
@@ -159,6 +159,9 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
+            for (int i = 0; i < params.length; i++){
+                stmt.setString(i+1, params[i]);
+            }
 
             rs = stmt.executeQuery();
 
