@@ -10,6 +10,9 @@
 --------------------------------------------------------------*/
 :root {
   scroll-behavior: smooth;
+  --primary-color: #4A4A4A;
+  --secondary-color: #FFD166;
+  --accent-color: #06D6A0;
 }
 
 body {
@@ -1257,4 +1260,32 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+/* Saatler */
+.hours {
+  background-color: #fff;
+  padding: 20px;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.hours h2 {
+  color: var(--primary-color);
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.hours .hour-buttons button {
+  height: 35px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 614;
+  color: #fff;
+  background-color: #4154F1;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
 }
