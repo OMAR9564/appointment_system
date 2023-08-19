@@ -48,7 +48,7 @@
 
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-rooms.jsp">
+        <a class="nav-link collapsed" href="avalibaleHoursAndDays.jsp">
           <i class="bx bx-time me-2" style="font-size: 1.3rem;"></i>
           <span>Müsait Günler ve Saatler</span>
         </a>

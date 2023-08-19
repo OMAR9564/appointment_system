@@ -118,17 +118,7 @@
                                     </div>
 
                                 </div>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Firma Adı</th>
-                                        <th scope="col">Acilis Saati</th>
-                                        <th scope="col">Kapanis Saati</th>
-                                        <th scope="col">Basarili Uyari Metni</th>
-                                        <th scope="col">Basarili Uyari Basligi</th>
-                                        <th scope="col">Tatil Gunu</th>
-                                    </tr>
-                                    </thead>
+                                <table class="table table-striped table-hover table-bordered">
                                     <tbody>
                                     <%
                                         session.setAttribute("custId", Integer.toString(settingsInfo.get(0).getId()));
@@ -140,24 +130,37 @@
                                         session.setAttribute("holiday", settingsInfo.get(0).getHoliday());
                                     %>
                                     <tr>
+                                        <th>Firma Adı</th>
                                         <td><%out.println((String) session.getAttribute("companyName"));%></td>
-                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
-                                            out.println((String) session.getAttribute("openingHour"));%></span></td>
-                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
-                                            out.println((String) session.getAttribute("closingHour"));%></span></td>
-                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
-                                            out.println((String) session.getAttribute("appointMessageBody"));%></span>
-                                        </td>
-                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
-                                            out.println((String) session.getAttribute("appointMessageTitle"));%></span>
-                                        </td>
-                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
-                                            out.println((String) session.getAttribute("holiday"));%></span></td>
-
-
-                                        </td>
                                     </tr>
+                                    <tr>
+                                        <th>Acilis Saati</th>
+                                        <td><%
+                                            out.println((String) session.getAttribute("openingHour"));%></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kapanis Saati</th>
+                                        <td><%
+                                            out.println((String) session.getAttribute("closingHour"));%></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Basarili Uyari Metni</th>
+                                        <td><%
+                                            out.println((String) session.getAttribute("appointMessageBody"));%>
+                                    </tr>
+                                    <tr>
+                                        <th>Basarili Uyari Basligi</th>
+                                        <td><%
+                                            out.println((String) session.getAttribute("appointMessageTitle"));%>
+                                    </tr>
+                                    <tr>
+                                        <th>Tatil Gunu</th>
+                                        <td><%
+                                            out.println((String) session.getAttribute("holiday"));%></td>
+                                    </tr>
+
                                     </tbody>
+
                                     <div class='col-md-2 ms-auto mt-3 d-grid gap-3 me-5 mb-3'>
                                     <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                             data-bs-target="#editModal"
@@ -198,7 +201,7 @@
 
                                                         <div class="mb-3 col-md-6">
                                                             <label for="holiday" class="col-form-label">Tatil
-                                                                Gunu:</label>
+                                                                Günü:</label>
                                                             <input type="text" class="form-control holidayInput"
                                                                    name="holiday" id="holiday">
                                                         </div>
@@ -207,13 +210,12 @@
                                                     <div class="row">
 
                                                         <div class="mb-3 col-md-6 ">
-                                                            <label for="openingHour" class="col-form-label">Acilis
-                                                                Saati:</label>
+                                                            <label for="openingHour" class="col-form-label">Açılış Saati:</label>
                                                             <input type="text" class="form-control openingHourInput"
                                                                    name="openingHour" id="openingHour" maxlength="5">
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="closingHour" class="col-form-label">Kapanis
+                                                            <label for="closingHour" class="col-form-label">Kapanış
                                                                 Saati:</label>
                                                             <input type="text" class="form-control closingHourInput"
                                                                    name="closingHour" id="closingHour" maxlength="5">
@@ -223,19 +225,19 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
-                                                            <label for="appointMessageBody" class="col-form-label">Basarili
-                                                                Uyari Metni:</label>
+                                                            <label for="appointMessageBody" class="col-form-label">Başarılı
+                                                                Uyarı Metni:</label>
                                                             <input type="text"
                                                                    class="form-control appointMessageBodyInput"
-                                                                   maxlength="5"
+
                                                                    name="appointMessageBody" id="appointMessageBody">
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="appointMessageTitle" class="col-form-label">Basarili
-                                                                Uyari Basligi: </label>
+                                                            <label for="appointMessageTitle" class="col-form-label">Başarılı
+                                                                Uyarı Başlıgı: </label>
                                                             <input type="text"
                                                                    class="form-control appointMessageTitleInput"
-                                                                   maxlength="5"
+
                                                                    name="appointMessageTitle" id="appointMessageTitle">
                                                         </div>
                                                     </div>

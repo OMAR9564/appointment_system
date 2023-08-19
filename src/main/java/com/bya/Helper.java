@@ -319,5 +319,15 @@ public class Helper {
         return false;
     }
 
+    public String changePatternOfDate(String input) throws ParseException {
+        String outputDateFormat = "yyyy-MM-dd";
+
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat outputDateFormatter = new SimpleDateFormat(outputDateFormat);
+
+
+        Date inputDate = inputDateFormat.parse(input);
+        return outputDateFormatter.format(inputDate);
+    }
 
 }

@@ -368,4 +368,39 @@ public class ConSql {
         return sqlInfo;
     }
 
+    public ArrayList<GetInfo> getDailyOCHour(String query, String... params) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+            if(params.length != 0){
+                stmt.setString(1, params[0]);
+            }
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setId(rs.getInt("id"));
+                temp.setDay(rs.getString("day"));
+                temp.setOpeningHour(rs.getString("openingHour"));
+                temp.setClosingHour(rs.getString("closingHour"));
+
+
+
+                sqlInfo.add(temp);
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return sqlInfo;
+    }
+
+
 }

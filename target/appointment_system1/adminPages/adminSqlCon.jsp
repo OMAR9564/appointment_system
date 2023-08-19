@@ -16,11 +16,13 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.ParseException" %>
+<%@ page import="com.bya.Helper" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
     String pageName = request.getParameter("page");
     String iam = request.getParameter("iam");
+    Helper helper = new Helper();
 
     String appointmentMade = "true";
     String messageOk = "";
@@ -47,7 +49,8 @@
 
                 out.println("Bir hata oluştu: " + e.getMessage());
             }
-        } else if (iam != null && iam.equals("appointmentEdit")) {
+        }
+        else if (iam != null && iam.equals("appointmentEdit")) {
             try {
 
                 String updateId = request.getParameter("id");
@@ -81,7 +84,8 @@
 
                 out.println("Bir hata oluştu: " + e.getMessage());
             }
-        } else if (iam != null && iam.equals("appointmentAdd")) {
+        }
+        else if (iam != null && iam.equals("appointmentAdd")) {
             try {
 
                 String name = request.getParameter("add-name");
@@ -124,7 +128,8 @@
                 out.println("Bir hata oluştu: " + e.getMessage());
             }
         }
-    } else if (pageName.equals("settingsPage.jsp")) {
+    }
+    else if (pageName.equals("settingsPage.jsp")) {
         try {
 
             String updateId = request.getParameter("id");
@@ -153,6 +158,67 @@
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
             out.println("Bir hata oluştu: " + e.getMessage());
+        }
+    }
+    else if (pageName.equals("avalibaleHoursAndDays.jsp")) {
+        if(iam != null && iam.equals("editDailyOCHour")  ){
+
+
+        try {
+
+            String updateId = request.getParameter("id");
+            String day = request.getParameter("day");
+            day = helper.changePatternOfDate(day);
+            String openingHour = request.getParameter("openingHour");
+            String closingHour = request.getParameter("closingHour");
+
+            if(openingHour == null || closingHour == null){
+                openingHour = "0";
+                closingHour = "0";
+
+            }
+
+            String updateQuery = "UPDATE `dailyOCHour` SET `day`=?," +
+                    "`openingHour`=?,`closingHour`=? WHERE `id`=?";
+
+            ConSql conSql = new ConSql();
+
+            conSql.executeQuery(updateQuery, day, openingHour, closingHour, updateId);
+
+            messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+            appointmentMade = "true";
+            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+
+        } catch (Exception e) {
+            appointmentMade = "false";
+            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+            out.println("Bir hata oluştu: " + e.getMessage());
+        }
+
+    }else if (iam != null && iam.equals("deleteDailyOCHour")) {
+            try {
+
+                String deleteId = request.getParameter("id");
+
+                String deleteQuery = "DELETE FROM dailyOCHour WHERE id = ?";
+
+                ConSql conSql = new ConSql();
+
+                conSql.executeQuery(deleteQuery, deleteId);
+
+                messageOk = "Kullanıcı başarılı bir şekilde silindi.";
+                appointmentMade = "true";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+
+            } catch (Exception e) {
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+                out.println("Bir hata oluştu: " + e.getMessage());
+            }
         }
     }
 %>

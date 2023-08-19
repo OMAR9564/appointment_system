@@ -3,6 +3,7 @@ package com.bya;
 public class GetInfo {
     int id = 0;
     String name = "" ;
+    String day = "";
     String rezervationName = "" ;
     String rezervationInterval = "" ;
     String rezervationNameTag = "" ;
@@ -231,5 +232,12 @@ public class GetInfo {
 
     public void setHoliday(String holiday) {
         this.holiday = holiday;
+    }
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 }
