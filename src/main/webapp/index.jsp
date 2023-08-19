@@ -200,6 +200,8 @@
                     <input type="hidden" id="doctor-name" name="doctor-name" value="">
                     <input type="hidden" id="loc-name" name="loc-name" value="">
                     <input type="hidden" id="interval-type" name="interval-type" value="">
+                    <input type="hidden" id="page-name" name="page-name" value="index.jsp">
+
 
 
                     <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"

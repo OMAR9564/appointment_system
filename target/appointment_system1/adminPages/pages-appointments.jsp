@@ -623,6 +623,7 @@
                                                                     <input type="hidden" id="doctor-name" name="doctor-name" value="">
                                                                     <input type="hidden" id="loc-name" name="loc-name" value="">
                                                                     <input type="hidden" id="interval-type" name="interval-type" value="">
+                                                                    <input type="hidden" id="page-name" name="page-name" value="adminPages/pages-appointments.jsp">
 
 
                                                                     <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"
@@ -765,6 +766,59 @@
         var myButton = document.getElementById("sucsessModalBtn");
         myButton.click();
     }
+
+    // Select öğesi değiştiğinde çalışacak fonksiyonu tanımlayın
+    document.getElementById("add-doktorName").onchange = function () {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("doctor-name").value = selectedValue;
+    };
+    document.getElementById("add-location").onchange = function () {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("loc-name").value = selectedValue;
+    };
+    document.getElementById("add-interval").onchange = function () {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("interval-type").value = selectedValue;
+    };
+
+    const custnNameIn = document.getElementById('name-input');
+    const custnSurnameIn = document.getElementById('surname-input');
+    const custnPhoneIn = document.getElementById('phone-input');
+
+
+    const custnNameHid = document.getElementById('cust-name');
+    const custnSurnameHid = document.getElementById('cust-surname');
+    const custnPhoneHid = document.getElementById('cust-phone');
+
+
+    custnNameIn.value = "";
+    custnSurnameIn.value = "";
+    custnPhoneIn.value = "";
+
+
+    custnNameIn.addEventListener('input', function () {
+        custnNameHid.value = this.value;
+    });
+    custnSurnameIn.addEventListener('input', function () {
+        custnSurnameHid.value = this.value;
+    });
+    custnPhoneIn.addEventListener('input', function () {
+        custnPhoneHid.value = this.value;
+    });
+    custnNameHid.value = "";
+    custnSurnameHid.value = "";
+    custnPhoneHid.value = "";
+
+
 
     const startHour = document.getElementById("startHour");
     startHour.addEventListener("input", function () {
