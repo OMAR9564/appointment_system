@@ -17,9 +17,11 @@
     ArrayList<GetInfo> info = new ArrayList<>();
     String sqlQuery = "";
     String filterName = "";
+    String selectedOptionName = "";
     String filter = "";
+    String selectedOption = "";
     filter = request.getParameter("filter");
-
+    selectedOption = request.getParameter("selectedOption");
 
     ConSql consql = new ConSql();
     sqlQuery = "SELECT * FROM `appointments` WHERE date = CURDATE() ORDER BY `appointments`.`startHour` DESC";
@@ -28,7 +30,10 @@
     ArrayList<GetInfo> locInfo = new ArrayList<>();
     ArrayList<GetInfo> docInfo = new ArrayList<>();
     ArrayList<GetInfo> revInfo = new ArrayList<>();
+    ArrayList<GetInfo> rezervationInfo = new ArrayList<>();
     ArrayList<GetInfo> revNameInfo = new ArrayList<>();
+    ArrayList<GetInfo> _revNameInfo = new ArrayList<>();
+
     ArrayList<GetInfo> docNameInfo = new ArrayList<>();
     ArrayList<GetInfo> locNameInfo = new ArrayList<>();
 
@@ -39,10 +44,14 @@
     String reverationNameQuery = "SELECT * FROM `reservationInfo` WHERE `tagName` = ?";
     String doctorNameQuery = "SELECT * FROM `doctorInfo` WHERE `id` = ?";
     String locationNameQuery = "SELECT * FROM `locationInfo` WHERE `id` = ?";
+    String rezervationQuery = "SELECT * FROM `reservationInfo`";
+
 
     locInfo = consql.getInfos(locQuery);
     docInfo = consql.getInfos(docQuery);
     revInfo = consql.getRezervationInfos(reservationQuery);
+    rezervationInfo = consql.getRezervationInfos(rezervationQuery);
+
     session.setAttribute("appointmentCount", Integer.toString(info.size()));
 
     String requestStr = null;
@@ -66,42 +75,41 @@
         appointmentMade = false;
     }
 
+    HttpSession urlSession = request.getSession();
 
     if (filter != null && filter.equals("today")) {
-        sqlQuery = "SELECT * FROM `appointments` WHERE date = CURDATE() ORDER BY `appointments`.`startHour` DESC";
-        info = consql.getAppointmentData(sqlQuery);
         filterName = "Bugün";
-    } else if (filter != null && filter.equals("thisMonth")) {
-        sqlQuery = "SELECT * FROM `appointments`\n" +
-                "WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE())\n" +
-                "ORDER BY `date` DESC, `startHour` DESC\n";
-        info = consql.getAppointmentData(sqlQuery);
-        filterName = "Bu Ay";
-    } else if (filter != null && filter.equals("theseThreeMonths")) {
-        sqlQuery = "SELECT * FROM `appointments` WHERE date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH) ORDER BY `date` DESC, `startHour` DESC;";
-        info = consql.getAppointmentData(sqlQuery);
-        filterName = "Bu 3 Ay";
-    } else if (filter != null && filter.equals("thisYear")) {
-        sqlQuery = "SELECT * FROM `appointments` WHERE YEAR(date) = YEAR(CURDATE()) ORDER BY `date` DESC, `startHour` DESC; ";
-        info = consql.getAppointmentData(sqlQuery);
-        filterName = "Bu Yıl";
-    } else if (filter != null && filter.equals("all")) {
-        sqlQuery = "SELECT * FROM `appointments` ORDER BY `date` DESC, `startHour` DESC; ";
-        info = consql.getAppointmentData(sqlQuery);
-        filterName = "Hepsi";
-    } else if (filter == null) {
-        sqlQuery = "SELECT * FROM `appointments` WHERE date = CURDATE() ORDER BY `appointments`.`startHour` DESC";
-
-        info = consql.getAppointmentData(sqlQuery);
+    } else if (filter != null && filter.equals("tomorrow")) {
+        filterName = "Yarin";
+    } else if (filter != null && filter.equals("dayaftertomorrow")) {
+        filterName = "Yarından Sonraki Gün";
+    }  else if (filter == null) {
         filterName = "Bugün";
 
     } else {
-        sqlQuery = "SELECT * FROM `appointments` WHERE date = CURDATE() ORDER BY `appointments`.`startHour` DESC";
-
-        info = consql.getAppointmentData(sqlQuery);
         filterName = "Bugün";
-
     }
+    urlSession.setAttribute("selectedFilterName", filterName);
+
+
+    if (selectedOption != null && selectedOption.equals("single")) {
+        _revNameInfo = consql.getRezervationInfos(reverationNameQuery, selectedOption);
+        selectedOptionName = _revNameInfo.get(0).getRezervationName();
+    } else if (selectedOption != null && selectedOption.equals("couple")) {
+        _revNameInfo = consql.getRezervationInfos(reverationNameQuery, selectedOption);
+        selectedOptionName = _revNameInfo.get(0).getRezervationName();
+    }  else if (selectedOption == null) {
+        String _reverationNameQuery = "SELECT * FROM `reservationInfo`";
+        _revNameInfo = consql.getRezervationInfos(_reverationNameQuery);
+        selectedOptionName = _revNameInfo.get(0).getRezervationName();
+
+    } else {
+        String _reverationNameQuery = "SELECT * FROM `reservationInfo`";
+        _revNameInfo = consql.getRezervationInfos(_reverationNameQuery);
+        selectedOptionName = _revNameInfo.get(0).getRezervationName();
+    }
+    urlSession.setAttribute("selectedOptionName", selectedOptionName);
+
 
 %>
 
@@ -196,46 +204,67 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">Musait Saatler
-
-                                        <a class="icon" href="#"
-                                           data-bs-toggle="dropdown">| <%out.println(filterName);%></a>
+                                    <div class="dropdown">
+                                        <a class="icon" href="#" data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedFilterName"));%></a>
                                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                             <li class="dropdown-header text-start">
-                                                <div>Filter</div>
+                                                <div style="text-transform: uppercase;">Filter</div>
                                             </li>
-                                            <li><a class="dropdown-item" href="?filter=today">Bugün</a></li>
-                                            <li><a class="dropdown-item" href="?filter=thisMonth">Bu Ay</a></li>
-                                            <li><a class="dropdown-item" href="?filter=theseThreeMonths">Bu 3 Ay</a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="?filter=thisYear">Bu Yıl</a></li>
-                                            <li><a class="dropdown-item" href="?filter=all">Hepsi</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="setFilter('today');">Bugün</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="setFilter('tomorrow');">Yarın</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="setFilter('dayaftertomorrow');">Yarından Sonraki Gün</a></li>
                                         </ul>
-
-                                </h5>
-                                <div class="hours">
-
-                                    <div class="hour-buttons">
-                                        <button class="hour-button active">09:00-10:00</button>
-                                        <button class="hour-button">10:00-11:00</button>
-                                        <button class="hour-button">11:00-12:00</button>
-                                        <button class="hour-button">12:00-13:00</button>
-                                        <button class="hour-button">13:00-14:00</button>
-                                        <button class="hour-button">14:00-15:00</button>
-                                        <button class="hour-button">15:00-16:00</button>
-                                        <button class="hour-button">16:00-17:00</button>
-                                        <button class="hour-button">17:00-18:00</button>
                                     </div>
+                                    <div class="dropdown">
+                                        <a class="icon" href="#" data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedOptionName"));%></a>
+                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                            <li class="dropdown-header text-start">
+                                                <div style="text-transform: uppercase;">Randevu Tipi</div>
+                                            </li>
+                                            <%
+                                                for (int i = 0; i < rezervationInfo.size(); i++) {
+                                                    String selectedOptionTagName = rezervationInfo.get(i).getRezervationNameTag();
+                                                    String rezervationName = rezervationInfo.get(i).getRezervationName();
+                                            %>
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="setOption('<%= selectedOptionTagName.trim() %>')">
+                                                    <%= rezervationName %>
+                                                </a>
+                                            </li>
 
 
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                </h5>
+
+                                <script>
+                                    function setFilter(filter) {
+                                        const urlParams = new URLSearchParams(window.location.search);
+                                        urlParams.set('filter', filter);
+                                        window.location.search = urlParams.toString();
+                                    }
+
+                                    function setOption(option) {
+                                        console.log(option);
+                                        const urlParams = new URLSearchParams(window.location.search);
+                                        urlParams.set('selectedOption', option);
+                                        window.location.search = urlParams.toString();
+                                    }
+                                </script>
+
+                                <div class="hours">
+                                    <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız gerekir.</p>
+
+                                    <div class="hour-buttons"></div>
                                 </div>
 
                             </div>
-
-
                         </div>
-
                     </div>
+                    <ul id="saatler" style="display: none;">
 
+                    </ul>
                     <div class="col-12">
                         <div class="card recent-sales overflow-auto">
 
@@ -243,7 +272,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <h5 class="card-title">Randevular <span>| <%out.println(filterName);%></span>
+                                        <h5 class="card-title">Randevular <span>| Bugün</span>
                                         </h5>
                                     </div>
                                 </div>

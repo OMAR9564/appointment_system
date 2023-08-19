@@ -179,11 +179,7 @@
         </div>
         <div class="col-md-6">
             <div class="hours">
-                <h3 id="selected-date">
-
-
-                </h3>
-
+                <h3 id="selected-date"></h3>
                 <h2 id="selected-day"></h2>
                 <div class="hour-buttons"></div>
                 <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız gerekir.</p>

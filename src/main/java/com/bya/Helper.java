@@ -280,6 +280,9 @@ public class Helper {
         if(stringLength == 1){
             result = "0" + day;
         }
+        else {
+            result = day;
+        }
         return result;
     }
 

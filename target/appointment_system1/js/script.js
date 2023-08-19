@@ -1,4 +1,3 @@
-
 const currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentMonthName = getMonthName(currentMonth);
@@ -15,6 +14,7 @@ prevMonthBtn.addEventListener("click", showPrevMonth);
 nextMonthBtn.addEventListener("click", showNextMonth);
 
 let selectedOption = null
+
 function saveSelectedOption() {
     selectedOption = document.getElementById("apptype-select").value;
 
@@ -22,7 +22,9 @@ function saveSelectedOption() {
     // örneğin bir API'ye gönderebilir veya bir veritabanına kaydedebilirsiniz.
     // Şu anda sadece konsola yazdırıyorum:
     console.log("Seçilen seçenek:", selectedOption);
-}    document.getElementById("apptype-select").addEventListener("change", saveSelectedOption);
+}
+
+document.getElementById("apptype-select").addEventListener("change", saveSelectedOption);
 
 // Show the current month's calendar
 showMonth(currentMonth, currentYear);
@@ -79,11 +81,10 @@ function showMonth(month, year) {
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
             dayEl.classList.add("today"); // Add the "today" class to the current day element
         }
-        if(new Date(year, month, i) < new Date()){
+        if (new Date(year, month, i) < new Date()) {
             dayEl.classList.add("disabled"); //Add the "disabled" class
 
-        }
-        else {
+        } else {
             dayEl.addEventListener("click", (event) => selectDay(event));
 
         }
@@ -116,6 +117,7 @@ function showPrevMonth() {
     }
     showMonth(currentMonth, currentYear);
 }
+
 //filtering days to only this month and the next 30 days
 function isDateInCurrentMonth(date) {
     const currentDate = new Date();
@@ -132,6 +134,7 @@ function showNextMonth() {
     }
     showMonth(currentMonth, currentYear);
 }
+
 let selectedDate = null;
 let selectedHour = null;
 
@@ -154,7 +157,7 @@ function selectDay(event) {
     const selectedDayStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}`;
     document.querySelector("#selected-date").innerHTML = selectedDayStr;
     const warningMessage = document.getElementById("warning-message")
-    const formattedDate  = formatDate(selectedDate);
+    const formattedDate = formatDate(selectedDate);
     const intervalType = document.getElementById("interval-type");
 
 
@@ -164,7 +167,7 @@ function selectDay(event) {
     var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate) + "&selectedOption=" + encodeURIComponent(selectedOption);
     xhttp.open("GET", url, true);
     xhttp.send();
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             var hoursList = JSON.parse(this.responseText);
             var hoursContainer = document.getElementById("saatler");
@@ -180,18 +183,17 @@ function selectDay(event) {
 
             }
             console.log(intervalType.value);
-            if(hours.length === 0 && intervalType.value !== ""){
+            if (hours.length === 0 && intervalType.value !== "") {
                 let temp = "Maalesef, bugün için uygun randevu seçeneği bulunmamaktadır. Lütfen başka bir tarih seçmeyi deneyin.";
                 warningMessage.textContent = temp;
                 warningMessage.style.display = "inline";
 
-            }else if ((hours.length === 0 && intervalType.value === "")){
+            } else if ((hours.length === 0 && intervalType.value === "")) {
                 let temp = "Önce gerekli bilgileri doldurmanız gerekir.";
                 warningMessage.textContent = temp;
                 warningMessage.style.display = "inline";
 
-            }
-            else{
+            } else {
                 warningMessage.style.display = "none";
             }
         }
@@ -212,8 +214,6 @@ function selectDay(event) {
                 const selectedYear = `${currentYear}`;
                 const selectedMonth = `${getMonthName(currentMonth)}`;
                 document.querySelector("#selected-date").innerHTML = selectedDateTimeStr;
-
-
 
 
                 // Set the selected date and time to the hidden input element
@@ -340,11 +340,11 @@ resetBtn.addEventListener("click", () => {
     document.querySelector("#selected-date").innerHTML = "";
     hourButtonsContainer.innerHTML = "";
 });
+
 // Function to get the number of days in a given month and year
 function getNumDaysInMonth(month, year) {
     return new Date(year, month + 1, 0).getDate();
 }
-
 
 
 // Function to get the name of a month from its index (0-11)
@@ -365,6 +365,7 @@ function getMonthName(monthIndex) {
     ];
     return monthNames[monthIndex];
 }
+
 function checkAndToggleClass() {
     const inputElement = document.getElementById("specialCharsInput");
     const specialCharsWarning = document.getElementById("specialCharsWarning");
@@ -389,7 +390,7 @@ function checkAndToggleClass() {
 
 function blockSpecialChars() {
     const inputElement = document.getElementById("name-input");
-    const forbiddenChars = [ '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
+    const forbiddenChars = ['"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
         "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~", "€", "‚",
         "ƒ", "„", "…", "†", "‡", "ˆ", "‰", "Š", "‹", "Œ", "Ž", "‘", "’", "“", "”", "•", "–",
         "—", "˜", "™", "š", "›", "œ", "ž", "Ÿ", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©",
@@ -407,6 +408,7 @@ function blockSpecialChars() {
 
     inputElement.value = updatedValue;
 }
+
 function blockSpecialChars1() {
     const inputElement = document.getElementById("surname-input");
     const forbiddenChars = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
@@ -427,6 +429,7 @@ function blockSpecialChars1() {
 
     inputElement.value = updatedValue;
 }
+
 function getDayOfWeek(year, month, day) {
     const date = new Date(year, month, day);
     return date.getDay();
@@ -471,6 +474,7 @@ function checkForSpecialChars(inputValue) {
     }
     return false;
 }
+
 // Şifreleme işlemi
 function encryptData(data, key) {
     const encoder = new TextEncoder();
@@ -479,7 +483,7 @@ function encryptData(data, key) {
     return crypto.subtle.importKey("raw", encoder.encode(key), "AES-CBC", false, ["encrypt"])
         .then(key => {
             const iv = crypto.getRandomValues(new Uint8Array(16));
-            return crypto.subtle.encrypt({ name: "AES-CBC", iv }, key, encodedData);
+            return crypto.subtle.encrypt({name: "AES-CBC", iv}, key, encodedData);
         })
         .then(encryptedData => {
             // Şifrelenmiş veriyi ve IV'yi birleştirin

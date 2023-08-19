@@ -313,3 +313,66 @@
   }
 
 })();
+
+// Sayfa yüklendiğinde veya yenilendiğinde çalışacak kod
+window.addEventListener("load", function () {
+  // URL'den "filter" parametresini al
+  var urlParams = new URLSearchParams(window.location.search);
+  var selectedFilter = urlParams.get("filter");
+  var selectedOption = urlParams.get("selectedOption");
+
+  // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
+  if (!selectedFilter) {
+    selectedFilter = "today";
+  }
+
+  console.log(selectedFilter);
+  var hours = []; // Boş bir dizi oluşturun
+  const warningMessage = document.getElementById("warning-message")
+
+  var xhttp = new XMLHttpRequest();
+  var url = "/adminPages/get_available_hours.jsp" + "?filter=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+  xhttp.open("GET", url, true);
+  xhttp.send();
+
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      var hoursList = JSON.parse(this.responseText);
+      var hoursContainer = document.getElementById("saatler");
+      hoursContainer.innerHTML = ""; // Temizleme
+
+      for (var i = 0; i < hoursList.length; i++) {
+        var hourItem = document.createElement("li");
+        hourItem.textContent = hoursList[i].appHour;
+        hoursContainer.appendChild(hourItem);
+        console.log(hoursList[i]);
+        // hourlist'e saatleri ekleyelim
+        hours.push(hoursList[i].appHour);
+      }
+
+      if (hours.length === 0) {
+        let temp = "Maalesef, bugün için uygun randevu seçeneği bulunmamaktadır. Lütfen başka bir tarih seçmeyi deneyin.";
+        warningMessage.textContent = temp;
+        warningMessage.style.display = "inline";
+      } else {
+        warningMessage.style.display = "none";
+      }
+
+      // Filtre seçimine bakılmaksızın, saat düğmelerini oluştur
+      createHourButtons(hours);
+    }
+  };
+});
+
+function createHourButtons(hours) {
+  var hourButtonsContainer = document.querySelector(".hour-buttons");
+  hourButtonsContainer.innerHTML = "";
+
+  for (let i = 0; i < hours.length; i++) {
+    console.log("om");
+    const hourButtonEl = document.createElement("button");
+    hourButtonEl.classList.add("hour-button");
+    hourButtonEl.innerHTML = hours[i];
+    hourButtonsContainer.appendChild(hourButtonEl);
+  }
+}
