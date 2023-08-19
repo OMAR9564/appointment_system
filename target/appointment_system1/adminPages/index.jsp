@@ -64,7 +64,7 @@
     discroption = request.getParameter("dic");
 
     if (discroption == null) {
-        discroption = "";
+        discroption = "Randevunuz Basirili Bir Sekilde Alindi.";
     }
     if (requestStr != null && requestStr.equals("true")) {
         appointmentMade = true;
@@ -144,6 +144,7 @@
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/calendar.css" rel="stylesheet">
 
 </head>
 
@@ -260,16 +261,16 @@
                                     }
                                 </script>
 
-                                <div class="hours">
-                                    <p class="fw-bolder" id="warning-message" name="warning-message"></p>
+                                <div class="hoursIndex">
+                                    <p class="fw-bolder" id="warning-messageIndex" name="warning-messageIndex"></p>
 
-                                    <div class="hour-buttons"></div>
+                                    <div class="hour-buttonsIndex"></div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                    <ul id="saatler" style="display: none;">
+                    <ul id="saatlerIndex" style="display: none;">
 
                     </ul>
                     <div class="col-12">
@@ -630,30 +631,177 @@
                         </div>
 
                         <!-- Appointment Modal -->
-                        <div class="modal fade" id="takeAppointment" tabindex="-1"
-                             aria-labelledby="AppointmentModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                        <div class="modal fade" id="takeAppointment" tabindex="-1" aria-labelledby="addModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="AppointmentModalLabel">Modal title</h5>
+                                        <h5 class="modal-title" id="addModalLabel">Ekle</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
 
+                                        <div class="row">
+                                            <div class="mb-3 col-md-6">
+                                                <label for="name-input" class="col-form-label">Adı:</label>
+                                                <input type="text" class="form-control nameInput"
+                                                       name="name-input" id="name-input">
+                                            </div>
+                                            <input type="text" value="appointmentAdd" name="iam" hidden>
+                                            <input type="text" value="pages-appointments.jsp" name="page"
+                                                   hidden>
+
+                                            <div class="mb-3 col-md-6 ms-auto">
+                                                <label for="surname-input"
+                                                       class="col-form-label">Soyadı:</label>
+                                                <input type="text" class="form-control surnameInput"
+                                                       name="surname-input" id="surname-input">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="mb-3 col-md-6">
+                                                <label for="phone-input" class="col-form-label">Phone:</label>
+                                                <input type="text" class="form-control phoneInput"
+                                                       name="phone-input" id="phone-input">
+                                            </div>
+                                            <div class="mb-3 col-md-6">
+                                                <label for="add-interval" class="col-form-label">Randevu
+                                                    Turu:</label>
+                                                <select class="form-control intervalInput"
+                                                        name="add-interval"
+                                                        id="add-interval">
+                                                    <option value="" selected hidden>Seçin</option>
+                                                    <%
+                                                        for (int i = 0; i < revInfo.size(); i++) {
+                                                    %>
+                                                    <option value=<%
+                                                        out.println((revInfo.get(i).getRezervationNameTag()));%>>
+                                                        <%
+                                                            out.println(revInfo.get(i).getRezervationName());%>
+                                                    </option>
+                                                    <%
+                                                        }
+                                                    %>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="mb-3 col-md-6">
+                                                <label for="add-doktorName" class="col-form-label">Doktor
+                                                    Adı:</label>
+                                                <select class="form-control doctorInput"
+                                                        name="add-doktorName"
+                                                        id="add-doktorName">
+                                                    <option value="" selected hidden>Seçin</option>
+                                                    <%
+                                                        for (int i = 0; i < docInfo.size(); i++) {
+                                                    %>
+                                                    <option value=<%
+                                                        out.println((docInfo.get(i).getId()));%>>
+                                                        <%out.println(docInfo.get(i).getName());%>
+                                                    </option>
+                                                    <%
+                                                        }
+                                                    %>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3 col-md-6 ms-auto">
+                                                <label for="add-location"
+                                                       class="col-form-label">Yer:</label>
+                                                <select class="form-control locationInput"
+                                                        name="add-location"
+                                                        id="add-location">
+                                                    <option value="" selected hidden>Seçin</option>
+                                                    <%
+                                                        for (int i = 0; i < locInfo.size(); i++) {
+                                                    %>
+                                                    <option value=<%
+                                                        out.println((locInfo.get(i).getId()));%>>
+                                                        <%out.println(locInfo.get(i).getName());%>
+                                                    </option>
+                                                    <%
+                                                        }
+                                                    %>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="mb-3 col-md-6">
+
+
+                                                <div class="calendar">
+                                                    <div class="calendar-header">
+                                                        <button id="prev-month-btn">&lt;</button>
+                                                        <h2 id="current-month"></h2>
+                                                        <button id="next-month-btn">&gt;</button>
+                                                    </div>
+                                                    <div class="calendar-body">
+                                                        <div class="weekdays">
+                                                            <div class="weekday">Pzt</div>
+                                                            <div class="weekday">Sal</div>
+                                                            <div class="weekday">Çar</div>
+                                                            <div class="weekday">Per</div>
+                                                            <div class="weekday">Cum</div>
+                                                            <div class="weekday">Cmt</div>
+                                                            <div class="weekday">Paz</div>
+
+                                                        </div>
+                                                        <div class="days"></div>
+                                                    </div>
+                                                </div>
 
 
 
+                                            </div>
+                                            <div class="mb-3 col-md-6 ms-auto">
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+
+                                                <div class="hours">
+                                                    <h3 id="selected-date"></h3>
+                                                    <h2 id="selected-day"></h2>
+                                                    <div class="hour-buttons">
+                                                        <button class="hour-buttonIndex" hidden="hidden" id="hourListIndex"></button>
+                                                    </div>
+                                                    <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız
+                                                        gerekir.</p>
+
+                                                    <form method="post" onsubmit="return validateForm()" action="/take_appoint.jsp" id="form">
+                                                        <input type="hidden" id="selected-year" name="selected-year" value="">
+                                                        <input type="hidden" id="selected-month" name="selected-month" value="">
+                                                        <input type="hidden" id="selected-dayIn" name="selected-dayIn" value="">
+                                                        <input type="hidden" id="selected-hour" name="selected-hour" value="">
+                                                        <input type="hidden" id="cust-name" name="cust-name" value="">
+                                                        <input type="hidden" id="cust-surname" name="cust-surname" value="">
+                                                        <input type="hidden" id="cust-phone" name="cust-phone" value="">
+                                                        <input type="hidden" id="doctor-name" name="doctor-name" value="">
+                                                        <input type="hidden" id="loc-name" name="loc-name" value="">
+                                                        <input type="hidden" id="interval-type" name="interval-type" value="">
+                                                        <input type="hidden" id="page-name" name="page-name" value="adminPages/index.jsp">
+
+
+                                                        <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"
+                                                               name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <ul id="saatler" style="display: none;">
+
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
 
 
                     </div>
@@ -685,6 +833,8 @@
 
 <!-- Template Main JS File -->
 <script src="assets/js/main.js"></script>
+<script src="assets/js/calendar.js"></script>
+
 <script>
     `use strict`;
     var exampleModal = document.getElementById('editModal');
@@ -807,6 +957,105 @@
             e.preventDefault();
         }
     });
+
+    // Select öğesi değiştiğinde çalışacak fonksiyonu tanımlayın
+    document.getElementById("add-doktorName").onchange = function () {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("doctor-name").value = selectedValue;
+    };
+    document.getElementById("add-location").onchange = function () {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("loc-name").value = selectedValue;
+    };
+    document.getElementById("add-interval").onchange = function () {
+        // Seçilen seçeneğin değerini alın
+        let selectedValue = this.value;
+
+        // Değerin başka bir input öğesine atanması
+        document.getElementById("interval-type").value = selectedValue;
+    };
+
+    const custnNameIn = document.getElementById('name-input');
+    const custnSurnameIn = document.getElementById('surname-input');
+    const custnPhoneIn = document.getElementById('phone-input');
+
+
+    const custnNameHid = document.getElementById('cust-name');
+    const custnSurnameHid = document.getElementById('cust-surname');
+    const custnPhoneHid = document.getElementById('cust-phone');
+
+
+    custnNameIn.value = "";
+    custnSurnameIn.value = "";
+    custnPhoneIn.value = "";
+
+
+    custnNameIn.addEventListener('input', function () {
+        custnNameHid.value = this.value;
+    });
+    custnSurnameIn.addEventListener('input', function () {
+        custnSurnameHid.value = this.value;
+    });
+    custnPhoneIn.addEventListener('input', function () {
+        custnPhoneHid.value = this.value;
+    });
+    custnNameHid.value = "";
+    custnSurnameHid.value = "";
+    custnPhoneHid.value = "";
+
+    let addPhoneInput = document.getElementById("phone-input");
+    addPhoneInput.addEventListener("input", function () {
+        let phone = addPhoneInput.value;
+        // Rakamları temizle
+        phone = phone.replace(/\D/g, '');
+
+        let phoneFormatted = "";
+        if (phone.length > 0) {
+            phoneFormatted = "(";
+            phoneFormatted += phone.substr(0, 3);
+            phoneFormatted += ") ";
+
+            if (phone.length > 3) {
+                phoneFormatted += phone.substr(3, 3);
+
+                if (phone.length > 6) {
+                    phoneFormatted += "-";
+                    phoneFormatted += phone.substr(6);
+                } else {
+                    phoneFormatted += phone.substr(6);
+                }
+            } else {
+                phoneFormatted += phone.substr(3);
+            }
+        }
+
+        // Yeni formatlı telefon numarasını gösterin
+        addPhoneInput.value = phoneFormatted;
+    });
+
+    // Sadece rakam girişine izin ver
+    addPhoneInput.addEventListener("keypress", function (e) {
+        // Sadece sayı tuşlarına izin ver (0-9 arası ASCII kodları 48-57 arasındadır)
+        if (e.charCode < 48 || e.charCode > 57) {
+            e.preventDefault();
+        }
+
+        // En fazla 10 rakam girilebilir
+        if (addPhoneInput.value.length >= 14) {
+            e.preventDefault();
+        }
+    });
+
+
+
+
+
 
 </script>
 </body>

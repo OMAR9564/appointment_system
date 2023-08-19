@@ -11,8 +11,8 @@
 :root {
   scroll-behavior: smooth;
   --primary-color: #4A4A4A;
-  --secondary-color: #FFD166;
-  --accent-color: #06D6A0;
+  --secondary-color: #3f4579;
+  --accent-color: #4154F1;
 }
 
 body {
@@ -1262,7 +1262,7 @@ h6 {
   color: #012970;
 }
 /* Saatler */
-.hours {
+.hoursIndex {
   background-color: #fff;
   padding: 20px;
   margin-top: 10px;
@@ -1271,13 +1271,13 @@ h6 {
   text-align: center;
 }
 
-.hours h2 {
+.hoursIndex h2 {
   color: var(--primary-color);
   font-size: 24px;
   margin-bottom: 20px;
 }
 
-.hours .hour-buttons button {
+.hoursIndex .hour-buttonsIndex button {
   height: 35px;
   margin: 5px;
   border: none;
@@ -1288,4 +1288,85 @@ h6 {
   background-color: #4154F1;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
+}
+
+/* Normal stil */
+@media (min-width: 992px) {
+  /* Ana renkler */
+  :root {
+    --primary-color: #4A4A4A;
+    --secondary-color: #3f4579;
+    --accent-color: #4154F1;
+  }
+  body {
+    background-color: #F9F9F9;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+  }
+  /* Saatler */
+  .hoursIndex {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+
+  .hoursIndex h2 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .hoursIndex .hour-buttonsIndex button {
+    width: calc(100% / 3 - 10px);
+    height: 50px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    background-color: #4154F1;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+}
+
+/* Özel stiller */
+@media (max-width: 991px) {
+  /* Ana renkler */
+  :root {
+    --primary-color: #4A4A4A;
+    --secondary-color: #3f4579;
+    --accent-color: #4154F1;
+  }
+  body {
+    background-color: #F9F9F9;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+  }
+  /* Saatler */
+  .hoursIndex {
+    margin-top: 15px;
+  }
+  .modal-dialog{
+    max-width: 700px;
+  }
+  .hoursIndex h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .hoursIndex .hour-buttonsIndex button {
+    width: calc(100% / 2 - 10px);
+    height: 40px;
+    margin: 5px;
+    font-size: 16px;
+  }
 }

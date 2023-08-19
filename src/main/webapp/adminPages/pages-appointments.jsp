@@ -93,7 +93,7 @@
         discroption = request.getParameter("dic");
 
         if (discroption == null) {
-            discroption = "Randevunuz Basirili Bir Sekilde Alindi. ";
+            discroption = "Randevunuz Basirili Bir Sekilde Alindi.";
         }
         if (requestStr != null && requestStr.equals("true")) {
             appointmentMade = true;

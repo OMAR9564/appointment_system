@@ -315,11 +315,13 @@
 })();
 
 // Sayfa yüklendiğinde veya yenilendiğinde çalışacak kod
+
 window.addEventListener("load", function () {
   // URL'den "filter" parametresini al
   var urlParams = new URLSearchParams(window.location.search);
   var selectedFilter = urlParams.get("filter");
   var selectedOption = urlParams.get("selectedOption");
+
 
   // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
   if (!selectedFilter) {
@@ -331,7 +333,7 @@ window.addEventListener("load", function () {
 
   console.log(selectedFilter);
   var hours = []; // Boş bir dizi oluşturun
-  const warningMessage = document.getElementById("warning-message")
+  const warningMessage = document.getElementById("warning-messageIndex")
 
   var xhttp = new XMLHttpRequest();
   var url = "/adminPages/get_available_hours.jsp" + "?filter=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
@@ -341,7 +343,7 @@ window.addEventListener("load", function () {
   xhttp.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       var hoursList = JSON.parse(this.responseText);
-      var hoursContainer = document.getElementById("saatler");
+      var hoursContainer = document.getElementById("saatlerIndex");
       hoursContainer.innerHTML = ""; // Temizleme
 
       for (var i = 0; i < hoursList.length; i++) {
@@ -363,19 +365,27 @@ window.addEventListener("load", function () {
 
       // Filtre seçimine bakılmaksızın, saat düğmelerini oluştur
       createHourButtons(hours);
+      function createHourButtons(hours) {
+        var hourButtonsContainer = document.querySelector(".hour-buttonsIndex");
+        hourButtonsContainer.innerHTML = "";
+
+        for (let i = 0; i < hours.length; i++) {
+          console.log("om");
+          const hourButtonEl = document.createElement("button");
+          hourButtonEl.classList.add("hour-buttonIndex");
+          hourButtonEl.setAttribute("data-bs-day", selectedFilter);
+          hourButtonEl.setAttribute("data-bs-interval", selectedOption);
+          hourButtonEl.setAttribute("data-bs-time", hours[i]);
+          hourButtonEl.setAttribute("id", "hourListIndex");
+
+
+
+          hourButtonEl.innerHTML = hours[i];
+          hourButtonsContainer.appendChild(hourButtonEl);
+        }
+      }
     }
   };
 });
 
-function createHourButtons(hours) {
-  var hourButtonsContainer = document.querySelector(".hour-buttons");
-  hourButtonsContainer.innerHTML = "";
 
-  for (let i = 0; i < hours.length; i++) {
-    console.log("om");
-    const hourButtonEl = document.createElement("button");
-    hourButtonEl.classList.add("hour-button");
-    hourButtonEl.innerHTML = hours[i];
-    hourButtonsContainer.appendChild(hourButtonEl);
-  }
-}

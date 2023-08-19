@@ -1,4 +1,8 @@
-
+:root {
+    --primary-color: #4A4A4A;
+    --secondary-color: #8b4513;
+    --accent-color: #ff6600;
+}
 
 /* Saatler */
 .hours {
@@ -24,7 +28,7 @@
     font-size: 15px;
     font-weight: 614;
     color: #fff;
-    background-color: var(--accent-color);
+    background-color: #ff6600;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
 }
@@ -56,7 +60,7 @@
 }
 
 .calendar-header button:hover {
-    color: var(--accent-color);
+    color: #ff6600;
 }
 
 .calendar-header h2 {
@@ -97,14 +101,14 @@
 }
 
 .day:hover {
-    background-color: var(--accent-color);
+    background-color: #ff6600;
     color: #fff;
 }
 .day.active {
-    background-color: var(--accent-color);
+    background-color: #ff6600;
 }
 .hours .hour-buttons .active {
-    background-color:var(--secondary-color);
+    background-color:#8b4513;
 }
 #schedule-appointment {
     background-color: #007bff;
@@ -197,7 +201,7 @@
         font-size: 16px;
         font-weight: 700;
         color: #fff;
-        background-color: var(--accent-color);
+        background-color: #ff6600;
         transition: all 0.3s ease-in-out;
         cursor: pointer;
     }
