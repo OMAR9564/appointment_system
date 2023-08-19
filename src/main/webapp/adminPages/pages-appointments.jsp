@@ -83,7 +83,7 @@
         session.setAttribute("appointmentCount", Integer.toString(info.size()));
 
 
-        String requestStr = null;
+        String requestStr = "";
         String discroption = null;
         Boolean appointmentMade = null;
         String appointmentNotMadeStr = "";
@@ -93,7 +93,7 @@
         discroption = request.getParameter("dic");
 
         if (discroption == null) {
-            discroption = "";
+            discroption = "Randevunuz Basirili Bir Sekilde Alindi. ";
         }
         if (requestStr != null && requestStr.equals("true")) {
             appointmentMade = true;
