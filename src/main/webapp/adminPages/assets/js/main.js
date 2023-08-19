@@ -325,6 +325,9 @@ window.addEventListener("load", function () {
   if (!selectedFilter) {
     selectedFilter = "today";
   }
+  if (!selectedOption) {
+    selectedOption = "";
+  }
 
   console.log(selectedFilter);
   var hours = []; // Boş bir dizi oluşturun
@@ -351,7 +354,7 @@ window.addEventListener("load", function () {
       }
 
       if (hours.length === 0) {
-        let temp = "Maalesef, bugün için uygun randevu seçeneği bulunmamaktadır. Lütfen başka bir tarih seçmeyi deneyin.";
+        let temp = "Maalesef, seçtiğiniz gün için uygun randevu seçeneği bulunmamaktadır.";
         warningMessage.textContent = temp;
         warningMessage.style.display = "inline";
       } else {

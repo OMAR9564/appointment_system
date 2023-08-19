@@ -36,7 +36,7 @@ try {
     if (selectedOption == null || selectedOption.equals("")){
         String _reverationNameQuery = "SELECT * FROM `reservationInfo`";
         _revNameInfo = conSql.getRezervationInfos(_reverationNameQuery);
-        String selectedOptionName = _revNameInfo.get(0).getRezervationName();
+        String selectedOptionName = _revNameInfo.get(0).getRezervationNameTag();
 
         selectedOption = selectedOptionName;
     }

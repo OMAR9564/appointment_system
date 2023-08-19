@@ -254,7 +254,7 @@
                                 </script>
 
                                 <div class="hours">
-                                    <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız gerekir.</p>
+                                    <p class="fw-bolder" id="warning-message" name="warning-message"></p>
 
                                     <div class="hour-buttons"></div>
                                 </div>
