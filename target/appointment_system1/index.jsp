@@ -31,7 +31,6 @@
     ArrayList<GetInfo> messageTitle = new ArrayList<>();
 
 
-
     String locationsQuery = "SELECT * FROM locationInfo";
     String doctorsQuery = "SELECT * FROM `doctorInfo`";
     String rezervationQuery = "SELECT * FROM `reservationInfo`";
@@ -41,7 +40,7 @@
 
 
     ConSql conSql = new ConSql();
-    locationNames= conSql.getInfos(locationsQuery);
+    locationNames = conSql.getInfos(locationsQuery);
     doctorInfo = conSql.getInfos(doctorsQuery);
     rezervationInfo = conSql.getRezervationInfos(rezervationQuery);
     companyName = conSql.getSettingName(companyNameQuery);
@@ -66,7 +65,7 @@
     if (requestStr != null && requestStr.equals("true")) {
         appointmentMade = true;
     } else {
-        if(discroption.length() != 0){
+        if (discroption.length() != 0) {
             appointmentNotMadeStr = discroption;
         }
         appointmentMade = false;
@@ -77,22 +76,25 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%out.println(companyNameTitle);%></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+            integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+            crossorigin="anonymous"></script>
 
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 
-
-
 </head>
 <body>
 <div class="container">
-    <div class="row mt-4" >
+    <div class="row mt-4">
         <div class="col-md-12 text-center">
             <h2> Randevu Alma Sistemi</h2>
         </div>
@@ -101,25 +103,27 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="name-input">Adınız:</label>
-                <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required oninput="blockSpecialChars()">
+                <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required
+                       oninput="blockSpecialChars()">
             </div>
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
-                <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required oninput="blockSpecialChars1()">
+                <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required
+                       oninput="blockSpecialChars1()">
             </div>
             <div class="form-group">
                 <label for="phone-input">Telefon Numaranız:</label>
-                <input type="tel" class="form-control" id="phone-input" name="phone-input"  required>
+                <input type="tel" class="form-control" id="phone-input" name="phone-input" required>
             </div>
 
             <div class="form-group">
                 <label for="doctor-select">Doktor seçin:</label>
                 <select class="form-control" id="doctor-select">
-                    <option value="" selected  hidden>Seçin</option>
+                    <option value="" selected hidden>Seçin</option>
                     <%
-                        for (int i = 0; i < doctorInfo.size(); i++){
+                        for (int i = 0; i < doctorInfo.size(); i++) {
                     %>
-                    <option value= <% out.println("doctor"+doctorInfo.get(i).getId());%> >
+                    <option value=<% out.println("doctor" + doctorInfo.get(i).getId());%>>
                         <%out.println(doctorInfo.get(i).getName());%>
                     </option>
                     <%
@@ -130,11 +134,11 @@
             <div class="form-group">
                 <label for="apptype-select">Randevu tipi seçin:</label>
                 <select class="form-control" id="apptype-select">
-                    <option value="" selected  hidden>Seçin</option>
+                    <option value="" selected hidden>Seçin</option>
                     <%
-                        for (int i = 0; i < rezervationInfo.size(); i++){
+                        for (int i = 0; i < rezervationInfo.size(); i++) {
                     %>
-                    <option value = <%out.println((rezervationInfo.get(i).getRezervationNameTag()));%>>
+                    <option value= <%out.println((rezervationInfo.get(i).getRezervationNameTag()));%>>
                         <%out.println(rezervationInfo.get(i).getRezervationName());%>
                     </option>
                     <%}%>
@@ -146,9 +150,9 @@
                 <select class="form-control" id="location-select">
                     <option value="" selected hidden>Seçin</option>
                     <%
-                        for (int i = 0; i < locationNames.size(); i++){
+                        for (int i = 0; i < locationNames.size(); i++) {
                     %>
-                    <option value= <%out.println("loc"+(locationNames.get(i).getId()));%> >
+                    <option value=<%out.println("loc" + (locationNames.get(i).getId()));%>>
                         <%out.println(locationNames.get(i).getName());%>
                     </option>
                     <%
@@ -182,7 +186,8 @@
                 <h3 id="selected-date"></h3>
                 <h2 id="selected-day"></h2>
                 <div class="hour-buttons"></div>
-                <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız gerekir.</p>
+                <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız
+                    gerekir.</p>
 
                 <form method="post" onsubmit="return validateForm()" action="/take_appoint.jsp" id="form">
                     <input type="hidden" id="selected-year" name="selected-year" value="">
@@ -197,14 +202,16 @@
                     <input type="hidden" id="interval-type" name="interval-type" value="">
 
 
-                    <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment" name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
+                    <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"
+                           name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
 
                 </form>
 
             </div>
 
             <!-- Button trigger modal -->
-            <button type="button" id="sucsessModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sucsessModal" hidden="hidden">
+            <button type="button" id="sucsessModalBtn" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#sucsessModal" hidden="hidden">
                 Launch demo modal
             </button>
 
@@ -242,14 +249,14 @@
 
 
             <div class="row row-cols-4" style="margin-right: 11px;padding-top: 5px;">
-                <div class = "col-10">
+                <div class="col-10">
                     <div class=" form-floating mt-2" style="padding-right: 0px;">
                         <input type="text" class="form-control" id="floatingInputGrid" placeholder="xxx-xxx">
                         <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
                     </div>
                 </div>
-                <div class = "col-2" style="padding-top: 5px;padding-left: -1px;padding-right: 15px;margin-right: 0px;">
-                    <button  type="button" class="btn btn-info mt-2 btn-lg">Info</button>
+                <div class="col-2" style="padding-top: 5px;padding-left: -1px;padding-right: 15px;margin-right: 0px;">
+                    <button type="button" class="btn btn-info mt-2 btn-lg">Info</button>
                 </div>
             </div>
 
@@ -370,13 +377,13 @@
     custnPhoneIn.value = "";
 
 
-    custnNameIn.addEventListener('input', function() {
+    custnNameIn.addEventListener('input', function () {
         custnNameHid.value = this.value;
     });
-    custnSurnameIn.addEventListener('input', function() {
+    custnSurnameIn.addEventListener('input', function () {
         custnSurnameHid.value = this.value;
     });
-    custnPhoneIn.addEventListener('input', function() {
+    custnPhoneIn.addEventListener('input', function () {
         custnPhoneHid.value = this.value;
     });
     custnNameHid.value = "";
@@ -384,10 +391,8 @@
     custnPhoneHid.value = "";
 
 
-
-
     let phoneInput = document.getElementById("phone-input");
-    phoneInput.addEventListener("input", function() {
+    phoneInput.addEventListener("input", function () {
         let phone = phoneInput.value;
         // Rakamları temizle
         phone = phone.replace(/\D/g, '');
@@ -417,7 +422,7 @@
     });
 
     // Sadece rakam girişine izin ver
-    phoneInput.addEventListener("keypress", function(e) {
+    phoneInput.addEventListener("keypress", function (e) {
         // Sadece sayı tuşlarına izin ver (0-9 arası ASCII kodları 48-57 arasındadır)
         if (e.charCode < 48 || e.charCode > 57) {
             e.preventDefault();
@@ -431,21 +436,21 @@
 
 
     // Select öğesi değiştiğinde çalışacak fonksiyonu tanımlayın
-    document.getElementById("doctor-select").onchange = function() {
+    document.getElementById("doctor-select").onchange = function () {
         // Seçilen seçeneğin değerini alın
         let selectedValue = this.value;
 
         // Değerin başka bir input öğesine atanması
         document.getElementById("doctor-name").value = selectedValue;
     };
-    document.getElementById("location-select").onchange = function() {
+    document.getElementById("location-select").onchange = function () {
         // Seçilen seçeneğin değerini alın
         let selectedValue = this.value;
 
         // Değerin başka bir input öğesine atanması
         document.getElementById("loc-name").value = selectedValue;
     };
-    document.getElementById("apptype-select").onchange = function() {
+    document.getElementById("apptype-select").onchange = function () {
         // Seçilen seçeneğin değerini alın
         let selectedValue = this.value;
 
@@ -473,8 +478,6 @@
             specialDays = data.grayedOutDays;
             console.log(specialDays[0]);
         });
-
-
 
 
     //Önceki aylara geçiş butonunu gizlemek
@@ -508,8 +511,6 @@
     }
 
     inputField.addEventListener('input', checkInput);
-
-
 
 
 </script>

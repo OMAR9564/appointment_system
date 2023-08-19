@@ -83,7 +83,7 @@
         filterName = "Yarin";
     } else if (filter != null && filter.equals("dayaftertomorrow")) {
         filterName = "Yarından Sonraki Gün";
-    }  else if (filter == null) {
+    } else if (filter == null) {
         filterName = "Bugün";
 
     } else {
@@ -98,7 +98,7 @@
     } else if (selectedOption != null && selectedOption.equals("couple")) {
         _revNameInfo = consql.getRezervationInfos(reverationNameQuery, selectedOption);
         selectedOptionName = _revNameInfo.get(0).getRezervationName();
-    }  else if (selectedOption == null) {
+    } else if (selectedOption == null) {
         String _reverationNameQuery = "SELECT * FROM `reservationInfo`";
         _revNameInfo = consql.getRezervationInfos(_reverationNameQuery);
         selectedOptionName = _revNameInfo.get(0).getRezervationName();
@@ -205,18 +205,24 @@
                             <div class="card-body">
                                 <h5 class="card-title">Musait Saatler
                                     <div class="dropdown">
-                                        <a class="icon" href="#" data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedFilterName"));%></a>
+                                        <a class="icon" href="#"
+                                           data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedFilterName"));%></a>
                                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                             <li class="dropdown-header text-start">
                                                 <div style="text-transform: uppercase;">Filter</div>
                                             </li>
-                                            <li><a class="dropdown-item" href="#" onclick="setFilter('today');">Bugün</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="setFilter('tomorrow');">Yarın</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="setFilter('dayaftertomorrow');">Yarından Sonraki Gün</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="setFilter('today');">Bugün</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="setFilter('tomorrow');">Yarın</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="setFilter('dayaftertomorrow');">Yarından Sonraki Gün</a>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="dropdown">
-                                        <a class="icon" href="#" data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedOptionName"));%></a>
+                                        <a class="icon" href="#"
+                                           data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedOptionName"));%></a>
                                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                             <li class="dropdown-header text-start">
                                                 <div style="text-transform: uppercase;">Randevu Tipi</div>
@@ -227,7 +233,8 @@
                                                     String rezervationName = rezervationInfo.get(i).getRezervationName();
                                             %>
                                             <li>
-                                                <a class="dropdown-item" href="#" onclick="setOption('<%= selectedOptionTagName.trim() %>')">
+                                                <a class="dropdown-item" href="#"
+                                                   onclick="setOption('<%= selectedOptionTagName.trim() %>')">
                                                     <%= rezervationName %>
                                                 </a>
                                             </li>
@@ -313,6 +320,10 @@
                                             session.setAttribute("AppEndHour", info.get(i).getAppEndHour());
                                             session.setAttribute("AppIntervalValue", info.get(i).getRezervationInterval());
 
+                                            session.setAttribute("DoctorName1", info.get(i).getDoctorName());
+                                            session.setAttribute("AppLocation1", info.get(i).getAppLocation());
+
+
                                             session.setAttribute("AppInterval", revNameInfo.get(0).getRezervationName());
 
                                     %>
@@ -360,8 +371,8 @@
 
                                                     data-bs-phone="<%out.println((String)session.getAttribute("CustPhone"));%>"
                                                     data-bs-date="<%out.println((String)session.getAttribute("AppDate"));%>"
-                                                    data-bs-doktorName="<%out.println((String)session.getAttribute("DoctorName"));%>"
-                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation"));%>"
+                                                    data-bs-doktorName="<%out.println((String)session.getAttribute("DoctorName1"));%>"
+                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation1"));%>"
                                                     data-bs-interval="<%out.println((String)session.getAttribute("AppIntervalValue"));%>"
                                                     data-bs-startHour="<%out.println((String)session.getAttribute("AppStartHour"));%>"
                                                     data-bs-endHour="<%out.println((String)session.getAttribute("AppEndHour"));%>">
@@ -590,28 +601,61 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row align-items-start">
-                            <div class="col-5">
+                        <div class="row d-flex justify-content-evenly">
+                            <div class="col mt-4">
+                                <button class="btn btn-success btn-lg" type="button" style="padding:30px;"
+                                        data-bs-toggle="modal" data-bs-target="#takeAppointment">
+                                    Randevu Al
+                                </button>
+                            </div>
+                            <div class="col mt-4">
                                 <button class="btn btn-warning btn-lg" type="button" style="padding:30px;">Müsait Günler
                                     ve Saatler
                                 </button>
                             </div>
-                            <div class="col-7">
+                            <div class="col mt-4">
                                 <a href="pages-appointments.jsp">
-                                    <button class="btn btn-secondary btn-lg" type="button" style="padding:30px;">Tüm
+                                    <button class="btn btn-primary btn-lg" type="button" style="padding:30px;">Tüm
                                         Randevular
                                     </button>
                                 </a>
                             </div>
-                            <div class="col-7 mt-4">
+                            <div class="col mt-4">
                                 <a href="settingsPage.jsp">
-                                    <button class="btn btn-info btn-lg" type="button" style="padding:30px;">Sayfa
+                                    <button class="btn btn-danger btn-lg" type="button" style="padding:30px;">Sayfa
                                         Ayarları
                                     </button>
                                 </a>
                             </div>
-
                         </div>
+
+                        <!-- Appointment Modal -->
+                        <div class="modal fade" id="takeAppointment" tabindex="-1"
+                             aria-labelledby="AppointmentModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="AppointmentModalLabel">Modal title</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+
+
+
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
 
                 </div>
@@ -673,7 +717,7 @@
 
         modalBodyInputName.value = name;
         modalBodyInputSurname.value = surname;
-
+        console.log("index.jsp");
         modalBodyInputId.value = id;
         modalBodyInputPhone.value = phone;
         modalBodyInputDate.value = date.trim();
@@ -720,22 +764,8 @@
             this.value = value.slice(0, 2) + ":" + value.slice(2);
         }
     });
-    const addStartHour = document.getElementById("add-startHour");
-    addStartHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
-    });
-    const addEndHour = document.getElementById("add-endHour");
-    addEndHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
-    });
 
-    let phoneInput = document.getElementById("add-phone");
+    let phoneInput = document.getElementById("phone");
     phoneInput.addEventListener("input", function () {
         let phone = phoneInput.value;
         // Rakamları temizle
