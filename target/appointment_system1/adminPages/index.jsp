@@ -403,7 +403,7 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <form method="post" action="adminSqlCon.jsp">
+                                                <form method="post" action="adminSqlCon.jsp" id="editForm">
                                                     <input type="text" class=" idInput" name="id" hidden>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
@@ -412,15 +412,16 @@
                                                                    name="name" id="name">
                                                         </div>
                                                         <input type="text" value="appointmentEdit" name="iam" hidden>
-                                                        <input type="text" value="index.jsp" name="page"
-                                                               hidden>
+                                                        <input type="text" value="index.jsp" name="page" hidden>
+                                                        <input type="text" class="appointAllHour" name="appointAllHour" id="appointAllHour" hidden>
+
+
 
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="surname" class="col-form-label">Soyadı:</label>
                                                             <input type="text" class="form-control surnameInput"
                                                                    name="surname" id="surname">
                                                         </div>
-
 
                                                     </div>
 
@@ -431,27 +432,45 @@
                                                                    name="phone" id="phone">
                                                         </div>
                                                         <div class="mb-3 col-md-6">
-                                                            <label for="date" class="col-form-label">Tarih:</label>
+                                                            <label for="editDate" class="col-form-label">Tarih:</label>
                                                             <input type="date" class="form-control dateInput"
-                                                                   name="date" id="date">
+                                                                   name="editDate" id="editDate">
                                                         </div>
 
                                                     </div>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
-                                                            <label for="startHour" class="col-form-label">Baslangic
-                                                                Saati:</label>
-                                                            <input type="text" class="form-control startHourInput"
-                                                                   maxlength="5"
-                                                                   name="startHour" id="startHour">
+                                                            <label for="editInterval" class="col-form-label">Randevu
+                                                                Turu:</label>
+                                                            <select class="form-control intervalInput"
+                                                                    name="editInterval"
+                                                                    id="editInterval">
+                                                                <option value="" selected hidden>Seçin</option>
+                                                                <%
+                                                                    for (int i = 0; i < revInfo.size(); i++) {
+                                                                %>
+                                                                <option value=<%
+                                                                    out.println((revInfo.get(i).getRezervationNameTag()));%>>
+                                                                    <%
+                                                                        out.println(revInfo.get(i).getRezervationName());%>
+                                                                </option>
+                                                                <%
+                                                                    }
+                                                                %>
+                                                            </select>
                                                         </div>
-                                                        <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="endHour" class="col-form-label">Bitis
-                                                                Saati:</label>
-                                                            <input type="text" class="form-control endHourInput"
-                                                                   maxlength="5"
-                                                                   name="endHour" id="endHour">
+                                                    </div>
+
+                                                    <div class="row ms-2 me-2 mb-2">
+                                                        <div class="hoursIndex">
+                                                            <p class="fw-bolder" id="edit-warning-messageIndex"
+                                                               name="edit-warning-messageIndex"></p>
+
+                                                            <div class="hour-editButtonsIndex"></div>
                                                         </div>
+                                                        <ul id="editSaatlerIndex" style="display: none;">
+
+                                                        </ul>
                                                     </div>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
@@ -490,28 +509,7 @@
                                                             </select>
 
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="mb-3 col-md-6">
-                                                                <label for="interval" class="col-form-label">Randevu
-                                                                    Turu:</label>
-                                                                <select class="form-control intervalInput"
-                                                                        name="interval"
-                                                                        id="interval">
-                                                                    <option value="" selected hidden>Seçin</option>
-                                                                    <%
-                                                                        for (int i = 0; i < revInfo.size(); i++) {
-                                                                    %>
-                                                                    <option value=<%
-                                                                        out.println((revInfo.get(i).getRezervationNameTag()));%>>
-                                                                        <%
-                                                                            out.println(revInfo.get(i).getRezervationName());%>
-                                                                    </option>
-                                                                    <%
-                                                                        }
-                                                                    %>
-                                                                </select>
-                                                            </div>
-                                                        </div>
+
                                                     </div>
 
 
@@ -519,14 +517,47 @@
                                                         <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Kapat
                                                         </button>
-                                                        <input type="submit" class="btn btn-primary" value="Düzenle">
+                                                        <input type="submit" class="btn btn-info" value="Düzenle">
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!--Delete modal-->
+                                <script>
+                                    var modal = document.getElementById("editModal");
+                                    var form = document.getElementById("editForm");
+
+                                    // Form içindeki tıklamaları dinle
+                                    form.addEventListener("click", function(event) {
+                                        if (event.target && event.target.nodeName === "BUTTON") {
+                                            event.preventDefault(); // Submit işlemini engelle
+
+                                            const button = event.target; // Tıklanan buton öğesini alın
+
+                                            // Tüm "active" sınıfına sahip butonları seçin
+                                            var buttonsWithout = document.querySelectorAll(".active");
+
+                                            // Her bir buton için "active" sınıfını "none-active" ile değiştirin
+                                            buttonsWithout.forEach(function(button) {
+                                                button.classList.remove("active");
+                                                button.classList.add("none-active");
+                                            });
+
+                                            // Tıklanan butona "active" sınıfını ekleyin
+                                            button.classList.remove("none-active");
+                                            button.classList.add("active");
+
+                                            var timeValue = button.getAttribute("data-bs-time");
+                                            modal.querySelector('.modal-body .appointAllHour').value = timeValue.trim();
+                                        }
+                                    });
+
+
+
+
+
+                                </script>                                <!--Delete modal-->
                                 <div class="modal fade" id="deleteModal" tabindex="-1"
                                      aria-labelledby="deleteModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -611,17 +642,18 @@
                                     Randevu Al
                                 </button>
                             </div>
-                            <div class="col mt-4">
-                                <a href="avalibaleHoursAndDays.jsp">
-                                <button class="btn btn-warning btn-lg" type="button" style="padding:30px;">Müsait Günler
-                                    ve Saatler
-                                </button>
-                                </a>
-                            </div>
+
                             <div class="col mt-4">
                                 <a href="pages-appointments.jsp">
                                     <button class="btn btn-primary btn-lg" type="button" style="padding:30px;">Tüm
                                         Randevular
+                                    </button>
+                                </a>
+                            </div>
+                            <div class="col mt-4">
+                                <a href="avalibaleHoursAndDays.jsp">
+                                    <button class="btn btn-warning btn-lg" type="button" style="padding:30px;">Müsait Günler
+                                        ve Saatler
                                     </button>
                                 </a>
                             </div>
@@ -842,9 +874,10 @@
 <script>
     `use strict`;
     var exampleModal = document.getElementById('editModal');
+    var button = '';
 
     exampleModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
+        button = event.relatedTarget;
         var name = button.getAttribute('data-bs-name');
         var surname = button.getAttribute('data-bs-surname');
         var id = button.getAttribute('data-bs-id');
@@ -865,21 +898,100 @@
         var modalBodyInputDoctor = exampleModal.querySelector('.modal-body .doctorInput');
         var modalBodyInputLocation = exampleModal.querySelector('.modal-body .locationInput');
         var modalBodyInputInterval = exampleModal.querySelector('.modal-body .intervalInput');
-        var modalBodyInputStartHour = exampleModal.querySelector('.modal-body .startHourInput');
-        var modalBodyInputEndHour = exampleModal.querySelector('.modal-body .endHourInput');
 
 
         modalBodyInputName.value = name;
         modalBodyInputSurname.value = surname;
-        console.log("index.jsp");
         modalBodyInputId.value = id;
         modalBodyInputPhone.value = phone;
         modalBodyInputDate.value = date.trim();
         modalBodyInputDoctor.value = doctorName.trim();
         modalBodyInputLocation.value = location.trim();
         modalBodyInputInterval.value = interval.trim();
-        modalBodyInputStartHour.value = startHour;
-        modalBodyInputEndHour.value = endHour;
+
+
+        var hourSql = startHour + "-" + endHour;
+
+        //Add Hours
+        var selectedFilter = date.trim();
+        var selectedOption = interval.trim();
+
+
+        // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
+        if (!selectedFilter) {
+            selectedFilter = "today";
+        }
+        if (!selectedOption) {
+            selectedOption = "";
+        }
+
+        console.log(selectedFilter);
+        var hours = []; // Boş bir dizi oluşturun
+        const warningMessage = document.getElementById("edit-warning-messageIndex")
+
+        var xhttp = new XMLHttpRequest();
+        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+        xhttp.open("GET", url, true);
+        xhttp.send();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                var hoursList = JSON.parse(this.responseText);
+                var hoursContainer = document.getElementById("editSaatlerIndex");
+                hoursContainer.innerHTML = ""; // Temizleme
+
+                for (var i = 0; i < hoursList.length; i++) {
+                    var hourItem = document.createElement("li");
+                    hourItem.textContent = hoursList[i].appHour;
+                    hoursContainer.appendChild(hourItem);
+                    console.log(hoursList[i]);
+                    // hourlist'e saatleri ekleyelim
+                    hours.push(hoursList[i].appHour);
+                }
+
+                if (hours.length === 0) {
+                    let temp = "Maalesef, seçtiğiniz gün için alinan randevu seçeneğinden baska bulunmamaktadır.";
+                    warningMessage.textContent = temp;
+                    warningMessage.style.display = "inline";
+                } else {
+                    warningMessage.style.display = "none";
+                }
+
+                // Filtre seçimine bakılmaksızın, saat düğmelerini oluştur
+                createHourButtons(hours);
+                function createHourButtons(hours) {
+                    var hourButtonsContainer = document.querySelector(".hour-editButtonsIndex");
+                    hourButtonsContainer.innerHTML = "";
+                    hours.push(hourSql);
+                    customSort(hours);
+
+                    for (let i = 0; i < hours.length; i++) {
+                        console.log("om");
+                        const hourButtonEl = document.createElement("button");
+                        hourButtonEl.classList.add("hour-editButtonIndex");
+                        if(hours[i] !== hourSql){
+                            hourButtonEl.classList.add("none-active");
+                        }
+                        else{
+                            hourButtonEl.classList.add("active");
+                        }
+                        hourButtonEl.classList.add("edit-hour");
+                        hourButtonEl.setAttribute("data-bs-day", selectedFilter);
+                        hourButtonEl.setAttribute("data-bs-interval", selectedOption);
+                        hourButtonEl.setAttribute("data-bs-time", hours[i]);
+                        hourButtonEl.setAttribute("id", "editHourListIndex");
+
+
+
+                        hourButtonEl.innerHTML = hours[i];
+                        hourButtonsContainer.appendChild(hourButtonEl);
+                    }
+
+                }
+            }
+        };
+
+
 
 
     });
@@ -904,20 +1016,6 @@
         myButton.click();
     }
 
-    const startHour = document.getElementById("startHour");
-    startHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
-    });
-    const endHour = document.getElementById("endHour");
-    endHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
-    });
 
     let phoneInput = document.getElementById("phone");
     phoneInput.addEventListener("input", function () {
@@ -1056,8 +1154,119 @@
         }
     });
 
+    var dateInput = document.getElementById('editDate');
+    var intervalInput = document.getElementById('editInterval');
+    dateInput.addEventListener('change', getHours);
+    intervalInput.addEventListener('change', getHours);
 
 
+    //add hour to modify data
+    function getHours(){
+        //Add Hours
+        var startHour = button.getAttribute('data-bs-startHour');
+        var endHour = button.getAttribute('data-bs-endHour');
+        var date = button.getAttribute('data-bs-date');
+
+        var hourSql = startHour + "-" + endHour;
+
+        var selectedFilter = dateInput.value;
+        var selectedOption = intervalInput.value;
+
+
+        // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
+        if (!selectedFilter) {
+            selectedFilter = "today";
+        }
+        if (!selectedOption) {
+            selectedOption = "";
+        }
+
+        console.log(selectedFilter);
+        var hours = []; // Boş bir dizi oluşturun
+        const warningMessage = document.getElementById("edit-warning-messageIndex")
+
+        var xhttp = new XMLHttpRequest();
+        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+        xhttp.open("GET", url, true);
+        xhttp.send();
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                var hoursList = JSON.parse(this.responseText);
+                var hoursContainer = document.getElementById("editSaatlerIndex");
+                hoursContainer.innerHTML = ""; // Temizleme
+
+                for (var i = 0; i < hoursList.length; i++) {
+                    var hourItem = document.createElement("li");
+                    hourItem.textContent = hoursList[i].appHour;
+                    hoursContainer.appendChild(hourItem);
+                    console.log(hoursList[i]);
+                    // hourlist'e saatleri ekleyelim
+                    hours.push(hoursList[i].appHour);
+                }
+
+                if (hours.length === 0) {
+                    let temp = "Maalesef, seçtiğiniz gün için alinan randevu seçeneğinden baska bulunmamaktadır.";
+                    warningMessage.textContent = temp;
+                    warningMessage.style.display = "inline";
+                } else {
+                    warningMessage.style.display = "none";
+                }
+
+                // Filtre seçimine bakılmaksızın, saat düğmelerini oluştur
+                createHourButtons(hours);
+                function createHourButtons(hours) {
+                    var hourButtonsContainer = document.querySelector(".hour-editButtonsIndex");
+                    hourButtonsContainer.innerHTML = "";
+                    if(dateInput.value === date.trim()){
+                        hours.push(hourSql);
+                        customSort(hours);
+
+
+                    }
+                    for (let i = 0; i < hours.length; i++) {
+                        console.log("om11");
+                        const hourButtonEl = document.createElement("button");
+                        hourButtonEl.classList.add("hour-editButtonIndex");
+
+                        if(hours[i] !== hourSql || dateInput.value !== date.trim()){
+                            hourButtonEl.classList.add("none-active");
+                        }
+                        else{
+                            hourButtonEl.classList.add("active");
+                        }
+                        hourButtonEl.setAttribute("data-bs-day", selectedFilter);
+                        hourButtonEl.setAttribute("data-bs-interval", selectedOption);
+                        hourButtonEl.setAttribute("data-bs-time", hours[i]);
+                        hourButtonEl.setAttribute("id", "aditHourListIndex");
+
+
+
+                        hourButtonEl.innerHTML = hours[i];
+                        hourButtonsContainer.appendChild(hourButtonEl);
+                    }
+
+
+
+                }
+            }
+        };
+
+    }
+
+
+    function customSort(timeSlots) {
+        for (let i = 0; i < timeSlots.length - 1; i++) {
+            for (let j = i + 1; j < timeSlots.length; j++) {
+                if (timeSlots[i].localeCompare(timeSlots[j]) > 0) {
+                    // Swap the time slots if they are in the wrong order
+                    let temp = timeSlots[i];
+                    timeSlots[i] = timeSlots[j];
+                    timeSlots[j] = temp;
+                }
+            }
+        }
+    }
 
 
 

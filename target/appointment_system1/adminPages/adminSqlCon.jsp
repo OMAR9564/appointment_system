@@ -61,7 +61,13 @@
                 String surname = request.getParameter("surname");
                 String phone = request.getParameter("phone");
                 String date = request.getParameter("date");
+                if(date == null){
+                    date = request.getParameter("editDate");
+                }
                 String interval = request.getParameter("interval");
+                if (interval == null){
+                    interval = request.getParameter("editInterval");
+                }
                 String fullHour = request.getParameter("appointAllHour");
 /*
                 String startHour = request.getParameter("startHour");

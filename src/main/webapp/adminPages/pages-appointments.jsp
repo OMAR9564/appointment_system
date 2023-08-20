@@ -458,7 +458,7 @@
                                             button.classList.remove("none-active");
                                             button.classList.add("active");
 
-                                            var timeValue = button.getAttribute("data-bs-time"); // Düzeltilen satır
+                                            var timeValue = button.getAttribute("data-bs-time");
                                             modal.querySelector('.modal-body .appointAllHour').value = timeValue.trim();
                                         }
                                     });
