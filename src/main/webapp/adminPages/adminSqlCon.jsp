@@ -17,6 +17,8 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.ParseException" %>
 <%@ page import="com.bya.Helper" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.bya.GetInfo" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
@@ -233,16 +235,29 @@
                     closingHour = "0";
 
                 }
-                String insertQuery = "INSERT INTO `dailyOCHour`(`day`, `openingHour`, `closingHour`) " +
-                        "VALUES (?, ?, ?)";
                 ConSql conSql = new ConSql();
+                ArrayList<GetInfo> countDayQuery = new ArrayList<>();
+                //control if add two rule in one day
+                String checkDayQuery = "SELECT * FROM `dailyOCHour` WHERE `day` = ?";
+                countDayQuery = conSql.getDailyOCHour(checkDayQuery, day);
+                if(countDayQuery.size() > 0){
+                    messageOk = "Aynı Günde Birden Fazla Kural Yazılmaz.";
+                    appointmentMade = "false";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
-                conSql.executeQuery(insertQuery, day, openingHour, closingHour);
+                }
+                else {
 
-                messageOk = "Kullanıcı başarılı bir şekilde eklendi.";
-                appointmentMade = "true";
-                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
+                    String insertQuery = "INSERT INTO `dailyOCHour`(`day`, `openingHour`, `closingHour`) " +
+                            "VALUES (?, ?, ?)";
+
+                    conSql.executeQuery(insertQuery, day, openingHour, closingHour);
+
+                    messageOk = "Gün başarılı bir şekilde eklendi.";
+                    appointmentMade = "true";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                }
 
             } catch (Exception e) {
                 appointmentMade = "false";

@@ -249,6 +249,7 @@
                                 <script>
                                     function setFilter(filter) {
                                         const urlParams = new URLSearchParams(window.location.search);
+                                        urlParams.delete('message');
                                         urlParams.set('filter', filter);
                                         window.location.search = urlParams.toString();
                                     }
@@ -256,6 +257,7 @@
                                     function setOption(option) {
                                         console.log(option);
                                         const urlParams = new URLSearchParams(window.location.search);
+                                        urlParams.delete('message');
                                         urlParams.set('selectedOption', option);
                                         window.location.search = urlParams.toString();
                                     }

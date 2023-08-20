@@ -198,7 +198,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table">
+                                <table class="table table-striped">
                                     <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -431,7 +431,7 @@
                                                         <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Kapat
                                                         </button>
-                                                        <input type="submit" class="btn btn-primary" value="Düzenle">
+                                                        <input type="submit" class="btn btn-info" value="Düzenle">
                                                     </div>
                                                 </form>
                                             </div>

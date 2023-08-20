@@ -204,7 +204,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="mb-3">
-                                                    Bu randevular tüm bilgilerini silenecektir!!
+                                                    Seçilen Günün Bilgileri Silenecektir!!
                                                 </div>
 
                                                 <form method="post" action="adminSqlCon.jsp">
@@ -217,7 +217,7 @@
                                                                 data-bs-dismiss="modal">Kapat
                                                         </button>
                                                         <input type="submit" class="btn btn-danger"
-                                                               value="Randevuyu sil">
+                                                               value="Seçilen Günü Sil">
 
                                                     </div>
                                                 </form>
@@ -264,16 +264,22 @@
                                                     <div class="row">
 
                                                         <div class="mb-3 col-md-6 ">
-                                                            <label for="openingHour" class="col-form-label">Acilis
+                                                            <label for="openingHour" class="col-form-label">Açılış
                                                                 Saati:</label>
-                                                            <input type="text" class="form-control openingHourInput"
+                                                            <select class="form-select openingHourInput"
                                                                    name="openingHour" id="openingHour" maxlength="5">
+                                                                <option selected disabled>Saati Seçin</option>
+
+                                                            </select>
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="closingHour" class="col-form-label">Kapanis
+                                                            <label for="closingHour" class="col-form-label">Kapanış
                                                                 Saati:</label>
-                                                            <input type="text" class="form-control closingHourInput"
+                                                            <select class="form-select closingHourInput"
                                                                    name="closingHour" id="closingHour" maxlength="5">
+                                                                <option selected disabled>Saati Seçin</option>
+
+                                                            </select>
                                                         </div>
 
 
@@ -287,7 +293,7 @@
                                                         <button type="button" class="btn btn-secondary"
                                                                 data-bs-dismiss="modal">Kapat
                                                         </button>
-                                                        <input type="submit" class="btn btn-primary" value="Düzenle">
+                                                        <input type="submit" class="btn btn-info" value="Düzenle">
                                                     </div>
                                                 </form>
                                             </div>
@@ -331,16 +337,21 @@
                                                     <div class="row">
 
                                                         <div class="mb-3 col-md-6 ">
-                                                            <label for="addOpeningHour" class="col-form-label">Acilis
+                                                            <label for="addOpeningHour" class="col-form-label">Açılış
                                                                 Saati:</label>
-                                                            <input type="text" class="form-control openingHourInput"
+                                                            <select class="form-select"
                                                                    name="addOpeningHour" id="addOpeningHour" maxlength="5">
+                                                                <option selected disabled>Saati Seçin</option>
+                                                            </select>
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="addClosingHour" class="col-form-label">Kapanis
+                                                            <label for="addClosingHour" class="col-form-label">Kapanış
                                                                 Saati:</label>
-                                                            <input type="text" class="form-control closingHourInput"
+                                                            <select class="form-select"
                                                                    name="addClosingHour" id="addClosingHour" maxlength="5">
+                                                                <option selected disabled>Saati Seçin</option>
+
+                                                            </select>
                                                         </div>
 
 
@@ -451,8 +462,8 @@
 
         modalBodyDayInput.value = day.trim();
         modalBodyInputId.value = id;
-        modalBodyopeningHourInput.value = openingHour;
-        modalBodyclosingHourInput.value = closingHour;
+        modalBodyopeningHourInput.value = openingHour.trim();
+        modalBodyclosingHourInput.value = closingHour.trim();
 
 
     });
@@ -579,6 +590,34 @@
             addClosingHour1.disabled = false;
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        function generateTimeOptions(selectElement) {
+            for (var hours = 0; hours <= 23; hours++) {
+                for (var minutes = 0; minutes <= 30; minutes += 30) {
+                    var time = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+                    var value = time;
+                    var option = new Option(time, value);
+                    selectElement.appendChild(option);
+                }
+            }
+        }
+
+        var openingHour = document.getElementById('openingHour');
+        generateTimeOptions(openingHour);
+
+        var closingHour = document.getElementById('closingHour');
+        generateTimeOptions(closingHour);
+
+        var addOpeningHour = document.getElementById('addOpeningHour');
+        generateTimeOptions(addOpeningHour);
+
+        var addClosingHour = document.getElementById('addClosingHour');
+        generateTimeOptions(addClosingHour);
+
+
+    });
+
 </script>
 
 

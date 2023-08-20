@@ -211,14 +211,20 @@
 
                                                         <div class="mb-3 col-md-6 ">
                                                             <label for="openingHour" class="col-form-label">Açılış Saati:</label>
-                                                            <input type="text" class="form-control openingHourInput"
-                                                                   name="openingHour" id="openingHour" maxlength="5">
+                                                            <select class="form-select openingHourInput"
+                                                                    name="openingHour" id="openingHour" maxlength="5">
+                                                                <option selected disabled>Saati Seçin</option>
+
+                                                            </select>
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="closingHour" class="col-form-label">Kapanış
                                                                 Saati:</label>
-                                                            <input type="text" class="form-control closingHourInput"
-                                                                   name="closingHour" id="closingHour" maxlength="5">
+                                                            <select class="form-select closingHourInput"
+                                                                    name="closingHour" id="closingHour" maxlength="5">
+                                                                <option selected disabled>Saati Seçin</option>
+
+                                                            </select>
                                                         </div>
 
 
@@ -249,7 +255,7 @@
                                                 <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Kapat
                                                 </button>
-                                                <input type="submit" class="btn btn-primary" value="Düzenle">
+                                                <input type="submit" class="btn btn-info" value="Düzenle">
                                             </div>
                                             </form>
                                         </div>
@@ -350,8 +356,8 @@
         modalBodycompanyNameInput.value = companyName;
         modalBodyholidayInput.value = holiday;
         modalBodyInputId.value = id;
-        modalBodyopeningHourInput.value = openingHour;
-        modalBodyclosingHourInput.value = closingHour;
+        modalBodyopeningHourInput.value = openingHour.trim();
+        modalBodyclosingHourInput.value = closingHour.trim();
         modalBodyappointMessageBodyInput.value = appointMessageBody;
         modalBodyappointMessageTitleInput.value = appointMessageTitle;
 
@@ -369,19 +375,27 @@
         myButton.click();
     }
 
-    const startHour = document.getElementById("openingHour");
-    startHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        function generateTimeOptions(selectElement) {
+            for (var hours = 0; hours <= 23; hours++) {
+                for (var minutes = 0; minutes <= 30; minutes += 30) {
+                    var time = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+                    var value = time;
+                    var option = new Option(time, value);
+                    selectElement.appendChild(option);
+                }
+            }
         }
-    });
-    const endHour = document.getElementById("closingHour");
-    endHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
+
+        var openingHour = document.getElementById('openingHour');
+        generateTimeOptions(openingHour);
+
+        var closingHour = document.getElementById('closingHour');
+        generateTimeOptions(closingHour);
+
+
     });
 
 
