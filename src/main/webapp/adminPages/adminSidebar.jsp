@@ -14,18 +14,18 @@
       <li class="nav-item">
         <a class="nav-link " href="index.jsp">
           <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
+          <span>Gösterge Paneli</span>
         </a>
       </li><!-- End Dashboard Nav -->
 
 
 
-      <li class="nav-heading">Pages</li>
+      <li class="nav-heading">Sayfalar</li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="users-profile.jsp">
           <i class="bi bi-person"></i>
-          <span>Profile</span>
+          <span>Profil</span>
         </a>
       </li><!-- End Profile Page Nav -->
 

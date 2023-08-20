@@ -610,9 +610,11 @@
                                 </button>
                             </div>
                             <div class="col mt-4">
+                                <a href="avalibaleHoursAndDays.jsp">
                                 <button class="btn btn-warning btn-lg" type="button" style="padding:30px;">Müsait Günler
                                     ve Saatler
                                 </button>
+                                </a>
                             </div>
                             <div class="col mt-4">
                                 <a href="pages-appointments.jsp">

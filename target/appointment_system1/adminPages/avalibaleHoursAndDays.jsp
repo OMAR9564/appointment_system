@@ -121,7 +121,21 @@
                                         <h5 class="card-title">Müsait Günler ve Saatler
                                         </h5>
                                     </div>
-
+                                    <div class="row">
+                                        <%--<div class='d-grid gap-2 d-md-flex justify-content-md-end mb-3'>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#addModal">Günde Müsait Olmayan Saatler
+                                            </button>
+                                        </div>--%>
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+                                            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                    data-bs-target="#addModal">Günde Müsait Olmayan Saatler
+                                            </button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#addModal">Ekle
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <table class="table ">
                                     <thead>
@@ -145,8 +159,14 @@
                                     %>
                                     <tr>
                                         <td scope="row"><%out.println((String) session.getAttribute("day"));%></td>
+                                        <% if(((String) session.getAttribute("openingHour")).equals("0")){ %>
+                                        <td scope="row"><%out.println("Tatil");%></td>
+                                        <td scope="row"><%out.println("Tatil");%></td>
+
+                                        <% } else{ %>
                                         <td scope="row"><%out.println((String) session.getAttribute("openingHour"));%></td>
                                         <td scope="row"><%out.println((String) session.getAttribute("closingHour"));%></td>
+                                        <% } %>
                                         <td scope="row">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                                     data-bs-target="#editModal"
@@ -274,6 +294,74 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--add modal-->
+                                <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="addModalLabel">Ekle</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="adminSqlCon.jsp">
+                                                    <input type="text" class=" idInput" name="id" hidden>
+                                                    <div class="row">
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="addDay" class="col-form-label">Gün
+                                                            </label>
+                                                            <input type="date" class="form-control dayInput"
+                                                                   name="addDay" id="addDay"  required>
+                                                        </div>
+                                                        <input type="text" value="addDailyOCHour" name="iam" hidden>
+                                                        <input type="text" value="avalibaleHoursAndDays.jsp" name="page"
+                                                               hidden>
+
+                                                        <div class="mb-3 col-md-6 ms-auto fs-6">
+                                                            <div class="form-check form-switch">
+                                                                <label class="form-check-label" for="addFlexSwitchCheckDefault">Tatil Günü</label>
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="addFlexSwitchCheckDefault">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="mb-3 col-md-6 ">
+                                                            <label for="addOpeningHour" class="col-form-label">Acilis
+                                                                Saati:</label>
+                                                            <input type="text" class="form-control openingHourInput"
+                                                                   name="addOpeningHour" id="addOpeningHour" maxlength="5">
+                                                        </div>
+                                                        <div class="mb-3 col-md-6 ms-auto">
+                                                            <label for="addClosingHour" class="col-form-label">Kapanis
+                                                                Saati:</label>
+                                                            <input type="text" class="form-control closingHourInput"
+                                                                   name="addClosingHour" id="addClosingHour" maxlength="5">
+                                                        </div>
+
+
+                                                    </div>
+
+
+
+
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Kapat
+                                                        </button>
+                                                        <input type="submit" class="btn btn-primary" value="Ekle">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
 
 
                                 <!-- Button trigger modal -->
@@ -409,6 +497,23 @@
         }
     });
 
+    //add modal oc hours
+    const addStartHour = document.getElementById("addOpeningHour");
+    addStartHour.addEventListener("input", function () {
+        const value = this.value.replace(/[^0-9]/g, "");
+        if (value.length > 2) {
+            this.value = value.slice(0, 2) + ":" + value.slice(2);
+        }
+    });
+    const addEndHour = document.getElementById("addClosingHour");
+    addEndHour.addEventListener("input", function () {
+        const value = this.value.replace(/[^0-9]/g, "");
+        if (value.length > 2) {
+            this.value = value.slice(0, 2) + ":" + value.slice(2);
+        }
+    });
+
+    //edit modal checkbox
     var checkbox = document.getElementById('flexSwitchCheckDefault');
     var openingHour1 = document.getElementById('openingHour');
     var closingHour1 = document.getElementById('closingHour');
@@ -433,8 +538,6 @@
         else{
             openingHour1.disabled = false;
             closingHour1.disabled = false;
-            openingHour1.value = '09:00';
-            closingHour1.value = '18:00';
             checkbox.checked = false;
 
         }
@@ -455,6 +558,25 @@
 
             openingHour1.value = openingHour;
             closingHour1.value = closingHour;
+        }
+    });
+
+
+    //add modal checkbox
+    var addCheckbox = document.getElementById('addFlexSwitchCheckDefault');
+    var addOpeningHour1 = document.getElementById('addOpeningHour');
+    var addClosingHour1 = document.getElementById('addClosingHour');
+
+    addCheckbox.addEventListener('change', function () {
+        if (addCheckbox.checked) {
+            addOpeningHour1.disabled = true;
+            addClosingHour1.disabled = true;
+
+            addOpeningHour1.value = '0';
+            addClosingHour1.value = '0';
+        } else {
+            addOpeningHour1.disabled = false;
+            addClosingHour1.disabled = false;
         }
     });
 </script>

@@ -172,6 +172,7 @@
             String openingHour = request.getParameter("openingHour");
             String closingHour = request.getParameter("closingHour");
 
+            //if day is holiday
             if(openingHour == null || closingHour == null){
                 openingHour = "0";
                 closingHour = "0";
@@ -209,6 +210,36 @@
                 conSql.executeQuery(deleteQuery, deleteId);
 
                 messageOk = "Kullanıcı başarılı bir şekilde silindi.";
+                appointmentMade = "true";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+
+            } catch (Exception e) {
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+                out.println("Bir hata oluştu: " + e.getMessage());
+            }
+        }else if (iam != null && iam.equals("addDailyOCHour")) {
+            try {
+
+                String day = request.getParameter("addDay");
+                day = helper.changePatternOfDate(day);
+                String openingHour = request.getParameter("addOpeningHour");
+                String closingHour = request.getParameter("addClosingHour");
+                //if day is holiday
+                if(openingHour == null || closingHour == null){
+                    openingHour = "0";
+                    closingHour = "0";
+
+                }
+                String insertQuery = "INSERT INTO `dailyOCHour`(`day`, `openingHour`, `closingHour`) " +
+                        "VALUES (?, ?, ?)";
+                ConSql conSql = new ConSql();
+
+                conSql.executeQuery(insertQuery, day, openingHour, closingHour);
+
+                messageOk = "Kullanıcı başarılı bir şekilde eklendi.";
                 appointmentMade = "true";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
