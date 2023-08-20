@@ -1370,3 +1370,10 @@ h6 {
     font-size: 16px;
   }
 }
+.hoursIndex .hour-editButtonIndex.none-active {
+  background-color: rgba(65, 84, 241, 0.25);
+}
+
+.hoursIndex .hour-editButtonIndex.none-active:hover {
+  background-color: #4154F1;
+}

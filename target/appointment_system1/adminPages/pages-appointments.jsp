@@ -140,8 +140,6 @@
     <link href="assets/css/calendar.css" rel="stylesheet">
 
 
-
-
 </head>
 
 <body>
@@ -315,7 +313,7 @@
                                                         aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <form method="post" action="adminSqlCon.jsp">
+                                                <form method="post" action="adminSqlCon.jsp" id="editForm">
                                                     <input type="text" class=" idInput" name="id" hidden>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
@@ -324,15 +322,16 @@
                                                                    name="name" id="name">
                                                         </div>
                                                         <input type="text" value="appointmentEdit" name="iam" hidden>
-                                                        <input type="text" value="pages-appointments.jsp" name="page"
-                                                               hidden>
+                                                        <input type="text" value="pages-appointments.jsp" name="page" hidden>
+                                                        <input type="text" class="appointAllHour" name="appointAllHour" id="appointAllHour" hidden>
+
+
 
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="surname" class="col-form-label">Soyadı:</label>
                                                             <input type="text" class="form-control surnameInput"
                                                                    name="surname" id="surname">
                                                         </div>
-
 
                                                     </div>
 
@@ -351,171 +350,11 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
-                                                            <label for="startHour" class="col-form-label">Baslangic
-                                                                Saati:</label>
-                                                            <input type="text" class="form-control startHourInput"
-                                                                   maxlength="5"
-                                                                   name="startHour" id="startHour">
-                                                        </div>
-                                                        <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="endHour" class="col-form-label">Bitis
-                                                                Saati:</label>
-                                                            <input type="text" class="form-control endHourInput"
-                                                                   maxlength="5"
-                                                                   name="endHour" id="endHour">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-6">
-                                                            <label for="doktorName" class="col-form-label">Doktor
-                                                                Adı:</label>
-                                                            <select class="form-control doctorInput" name="doktorName"
-                                                                    id="doktorName">
-                                                                <option value="" selected hidden>Seçin</option>
-                                                                <%
-                                                                    for (int i = 0; i < docInfo.size(); i++) {
-                                                                %>
-                                                                <option value=<%
-                                                                    out.println((docInfo.get(i).getId()));%>>
-                                                                    <%out.println(docInfo.get(i).getName());%>
-                                                                </option>
-                                                                <%
-                                                                    }
-                                                                %>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="location" class="col-form-label">Yer:</label>
-                                                            <select class="form-control locationInput" name="location"
-                                                                    id="location">
-                                                                <option value="" selected hidden>Seçin</option>
-                                                                <%
-                                                                    for (int i = 0; i < locInfo.size(); i++) {
-                                                                %>
-                                                                <option value=<%
-                                                                    out.println((locInfo.get(i).getId()));%>>
-                                                                    <%out.println(locInfo.get(i).getName());%>
-                                                                </option>
-                                                                <%
-                                                                    }
-                                                                %>
-                                                            </select>
-
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="mb-3 col-md-6">
-                                                                <label for="interval" class="col-form-label">Randevu
-                                                                    Turu:</label>
-                                                                <select class="form-control intervalInput"
-                                                                        name="interval"
-                                                                        id="interval">
-                                                                    <option value="" selected hidden>Seçin</option>
-                                                                    <%
-                                                                        for (int i = 0; i < revInfo.size(); i++) {
-                                                                    %>
-                                                                    <option value=<%
-                                                                        out.println((revInfo.get(i).getRezervationNameTag()));%>>
-                                                                        <%
-                                                                            out.println(revInfo.get(i).getRezervationName());%>
-                                                                    </option>
-                                                                    <%
-                                                                        }
-                                                                    %>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Kapat
-                                                        </button>
-                                                        <input type="submit" class="btn btn-info" value="Düzenle">
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--Delete modal-->
-                                <div class="modal fade" id="deleteModal" tabindex="-1"
-                                     aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel">Silmek istediğinizden
-                                                    emin misiniz?</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    Bu randevular tüm bilgilerini silenecektir!!
-                                                </div>
-
-                                                <form method="post" action="adminSqlCon.jsp">
-                                                    <input type="text" class="delIdInput" name="id" id="id" hidden>
-                                                    <input type="text" value="pages-appointments.jsp" name="page"
-                                                           hidden>
-                                                    <input type="text" value="appoitnmentDelete" name="iam" hidden>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Kapat
-                                                        </button>
-                                                        <input type="submit" class="btn btn-danger"
-                                                               value="Randevuyu sil">
-
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <%--add modal--%>
-                                <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-xl">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addModalLabel">Ekle</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-6">
-                                                            <label for="name-input" class="col-form-label">Adı:</label>
-                                                            <input type="text" class="form-control nameInput"
-                                                                   name="name-input" id="name-input">
-                                                        </div>
-                                                        <input type="text" value="appointmentAdd" name="iam" hidden>
-                                                        <input type="text" value="pages-appointments.jsp" name="page"
-                                                               hidden>
-
-                                                        <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="surname-input"
-                                                                   class="col-form-label">Soyadı:</label>
-                                                            <input type="text" class="form-control surnameInput"
-                                                                   name="surname-input" id="surname-input">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-6">
-                                                            <label for="phone-input" class="col-form-label">Phone:</label>
-                                                            <input type="text" class="form-control phoneInput"
-                                                                   name="phone-input" id="phone-input">
-                                                        </div>
-                                                        <div class="mb-3 col-md-6">
-                                                            <label for="add-interval" class="col-form-label">Randevu
+                                                            <label for="interval" class="col-form-label">Randevu
                                                                 Turu:</label>
                                                             <select class="form-control intervalInput"
-                                                                    name="add-interval"
-                                                                    id="add-interval">
+                                                                    name="interval"
+                                                                    id="interval">
                                                                 <option value="" selected hidden>Seçin</option>
                                                                 <%
                                                                     for (int i = 0; i < revInfo.size(); i++) {
@@ -532,155 +371,358 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-6">
-                                                            <label for="add-doktorName" class="col-form-label">Doktor
-                                                                Adı:</label>
-                                                            <select class="form-control doctorInput"
-                                                                    name="add-doktorName"
-                                                                    id="add-doktorName">
-                                                                <option value="" selected hidden>Seçin</option>
-                                                                <%
-                                                                    for (int i = 0; i < docInfo.size(); i++) {
-                                                                %>
-                                                                <option value=<%
-                                                                    out.println((docInfo.get(i).getId()));%>>
-                                                                    <%out.println(docInfo.get(i).getName());%>
-                                                                </option>
-                                                                <%
-                                                                    }
-                                                                %>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3 col-md-6 ms-auto">
-                                                            <label for="add-location"
-                                                                   class="col-form-label">Yer:</label>
-                                                            <select class="form-control locationInput"
-                                                                    name="add-location"
-                                                                    id="add-location">
-                                                                <option value="" selected hidden>Seçin</option>
-                                                                <%
-                                                                    for (int i = 0; i < locInfo.size(); i++) {
-                                                                %>
-                                                                <option value=<%
-                                                                    out.println((locInfo.get(i).getId()));%>>
-                                                                    <%out.println(locInfo.get(i).getName());%>
-                                                                </option>
-                                                                <%
-                                                                    }
-                                                                %>
-                                                            </select>
+                                            <div class="row ms-2 me-2 mb-2">
+                                                <div class="hoursIndex">
+                                                    <p class="fw-bolder" id="warning-messageIndex"
+                                                       name="warning-messageIndex"></p>
 
-                                                        </div>
+                                                    <div class="hour-buttonsIndex"></div>
+                                                </div>
+                                                <ul id="saatlerIndex" style="display: none;">
 
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="mb-3 col-md-6">
-
-
-                                                            <div class="calendar">
-                                                                <div class="calendar-header">
-                                                                    <button id="prev-month-btn">&lt;</button>
-                                                                    <h2 id="current-month"></h2>
-                                                                    <button id="next-month-btn">&gt;</button>
-                                                                </div>
-                                                                <div class="calendar-body">
-                                                                    <div class="weekdays">
-                                                                        <div class="weekday">Pzt</div>
-                                                                        <div class="weekday">Sal</div>
-                                                                        <div class="weekday">Çar</div>
-                                                                        <div class="weekday">Per</div>
-                                                                        <div class="weekday">Cum</div>
-                                                                        <div class="weekday">Cmt</div>
-                                                                        <div class="weekday">Paz</div>
-
-                                                                    </div>
-                                                                    <div class="days"></div>
-                                                                </div>
-                                                            </div>
-
-
-
-                                                        </div>
-                                                        <div class="mb-3 col-md-6 ms-auto">
-
-
-                                                            <div class="hours">
-                                                                <h3 id="selected-date"></h3>
-                                                                <h2 id="selected-day"></h2>
-                                                                <div class="hour-buttons"></div>
-                                                                <p class="fw-bolder" id="warning-message" name="warning-message">Önce gerekli bilgileri doldurmanız
-                                                                    gerekir.</p>
-
-                                                                <form method="post" onsubmit="return validateForm()" action="/take_appoint.jsp" id="form">
-                                                                    <input type="hidden" id="selected-year" name="selected-year" value="">
-                                                                    <input type="hidden" id="selected-month" name="selected-month" value="">
-                                                                    <input type="hidden" id="selected-dayIn" name="selected-dayIn" value="">
-                                                                    <input type="hidden" id="selected-hour" name="selected-hour" value="">
-                                                                    <input type="hidden" id="cust-name" name="cust-name" value="">
-                                                                    <input type="hidden" id="cust-surname" name="cust-surname" value="">
-                                                                    <input type="hidden" id="cust-phone" name="cust-phone" value="">
-                                                                    <input type="hidden" id="doctor-name" name="doctor-name" value="">
-                                                                    <input type="hidden" id="loc-name" name="loc-name" value="">
-                                                                    <input type="hidden" id="interval-type" name="interval-type" value="">
-                                                                    <input type="hidden" id="page-name" name="page-name" value="adminPages/pages-appointments.jsp">
-
-
-                                                                    <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"
-                                                                           name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
-
-                                                                </form>
-
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-
-                                                    <ul id="saatler" style="display: none;">
-
-                                                    </ul>
+                                                </ul>
                                             </div>
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="doktorName" class="col-form-label">Doktor
+                                                        Adı:</label>
+                                                    <select class="form-control doctorInput" name="doktorName"
+                                                            id="doktorName">
+                                                        <option value="" selected hidden>Seçin</option>
+                                                        <%
+                                                            for (int i = 0; i < docInfo.size(); i++) {
+                                                        %>
+                                                        <option value=<%
+                                                            out.println((docInfo.get(i).getId()));%>>
+                                                            <%out.println(docInfo.get(i).getName());%>
+                                                        </option>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-6 ms-auto">
+                                                    <label for="location" class="col-form-label">Yer:</label>
+                                                    <select class="form-control locationInput" name="location"
+                                                            id="location">
+                                                        <option value="" selected hidden>Seçin</option>
+                                                        <%
+                                                            for (int i = 0; i < locInfo.size(); i++) {
+                                                        %>
+                                                        <option value=<%
+                                                            out.println((locInfo.get(i).getId()));%>>
+                                                            <%out.println(locInfo.get(i).getName());%>
+                                                        </option>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </select>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Kapat
+                                                </button>
+                                                <input type="submit" class="btn btn-info" value="Düzenle">
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                <script>
+                                    var modal = document.getElementById("editModal");
+                                    var form = document.getElementById("editForm");
+
+                                    // Form içindeki tıklamaları dinle
+                                    form.addEventListener("click", function(event) {
+                                        if (event.target && event.target.nodeName === "BUTTON") {
+                                            event.preventDefault(); // Submit işlemini engelle
+
+                                            const button = event.target; // Tıklanan buton öğesini alın
+
+                                            // Tüm "active" sınıfına sahip butonları seçin
+                                            var buttonsWithout = document.querySelectorAll(".active");
+
+                                            // Her bir buton için "active" sınıfını "none-active" ile değiştirin
+                                            buttonsWithout.forEach(function(button) {
+                                                button.classList.remove("active");
+                                                button.classList.add("none-active");
+                                            });
+
+                                            // Tıklanan butona "active" sınıfını ekleyin
+                                            button.classList.remove("none-active");
+                                            button.classList.add("active");
+
+                                            var timeValue = button.getAttribute("data-bs-time"); // Düzeltilen satır
+                                            modal.querySelector('.modal-body .appointAllHour').value = timeValue.trim();
+                                        }
+                                    });
+
+
+
+
+
+                                </script>
+                            <!--Delete modal-->
+                            <div class="modal fade" id="deleteModal" tabindex="-1"
+                                 aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel">Silmek istediğinizden
+                                                emin misiniz?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                Bu randevular tüm bilgilerini silenecektir!!
+                                            </div>
+
+                                            <form method="post" action="adminSqlCon.jsp">
+                                                <input type="text" class="delIdInput" name="id" id="id" hidden>
+                                                <input type="text" value="pages-appointments.jsp" name="page"
+                                                       hidden>
+                                                <input type="text" value="appoitnmentDelete" name="iam" hidden>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Kapat
+                                                    </button>
+                                                    <input type="submit" class="btn btn-danger"
+                                                           value="Randevuyu sil">
+
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Button trigger modal -->
-                                <button type="button" id="sucsessModalBtn" class="btn btn-primary"
-                                        data-bs-toggle="modal" data-bs-target="#sucsessModal" hidden="hidden">
-                                    Launch demo modal
-                                </button>
-                                <!-- Modal -->
-                                <div class="modal fade" id="sucsessModal" tabindex="-1" aria-labelledby="sucsess-modal"
-                                     aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="sucsess-modal">
-                                                    <%
-                                                        if (appointmentMade) {
-                                                            out.println(messageHeader);
-                                                        } else {
-                                                            out.println(messageHeader);
-                                                        }
-                                                    %>
-                                                </h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                            </div>
+
+                            <%--add modal--%>
+                            <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addModalLabel">Ekle</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="name-input" class="col-form-label">Adı:</label>
+                                                    <input type="text" class="form-control nameInput"
+                                                           name="name-input" id="name-input">
+                                                </div>
+                                                <input type="text" value="appointmentAdd" name="iam" hidden>
+                                                <input type="text" value="pages-appointments.jsp" name="page"
+                                                       hidden>
+
+                                                <div class="mb-3 col-md-6 ms-auto">
+                                                    <label for="surname-input"
+                                                           class="col-form-label">Soyadı:</label>
+                                                    <input type="text" class="form-control surnameInput"
+                                                           name="surname-input" id="surname-input">
+                                                </div>
                                             </div>
-                                            <div class="modal-body">
+
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="phone-input" class="col-form-label">Phone:</label>
+                                                    <input type="text" class="form-control phoneInput"
+                                                           name="phone-input" id="phone-input">
+                                                </div>
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="add-interval" class="col-form-label">Randevu
+                                                        Turu:</label>
+                                                    <select class="form-control intervalInput"
+                                                            name="add-interval"
+                                                            id="add-interval">
+                                                        <option value="" selected hidden>Seçin</option>
+                                                        <%
+                                                            for (int i = 0; i < revInfo.size(); i++) {
+                                                        %>
+                                                        <option value=<%
+                                                            out.println((revInfo.get(i).getRezervationNameTag()));%>>
+                                                            <%
+                                                                out.println(revInfo.get(i).getRezervationName());%>
+                                                        </option>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="add-doktorName" class="col-form-label">Doktor
+                                                        Adı:</label>
+                                                    <select class="form-control doctorInput"
+                                                            name="add-doktorName"
+                                                            id="add-doktorName">
+                                                        <option value="" selected hidden>Seçin</option>
+                                                        <%
+                                                            for (int i = 0; i < docInfo.size(); i++) {
+                                                        %>
+                                                        <option value=<%
+                                                            out.println((docInfo.get(i).getId()));%>>
+                                                            <%out.println(docInfo.get(i).getName());%>
+                                                        </option>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3 col-md-6 ms-auto">
+                                                    <label for="add-location"
+                                                           class="col-form-label">Yer:</label>
+                                                    <select class="form-control locationInput"
+                                                            name="add-location"
+                                                            id="add-location">
+                                                        <option value="" selected hidden>Seçin</option>
+                                                        <%
+                                                            for (int i = 0; i < locInfo.size(); i++) {
+                                                        %>
+                                                        <option value=<%
+                                                            out.println((locInfo.get(i).getId()));%>>
+                                                            <%out.println(locInfo.get(i).getName());%>
+                                                        </option>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </select>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="mb-3 col-md-6">
+
+
+                                                    <div class="calendar">
+                                                        <div class="calendar-header">
+                                                            <button id="prev-month-btn">&lt;</button>
+                                                            <h2 id="current-month"></h2>
+                                                            <button id="next-month-btn">&gt;</button>
+                                                        </div>
+                                                        <div class="calendar-body">
+                                                            <div class="weekdays">
+                                                                <div class="weekday">Pzt</div>
+                                                                <div class="weekday">Sal</div>
+                                                                <div class="weekday">Çar</div>
+                                                                <div class="weekday">Per</div>
+                                                                <div class="weekday">Cum</div>
+                                                                <div class="weekday">Cmt</div>
+                                                                <div class="weekday">Paz</div>
+
+                                                            </div>
+                                                            <div class="days"></div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="mb-3 col-md-6 ms-auto">
+
+
+                                                    <div class="hours">
+                                                        <h3 id="selected-date"></h3>
+                                                        <h2 id="selected-day"></h2>
+                                                        <div class="hour-buttons"></div>
+                                                        <p class="fw-bolder" id="warning-message"
+                                                           name="warning-message">Önce gerekli bilgileri doldurmanız
+                                                            gerekir.</p>
+
+                                                        <form method="post" onsubmit="return validateForm()"
+                                                              action="/take_appoint.jsp" id="form">
+                                                            <input type="hidden" id="selected-year" name="selected-year"
+                                                                   value="">
+                                                            <input type="hidden" id="selected-month"
+                                                                   name="selected-month" value="">
+                                                            <input type="hidden" id="selected-dayIn"
+                                                                   name="selected-dayIn" value="">
+                                                            <input type="hidden" id="selected-hour" name="selected-hour"
+                                                                   value="">
+                                                            <input type="hidden" id="cust-name" name="cust-name"
+                                                                   value="">
+                                                            <input type="hidden" id="cust-surname" name="cust-surname"
+                                                                   value="">
+                                                            <input type="hidden" id="cust-phone" name="cust-phone"
+                                                                   value="">
+                                                            <input type="hidden" id="doctor-name" name="doctor-name"
+                                                                   value="">
+                                                            <input type="hidden" id="loc-name" name="loc-name" value="">
+                                                            <input type="hidden" id="interval-type" name="interval-type"
+                                                                   value="">
+                                                            <input type="hidden" id="page-name" name="page-name"
+                                                                   value="adminPages/pages-appointments.jsp">
+
+
+                                                            <input type="submit" class="btn btn-primary btn-lg "
+                                                                   id="schedule-appointment"
+                                                                   name="schedule-appointment" onclick="clearInput()"
+                                                                   value="Randevu Al">
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <ul id="saatler" style="display: none;">
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Button trigger modal -->
+                            <button type="button" id="sucsessModalBtn" class="btn btn-primary"
+                                    data-bs-toggle="modal" data-bs-target="#sucsessModal" hidden="hidden">
+                                Launch demo modal
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="sucsessModal" tabindex="-1" aria-labelledby="sucsess-modal"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="sucsess-modal">
                                                 <%
                                                     if (appointmentMade) {
-                                                        out.println(discroption);
+                                                        out.println(messageHeader);
                                                     } else {
-                                                        out.println(discroption);
+                                                        out.println(messageHeader);
                                                     }
                                                 %>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Kapat
-                                                </button>
-                                            </div>
+                                            </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <%
+                                                if (appointmentMade) {
+                                                    out.println(discroption);
+                                                } else {
+                                                    out.println(discroption);
+                                                }
+                                            %>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Kapat
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -689,6 +731,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 
@@ -709,14 +752,17 @@
 <script src="assets/vendor/php-email-form/validate.js"></script>
 
 <!-- Template Main JS File -->
+<script src="assets/js/main.js"></script>
+
 <script src="assets/js/calendar.js"></script>
+
 
 <script>
     `use strict`;
     var exampleModal = document.getElementById('editModal');
-
+    var button = '';
     exampleModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
+        button = event.relatedTarget;
         var name = button.getAttribute('data-bs-name');
         var surname = button.getAttribute('data-bs-surname');
         var id = button.getAttribute('data-bs-id');
@@ -737,8 +783,6 @@
         var modalBodyInputDoctor = exampleModal.querySelector('.modal-body .doctorInput');
         var modalBodyInputLocation = exampleModal.querySelector('.modal-body .locationInput');
         var modalBodyInputInterval = exampleModal.querySelector('.modal-body .intervalInput');
-        var modalBodyInputStartHour = exampleModal.querySelector('.modal-body .startHourInput');
-        var modalBodyInputEndHour = exampleModal.querySelector('.modal-body .endHourInput');
 
 
         modalBodyInputName.value = name;
@@ -750,11 +794,204 @@
         modalBodyInputDoctor.value = doctorName.trim();
         modalBodyInputLocation.value = location.trim();
         modalBodyInputInterval.value = interval.trim();
-        modalBodyInputStartHour.value = startHour;
-        modalBodyInputEndHour.value = endHour;
+
+        var hourSql = startHour + "-" + endHour;
+
+        //Add Hours
+            var selectedFilter = date.trim();
+            var selectedOption = interval.trim();
+
+
+            // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
+            if (!selectedFilter) {
+                selectedFilter = "today";
+            }
+            if (!selectedOption) {
+                selectedOption = "";
+            }
+
+            console.log(selectedFilter);
+            var hours = []; // Boş bir dizi oluşturun
+            const warningMessage = document.getElementById("warning-messageIndex")
+
+            var xhttp = new XMLHttpRequest();
+            var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+            xhttp.open("GET", url, true);
+            xhttp.send();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    var hoursList = JSON.parse(this.responseText);
+                    var hoursContainer = document.getElementById("saatlerIndex");
+                    hoursContainer.innerHTML = ""; // Temizleme
+
+                    for (var i = 0; i < hoursList.length; i++) {
+                        var hourItem = document.createElement("li");
+                        hourItem.textContent = hoursList[i].appHour;
+                        hoursContainer.appendChild(hourItem);
+                        console.log(hoursList[i]);
+                        // hourlist'e saatleri ekleyelim
+                        hours.push(hoursList[i].appHour);
+                    }
+
+                    if (hours.length === 0) {
+                        let temp = "Maalesef, seçtiğiniz gün için alinan randevu seçeneğinden baska bulunmamaktadır.";
+                        warningMessage.textContent = temp;
+                        warningMessage.style.display = "inline";
+                    } else {
+                        warningMessage.style.display = "none";
+                    }
+
+                    // Filtre seçimine bakılmaksızın, saat düğmelerini oluştur
+                    createHourButtons(hours);
+                    function createHourButtons(hours) {
+                        var hourButtonsContainer = document.querySelector(".hour-buttonsIndex");
+                        hourButtonsContainer.innerHTML = "";
+                        hours.push(hourSql);
+                        customSort(hours);
+
+                        for (let i = 0; i < hours.length; i++) {
+                            console.log("om");
+                            const hourButtonEl = document.createElement("button");
+                            hourButtonEl.classList.add("hour-editButtonIndex");
+                            if(hours[i] !== hourSql){
+                                hourButtonEl.classList.add("none-active");
+                            }
+                            else{
+                                hourButtonEl.classList.add("active");
+                            }
+                            hourButtonEl.classList.add("edit-hour");
+                            hourButtonEl.setAttribute("data-bs-day", selectedFilter);
+                            hourButtonEl.setAttribute("data-bs-interval", selectedOption);
+                            hourButtonEl.setAttribute("data-bs-time", hours[i]);
+                            hourButtonEl.setAttribute("id", "editHourListIndex");
+
+
+
+                            hourButtonEl.innerHTML = hours[i];
+                            hourButtonsContainer.appendChild(hourButtonEl);
+                        }
+
+                    }
+                }
+            };
+
+
+
 
 
     });
+
+    var deleteModal = document.getElementById('deleteModal');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        console.log("omeroemroemreomreormeormeorm");
+        var delId = button.getAttribute('data-bs-idDel');
+        var modalBodyInputDelId = deleteModal.querySelector('.modal-body .delIdInput');
+        modalBodyInputDelId.value = delId;
+
+    });
+
+    var dateInput = document.getElementById('date');
+    var intervalInput = document.getElementById('interval');
+
+    function getHours(){
+        //Add Hours
+        var startHour = button.getAttribute('data-bs-startHour');
+        var endHour = button.getAttribute('data-bs-endHour');
+        var date = button.getAttribute('data-bs-date');
+
+        var hourSql = startHour + "-" + endHour;
+
+            var selectedFilter = dateInput.value;
+            var selectedOption = intervalInput.value;
+
+
+            // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
+            if (!selectedFilter) {
+                selectedFilter = "today";
+            }
+            if (!selectedOption) {
+                selectedOption = "";
+            }
+
+            console.log(selectedFilter);
+            var hours = []; // Boş bir dizi oluşturun
+            const warningMessage = document.getElementById("warning-messageIndex")
+
+            var xhttp = new XMLHttpRequest();
+            var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+            xhttp.open("GET", url, true);
+            xhttp.send();
+
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    var hoursList = JSON.parse(this.responseText);
+                    var hoursContainer = document.getElementById("saatlerIndex");
+                    hoursContainer.innerHTML = ""; // Temizleme
+
+                    for (var i = 0; i < hoursList.length; i++) {
+                        var hourItem = document.createElement("li");
+                        hourItem.textContent = hoursList[i].appHour;
+                        hoursContainer.appendChild(hourItem);
+                        console.log(hoursList[i]);
+                        // hourlist'e saatleri ekleyelim
+                        hours.push(hoursList[i].appHour);
+                    }
+
+                    if (hours.length === 0) {
+                        let temp = "Maalesef, seçtiğiniz gün için alinan randevu seçeneğinden baska bulunmamaktadır.";
+                        warningMessage.textContent = temp;
+                        warningMessage.style.display = "inline";
+                    } else {
+                        warningMessage.style.display = "none";
+                    }
+
+                    // Filtre seçimine bakılmaksızın, saat düğmelerini oluştur
+                    createHourButtons(hours);
+                    function createHourButtons(hours) {
+                        var hourButtonsContainer = document.querySelector(".hour-buttonsIndex");
+                        hourButtonsContainer.innerHTML = "";
+                        if(dateInput.value === date.trim()){
+                            hours.push(hourSql);
+                            customSort(hours);
+
+
+                        }
+                        for (let i = 0; i < hours.length; i++) {
+                            console.log("om11");
+                            const hourButtonEl = document.createElement("button");
+                            hourButtonEl.classList.add("hour-editButtonIndex");
+
+                            if(hours[i] !== hourSql || dateInput.value !== date.trim()){
+                                hourButtonEl.classList.add("none-active");
+                            }
+                            else{
+                                hourButtonEl.classList.add("active");
+                            }
+                            hourButtonEl.setAttribute("data-bs-day", selectedFilter);
+                            hourButtonEl.setAttribute("data-bs-interval", selectedOption);
+                            hourButtonEl.setAttribute("data-bs-time", hours[i]);
+                            hourButtonEl.setAttribute("id", "aditHourListIndex");
+
+
+
+                            hourButtonEl.innerHTML = hours[i];
+                            hourButtonsContainer.appendChild(hourButtonEl);
+                        }
+
+
+
+                    }
+                }
+            };
+
+        }
+        dateInput.addEventListener('change', getHours);
+        intervalInput.addEventListener('change', getHours);
+
+
 
 
     <% if (requestStr != null && requestStr.length() > 1) { %>
@@ -817,7 +1054,6 @@
     custnNameHid.value = "";
     custnSurnameHid.value = "";
     custnPhoneHid.value = "";
-
 
 
     const startHour = document.getElementById("startHour");
@@ -920,6 +1156,38 @@
             e.preventDefault();
         }
     });
+
+/*
+function removeActiveClass(){
+    const button = document.getElementById("editHourListIndex");
+    const buttonWithout = document.getElementsByClassName("active");
+    buttonWithout.classList.remove("active");
+    buttonWithout.classList.add("none-active");
+
+    button.classList.remove("none-active");
+    button.classList.add("active");
+}
+    var editHourListIndex = document.getElementById('editHourListIndex');
+
+    editHourListIndex.addEventListener('click', removeActiveClass);
+*/
+
+
+
+    function customSort(timeSlots) {
+        for (let i = 0; i < timeSlots.length - 1; i++) {
+            for (let j = i + 1; j < timeSlots.length; j++) {
+                if (timeSlots[i].localeCompare(timeSlots[j]) > 0) {
+                    // Swap the time slots if they are in the wrong order
+                    let temp = timeSlots[i];
+                    timeSlots[i] = timeSlots[j];
+                    timeSlots[j] = temp;
+                }
+            }
+        }
+    }
+
+
 
 </script>
 

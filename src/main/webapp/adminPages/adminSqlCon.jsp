@@ -54,17 +54,25 @@
         }
         else if (iam != null && iam.equals("appointmentEdit")) {
             try {
-
+                String startHour = null;
+                String endHour = null;
                 String updateId = request.getParameter("id");
                 String name = request.getParameter("name");
                 String surname = request.getParameter("surname");
                 String phone = request.getParameter("phone");
                 String date = request.getParameter("date");
                 String interval = request.getParameter("interval");
+                String fullHour = request.getParameter("appointAllHour");
+/*
                 String startHour = request.getParameter("startHour");
                 String endHour = request.getParameter("endHour");
+*/
                 String doktorName = request.getParameter("doktorName");
                 String location = request.getParameter("location");
+
+                startHour = fullHour.split("-")[0];
+                endHour = fullHour.split("-")[1];
+
 
                 String updateQuery = "UPDATE `appointments` SET `name`= ?,`surname`=?," +
                         "`phone`=?,`doctorId`=?,`locationId`=?," +
