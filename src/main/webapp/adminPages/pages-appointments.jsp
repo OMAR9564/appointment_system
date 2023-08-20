@@ -1056,20 +1056,7 @@
     custnPhoneHid.value = "";
 
 
-    const startHour = document.getElementById("startHour");
-    startHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
-    });
-    const endHour = document.getElementById("endHour");
-    endHour.addEventListener("input", function () {
-        const value = this.value.replace(/[^0-9]/g, "");
-        if (value.length > 2) {
-            this.value = value.slice(0, 2) + ":" + value.slice(2);
-        }
-    });
+
 
     let phoneInput = document.getElementById("phone");
     phoneInput.addEventListener("input", function () {

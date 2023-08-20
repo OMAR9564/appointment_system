@@ -285,6 +285,20 @@ public class Helper {
         }
         return result;
     }
+    public static String checkZeroIfHourOfDate(String input){
+        String hour = input.split(":")[0];
+        String munite = input.split(":")[1];
+        int stringLength = hour.length();
+        String result = "" ;
+        if(stringLength == 1){
+            result = "0" + hour + ":" + munite;
+        }
+        else {
+            result = hour + ":" + munite;
+        }
+        return result;
+    }
+
 
     public static String removeWord(String originalString, String wordToRemove) {
         return originalString.replace(wordToRemove, "");

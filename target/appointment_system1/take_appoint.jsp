@@ -88,9 +88,12 @@
 
             String numOfMonth = helper.monthNameToNum(appointMonth);
             String[] startEndHours = helper.hourToParts(appointTime);
-            String startHour = helper.hourUnUtc(startEndHours[0]);
-            String endHour = helper.hourUnUtc(startEndHours[1]);
 
+            String startHour = helper.checkZeroIfHourOfDate(startEndHours[0]);
+            String endHour = helper.checkZeroIfHourOfDate(startEndHours[1]);
+
+            startHour = helper.hourUnUtc(startHour);
+            endHour = helper.hourUnUtc(endHour);
 
             String title = custName + " " + custSurname;
             String description = custPhone + " - " + locName;
