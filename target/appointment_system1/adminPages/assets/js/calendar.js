@@ -122,7 +122,10 @@ function showPrevMonth() {
 //filtering days to only this month and the next 30 days
 function isDateInCurrentMonth(date) {
     const currentDate = new Date();
-    return date.getMonth() === currentDate.getMonth() && date >= currentDate;
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(currentDate.getDate() + 30);
+
+    return date >= currentDate && date <= thirtyDaysFromNow;
 }
 
 // Function to show the next month's calendar
