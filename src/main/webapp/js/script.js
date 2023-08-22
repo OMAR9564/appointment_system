@@ -29,17 +29,24 @@ document.getElementById("apptype-select").addEventListener("change", saveSelecte
 // Show the current month's calendar
 fetchAndShowMonth(currentMonth, currentYear);
 
-
 function fetchAndShowMonth(month, year) {
-    fetch('days.json')
+    fetch('days.json', {
+        method: 'GET',
+        headers: {
+            'Cache-Control': 'no-cache',  // Tarayıcı önbelleği devre dışı bırakılıyor
+            'Pragma': 'no-cache'  // Eski HTTP/1.0 önbellek yönetimi için
+        }
+    })
         .then(response => response.json())
         .then(data => {
-            const specialDays = data.grayedOutDays;
+            let specialDays = [0,0];
+            specialDays = data.grayedOutDays;
             showMonthWithSpecialDays(month, year, specialDays);
         })
         .catch(error => {
             console.error("Fetch hatası:", error);
         });
+
 }
 
 // Function to show the calendar for a given month and year

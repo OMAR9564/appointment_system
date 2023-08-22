@@ -28,10 +28,29 @@ function saveSelectedOption() {
 document.getElementById("add-interval").addEventListener("change", saveSelectedOption);
 
 // Show the current month's calendar
-showMonth(currentMonth, currentYear);
+fetchAndShowMonth(currentMonth, currentYear);
+function fetchAndShowMonth(month, year) {
+    fetch('../days.json', {
+        method: 'GET',
+        headers: {
+            'Cache-Control': 'no-cache',  // Tarayıcı önbelleği devre dışı bırakılıyor
+            'Pragma': 'no-cache'  // Eski HTTP/1.0 önbellek yönetimi için
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            let specialDays = [0,0];
+            specialDays = data.grayedOutDays;
+            showMonthWithSpecialDays(month, year, specialDays);
+        })
+        .catch(error => {
+            console.error("Fetch hatası:", error);
+        });
+
+}
 
 // Function to show the calendar for a given month and year
-function showMonth(month, year) {
+function showMonthWithSpecialDays(month, year, specialDays) {
     // Clear any existing days from the calendar
     daysContainer.innerHTML = "";
 
@@ -45,14 +64,6 @@ function showMonth(month, year) {
     const firstDayIndex = new Date(year, month, 1).getDay();
 
     // Günleri içeren bir dizi
-    let specialDays = [];
-
-    fetch('../days.json')
-        .then(response => response.json())
-        .then(data => {
-            specialDays = data.grayedOutDays;
-            console.log(specialDays[0]);
-        });
 
 
     // Add empty day elements for days before the first day of the month
@@ -63,30 +74,32 @@ function showMonth(month, year) {
     }
 
     // Add day elements for each day of the month
-    for (let i = 1; i <= numDays; i++) {
+    for (let j = 1; j <= numDays; j++) {
         const dayEl = document.createElement("div");
         dayEl.classList.add("day");
-        dayEl.innerHTML = i;
+        dayEl.innerHTML = j;
 
-        const date = new Date(year, month, i);
+        const date = new Date(year, month, j);
         if (!isDateInCurrentMonth(date)) {
             dayEl.classList.add("disabled"); // Add the "disabled" class to non-current month days
             dayEl.style.pointerEvents = "none"; // Disable pointer events for non-current month days
         }
-        const dayOfWeek = getDayOfWeek(year, month, i);
+        const dayOfWeek = date.getDay();
+        console.log(dayOfWeek);
         if (specialDays.includes(dayOfWeek)) {
+            console.log(specialDays[0] + "--" + specialDays[1]);
             dayEl.classList.add("disabled"); // Pazar (0) ve Pazartesi (1) günlerini gri renkte göster
             dayEl.style.pointerEvents = "none"; // Pazar ve Pazartesi günleri için etkileşimi devre dışı bırak
         }
 
-        if (year === currentDate.getFullYear() && month === currentDate.getMonth() && i === currentDate.getDate()) {
+        if (year === currentDate.getFullYear() && month === currentDate.getMonth() && j === currentDate.getDate()) {
             dayEl.classList.add("today"); // Add the "today" class to the current day element
         }
-        if (new Date(year, month, i) < new Date()) {
+        if (new Date(year, month, j) < new Date()) {
             dayEl.classList.add("disabled"); //Add the "disabled" class
 
         } else {
-            dayEl.addEventListener("click", (event) => selectDay(event));
+            dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
 
         }
         daysContainer.appendChild(dayEl);
@@ -103,7 +116,7 @@ function showMonth(month, year) {
     // Set the selected day to today's date
     const today = new Date();
     if (month === today.getMonth() && year === today.getFullYear()) {
-        selectDay(today.getDate());
+        selectDay(today.getDate(), firstDayIndex);
     }
 }
 
@@ -116,7 +129,7 @@ function showPrevMonth() {
     } else {
         currentMonth--;
     }
-    showMonth(currentMonth, currentYear);
+    fetchAndShowMonth(currentMonth, currentYear);
 }
 
 //filtering days to only this month and the next 30 days
@@ -136,7 +149,7 @@ function showNextMonth() {
     } else {
         currentMonth++;
     }
-    showMonth(currentMonth, currentYear);
+    fetchAndShowMonth(currentMonth, currentYear);
 }
 
 let selectedDate = null;
@@ -322,7 +335,7 @@ function selectDay(event) {
 
 
 // Initialize the calendar on page load
-showMonth(currentMonth, currentYear);
+fetchAndShowMonth(currentMonth, currentYear);
 
 // Select today's date and hours by default
 selectDay();
