@@ -150,7 +150,7 @@
 
             String updateId = request.getParameter("id");
             String companyName = new String(request.getParameter("companyName").getBytes("ISO-8859-9"), "UTF-8");
-            String holiday = request.getParameter("holiday");
+            String holiday = new String (request.getParameter("holiday").getBytes("ISO-8859-9"), "UTF-8");
             String openingHour = request.getParameter("openingHour");
             String closingHour = request.getParameter("closingHour");
             String appointMessageBody = new String(request.getParameter("appointMessageBody").getBytes("ISO-8859-9"), "UTF-8");

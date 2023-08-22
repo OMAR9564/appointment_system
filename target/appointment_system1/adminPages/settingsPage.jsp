@@ -202,8 +202,18 @@
                                                         <div class="mb-3 col-md-6">
                                                             <label for="holiday" class="col-form-label">Tatil
                                                                 Günü:</label>
-                                                            <input type="text" class="form-control holidayInput"
-                                                                   name="holiday" id="holiday">
+                                                            <select class="form-select holidayInput"
+                                                                    name="holiday" id="holiday" >
+                                                                <option selected disabled>Saati Seçin</option>
+                                                                <option value="Pazartesi" >Pazartesi</option>
+                                                                <option value="Salı" >Salı</option>
+                                                                <option value="Çarşamba" >Çarşamba</option>
+                                                                <option value="Perşembe" >Perşembe</option>
+                                                                <option value="Cuma" >Cuma</option>
+                                                                <option value="Cumartesi" >Cumartesi</option>
+                                                                <option value="Pazar" >Pazar</option>
+
+                                                            </select>
                                                         </div>
                                                     </div>
 
@@ -354,7 +364,7 @@
 
 
         modalBodycompanyNameInput.value = companyName;
-        modalBodyholidayInput.value = holiday;
+        modalBodyholidayInput.value = holiday.trim();
         modalBodyInputId.value = id;
         modalBodyopeningHourInput.value = openingHour.trim();
         modalBodyclosingHourInput.value = closingHour.trim();

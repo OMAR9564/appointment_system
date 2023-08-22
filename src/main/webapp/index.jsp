@@ -27,6 +27,8 @@
     ArrayList<GetInfo> companyName = new ArrayList<>();
     ArrayList<GetInfo> messageBody = new ArrayList<>();
     ArrayList<GetInfo> messageTitle = new ArrayList<>();
+    ArrayList<GetInfo> holiday = new ArrayList<>();
+
 
 
     String locationsQuery = "SELECT * FROM locationInfo";
@@ -35,6 +37,7 @@
     String companyNameQuery = "SELECT companyName FROM settings";
     String appointMessageBody = "SELECT appointMessageBody FROM settings";
     String appointMessageTitle = "SELECT appointMessageTitle FROM settings";
+    String holidayQuery = "SELECT holiday FROM settings";
 
 
     ConSql conSql = new ConSql();
@@ -44,11 +47,15 @@
     companyName = conSql.getSettingName(companyNameQuery);
     messageBody = conSql.getSettingName(appointMessageBody);
     messageTitle = conSql.getSettingName(appointMessageTitle);
+    holiday = conSql.getSettingName(holidayQuery);
+
     String appointmentMadeStr = messageBody.get(0).getName();
     String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
 
     String appointmentMadeHeader = messageTitle.get(0).getName();
     String appointmentNotMadeHeader = "Bir Hata Olustu!!";
+
+    String holidayName = holiday.get(0).getName();
 
     String locName = "";
 
@@ -262,7 +269,7 @@
 
             <%
                 Helper helper = new Helper();
-                //helper.JsonFileWriter();
+                helper.writeJsonFile(holidayName);
                 Cookie cookie = null;
                 Cookie[] cookies = null;
 
@@ -392,8 +399,14 @@
 
 
     let phoneInput = document.getElementById("phone-input");
-    phoneInput.addEventListener("input", function () {
+    phoneInput.addEventListener("input", function (event) {
         let phone = phoneInput.value;
+
+        // Parantez içerisindeki karakterleri sil
+        if (event.inputType === "deleteContentBackward" && phone.charAt(phone.length - 1) === ")") {
+            phone = phone.substring(0, phone.length - 2);
+        }
+
         // Rakamları temizle
         phone = phone.replace(/\D/g, '');
 
@@ -420,6 +433,8 @@
         // Yeni formatlı telefon numarasını gösterin
         phoneInput.value = phoneFormatted;
     });
+
+
 
     // Sadece rakam girişine izin ver
     phoneInput.addEventListener("keypress", function (e) {

@@ -1059,8 +1059,14 @@
 
 
     let phoneInput = document.getElementById("phone");
-    phoneInput.addEventListener("input", function () {
+    phoneInput.addEventListener("input", function (event) {
         let phone = phoneInput.value;
+
+        // Parantez içerisindeki karakterleri sil
+        if (event.inputType === "deleteContentBackward" && phone.charAt(phone.length - 1) === ")") {
+            phone = phone.substring(0, phone.length - 2);
+        }
+
         // Rakamları temizle
         phone = phone.replace(/\D/g, '');
 
@@ -1088,6 +1094,7 @@
         phoneInput.value = phoneFormatted;
     });
 
+
     // Sadece rakam girişine izin ver
     phoneInput.addEventListener("keypress", function (e) {
         // Sadece sayı tuşlarına izin ver (0-9 arası ASCII kodları 48-57 arasındadır)
@@ -1102,8 +1109,14 @@
     });
 
     let addPhoneInput = document.getElementById("phone-input");
-    addPhoneInput.addEventListener("input", function () {
+    addPhoneInput.addEventListener("input", function (event) {
         let phone = addPhoneInput.value;
+
+        // Parantez içerisindeki karakterleri sil
+        if (event.inputType === "deleteContentBackward" && phone.charAt(phone.length - 1) === ")") {
+            phone = phone.substring(0, phone.length - 2);
+        }
+
         // Rakamları temizle
         phone = phone.replace(/\D/g, '');
 
@@ -1130,6 +1143,7 @@
         // Yeni formatlı telefon numarasını gösterin
         addPhoneInput.value = phoneFormatted;
     });
+
 
     // Sadece rakam girişine izin ver
     addPhoneInput.addEventListener("keypress", function (e) {
