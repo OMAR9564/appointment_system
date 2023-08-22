@@ -125,9 +125,10 @@ public class CalendarService {
         return errorCount;
     }
 
-    public void updateEvent(String eventId, String newTitle, String newDescription,
+    public String updateEvent(String eventId, String newTitle, String newDescription,
                             String newLocation, String newStartDateTimeStr,
                             String newEndDateTimeStr) throws IOException, GeneralSecurityException {
+        String ok = "false";
         try {
             String CALENDAR_ID = "iroqeu1hcosib5emnd6u965tcs@group.calendar.google.com";
 
@@ -153,12 +154,32 @@ public class CalendarService {
             // Update the event in the calendar
             Event updatedEvent = getCalendarService().events().update(CALENDAR_ID, eventId, event).execute();
             System.out.printf("Event updated: %s\n", updatedEvent.getHtmlLink());
+            ok = "true";
         } catch (IOException | GeneralSecurityException e) {
             errorCount += 1;
             System.err.println(e);
-        }
-    }
+            ok = "false";
 
+        }
+
+        return ok;
+    }
+    public String deleteEvent(String eventId) throws IOException, GeneralSecurityException {
+       String ok = "false";
+        try {
+            String CALENDAR_ID = "iroqeu1hcosib5emnd6u965tcs@group.calendar.google.com";
+
+            // Delete the event from the calendar
+            getCalendarService().events().delete(CALENDAR_ID, eventId).execute();
+            System.out.println("Etkinlik silindi.");
+            ok = "true";
+        } catch (IOException | GeneralSecurityException e) {
+            errorCount += 1;
+            System.err.println(e);
+            ok = "false";
+        }
+        return ok;
+    }
 
 }
 

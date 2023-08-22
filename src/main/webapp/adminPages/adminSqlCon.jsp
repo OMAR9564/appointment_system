@@ -32,19 +32,25 @@
     if (pageName.equals("index.jsp") || pageName.equals("pages-appointments.jsp")) {
         if (iam != null && iam.equals("appoitnmentDelete")) {
             try {
-
+                CalendarService calendarService = new CalendarService();
                 String deleteId = request.getParameter("id");
 
                 String deleteQuery = "DELETE FROM appointments WHERE id = ?";
 
                 ConSql conSql = new ConSql();
+                ArrayList<GetInfo> getEventID;
+                String eventIdQuert = "SELECT eventID FROM `appointments` WHERE `id` = ?";
+                getEventID = conSql.getSettingName(eventIdQuert, deleteId);
+                String eventID = getEventID.get(0).getName();
 
-                conSql.executeQuery(deleteQuery, deleteId);
+                String deleted = calendarService.deleteEvent(eventID);
+                if(deleted.equals("true")) {
+                    conSql.executeQuery(deleteQuery, deleteId);
 
-                messageOk = "Kullanıcı başarılı bir şekilde silindi.";
-                appointmentMade = "true";
-                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
-
+                    messageOk = "Kullanıcı başarılı bir şekilde silindi.";
+                    appointmentMade = "true";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                }
 
             } catch (Exception e) {
                 appointmentMade = "false";
@@ -106,13 +112,14 @@
                 String endDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _endHour + ":00";
 
 
-                calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr);
+                String updated = calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr);
+                if(updated.equals("true")) {
+                    conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
+                    messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+                    appointmentMade = "true";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
-                conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
-
-                messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
-                appointmentMade = "true";
-                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                }
 
 
             } catch (Exception e) {
