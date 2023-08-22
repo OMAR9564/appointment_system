@@ -45,9 +45,9 @@
     String locationQuery = "SELECT * FROM locationInfo WHERE id = ?";
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
     String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
-    String doctorCountQuery = "SELECT name FROM `doctorInfo`";
-    String reverationTagNamesQuery = "SELECT tagName FROM `reservationInfo`";
-    String locationCountQuery = "SELECT name FROM `locationInfo`";
+    String doctorCountQuery = "SELECT * FROM `doctorInfo`";
+    String reverationTagNamesQuery = "SELECT * FROM `reservationInfo`";
+    String locationCountQuery = "SELECT * FROM `locationInfo`";
 
 
     doctorCount = conSql.getInfos(doctorCountQuery).size();
@@ -91,7 +91,8 @@
 
             // 2 > 1 < 2
         } else if (!(locationCount >= Integer.parseInt(helper.removeWord(locName, "loc"))
-                    && Integer.parseInt(helper.removeWord(locName, "loc")) <= locationCount)) {
+                    && Integer.parseInt(helper.removeWord(locName, "loc")) <= locationCount)
+                    || helper.removeWord(locName, "loc").equals("0")) {
             appointmentMade = "false";
             messageDic = "Lütfen size sunulan seçeneklerden seçin.";
 
@@ -99,9 +100,10 @@
             String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
             response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
 
-
+         //   2 > 5 < 2
         } else if (!(doctorCount >= Integer.parseInt(helper.removeWord(doctorName, "doctor"))
-                && Integer.parseInt(helper.removeWord(doctorName, "doctor")) <= doctorCount)) {
+                && Integer.parseInt(helper.removeWord(doctorName, "doctor")) <= doctorCount)
+                || helper.removeWord(doctorName, "doctor").equals("0")) {
             appointmentMade = "false";
             messageDic = "Lütfen size sunulan seçeneklerden seçin.";
 

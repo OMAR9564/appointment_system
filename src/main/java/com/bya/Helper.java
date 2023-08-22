@@ -304,7 +304,14 @@ public class Helper {
 
 
     public static String removeWord(String originalString, String wordToRemove) {
-        return originalString.replace(wordToRemove, "");
+        String result = originalString.replace(wordToRemove, "");
+
+        if (result.equals(originalString)) {
+            // Değişiklik yapılmamışsa, boş bir metin döndür
+            return "0";
+        }
+
+        return result;
     }
 
     //check all input frim spetioal chars
