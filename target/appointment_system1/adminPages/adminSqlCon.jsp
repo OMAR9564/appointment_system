@@ -19,6 +19,7 @@
 <%@ page import="com.bya.Helper" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.bya.GetInfo" %>
+<%@ page import="com.bya.CalendarService" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
@@ -79,13 +80,33 @@
                 startHour = fullHour.split("-")[0];
                 endHour = fullHour.split("-")[1];
 
+                CalendarService calendarService = new CalendarService();
+                ConSql conSql = new ConSql();
+                ArrayList<GetInfo> getEventID;
+                String eventIdQuert = "SELECT eventID FROM `appointments` WHERE `id` = ?";
+                getEventID = conSql.getSettingName(eventIdQuert, updateId);
+
+                ArrayList<GetInfo> getLocName;
+                String locNameQuery = "SELECT * FROM `locationInfo` WHERE `id` = ?";
+                getLocName = conSql.getInfos(locNameQuery, location);
 
                 String updateQuery = "UPDATE `appointments` SET `name`= ?,`surname`=?," +
                         "`phone`=?,`doctorId`=?,`locationId`=?," +
                         "`date`=?,`startHour`=?," +
                         "`endHour`=?,`intervalId`=? WHERE `id`=?";
 
-                ConSql conSql = new ConSql();
+                String eventID = getEventID.get(0).getName();
+                String title = name + " " + surname;
+                String locationName = getLocName.get(0).getName();
+                String description = "Düzeltildi" + " - " + phone;
+                String _startHour = helper.hourUnUtc(startHour);
+                String _endHour = helper.hourUnUtc(endHour);
+
+                String startDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _startHour + ":00";
+                String endDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _endHour + ":00";
+
+
+                calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr);
 
                 conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
 
@@ -125,12 +146,12 @@
 
 
                 String insertQuery = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`," +
-                        " `locationId`, `date`, `startHour`, `endHour`, `intervalId`, eventID) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        " `locationId`, `date`, `startHour`, `endHour`, `intervalId`) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 ConSql conSql = new ConSql();
 
-                conSql.insertData(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
+                conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
 
                 messageOk = "Kullanıcı başarılı bir şekilde Eklendi.";
                 appointmentMade = "true";

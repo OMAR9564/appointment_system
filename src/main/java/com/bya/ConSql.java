@@ -282,7 +282,7 @@ public class ConSql {
         }
         return sqlInfo;
     }
-    public ArrayList<GetInfo> getSettingName(String query) throws SQLException {
+    public ArrayList<GetInfo> getSettingName(String query, String... params) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
             Connection conn = null;
@@ -292,6 +292,9 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
+            if(params.length != 0){
+                stmt.setString(1, params[0]);
+            }
 
             rs = stmt.executeQuery();
 
