@@ -408,7 +408,7 @@
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label for="name" class="col-form-label">Adı:</label>
-                                                            <input type="text" class="form-control nameInput"
+                                                            <input type="text" class="form-control nameInput" maxlength="20" required oninput="blockSpecialChars('name')"
                                                                    name="name" id="name">
                                                         </div>
                                                         <input type="text" value="appointmentEdit" name="iam" hidden>
@@ -419,7 +419,7 @@
 
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="surname" class="col-form-label">Soyadı:</label>
-                                                            <input type="text" class="form-control surnameInput"
+                                                            <input type="text" class="form-control surnameInput" maxlength="20" required oninput="blockSpecialChars('surname')"
                                                                    name="surname" id="surname">
                                                         </div>
 
@@ -681,7 +681,7 @@
                                         <div class="row">
                                             <div class="mb-3 col-md-6">
                                                 <label for="name-input" class="col-form-label">Adı:</label>
-                                                <input type="text" class="form-control nameInput"
+                                                <input type="text" class="form-control nameInput"  maxlength="20" required oninput="blockSpecialChars('name-input')"
                                                        name="name-input" id="name-input">
                                             </div>
                                             <input type="text" value="appointmentAdd" name="iam" hidden>
@@ -691,7 +691,7 @@
                                             <div class="mb-3 col-md-6 ms-auto">
                                                 <label for="surname-input"
                                                        class="col-form-label">Soyadı:</label>
-                                                <input type="text" class="form-control surnameInput"
+                                                <input type="text" class="form-control surnameInput" maxlength="20" required oninput="blockSpecialChars('surname-input')"
                                                        name="surname-input" id="surname-input">
                                             </div>
                                         </div>

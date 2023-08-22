@@ -388,4 +388,25 @@ window.addEventListener("load", function () {
   };
 });
 
+function blockSpecialChars(id) {
+  const inputElement = document.getElementById(id);
+  const forbiddenChars = ['"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";",
+    "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~", "€", "‚",
+    "ƒ", "„", "…", "†", "‡", "ˆ", "‰", "Š", "‹", "Œ", "Ž", "‘", "’", "“", "”", "•", "–",
+    "—", "˜", "™", "š", "›", "œ", "ž", "Ÿ", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©",
+    "ª", "«", "¬", "®", "¯", "°", "±", "²", "³", "´", "µ", "¶", "·", "¸", "¹", "º", "»",
+    "¼", "½", "¾", "¿", "×", "÷", "×", "÷", "¿"]; // Kullanmak istemediğiniz özel karakterleri belirtin
+
+  let inputValue = inputElement.value;
+  let updatedValue = "";
+
+  for (let i = 0; i < inputValue.length; i++) {
+    if (!forbiddenChars.includes(inputValue[i])) {
+      updatedValue += inputValue[i];
+    }
+  }
+
+  inputElement.value = updatedValue;
+}
+
 
