@@ -109,12 +109,12 @@
             <div class="form-group">
                 <label for="name-input">Adınız:</label>
                 <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required
-                       oninput="blockSpecialChars()">
+                       oninput="blockSpecialChars('name-input')">
             </div>
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
                 <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required
-                       oninput="blockSpecialChars1()">
+                       oninput="blockSpecialChars('surname-input')">
             </div>
             <div class="form-group">
                 <label for="phone-input">Telefon Numaranız:</label>

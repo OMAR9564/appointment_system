@@ -37,10 +37,25 @@
     GetInfo getInfo = new GetInfo();
     ConSql conSql = new ConSql();
 
+    int doctorCount = 0;
+    ArrayList<GetInfo> reverationTagNames = new ArrayList<>();
+    ArrayList<String> _reverationTagNames = new ArrayList<>();
+    int locationCount = 0;
+
     String locationQuery = "SELECT * FROM locationInfo WHERE id = ?";
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
     String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
+    String doctorCountQuery = "SELECT name FROM `doctorInfo`";
+    String reverationTagNamesQuery = "SELECT tagName FROM `reservationInfo`";
+    String locationCountQuery = "SELECT name FROM `locationInfo`";
 
+
+    doctorCount = conSql.getInfos(doctorCountQuery).size();
+    reverationTagNames = conSql.getRezervationInfos(reverationTagNamesQuery);
+    for (int i = 0; i < reverationTagNames.size(); i++){
+        _reverationTagNames.add(reverationTagNames.get(i).getRezervationNameTag());
+    }
+    locationCount = conSql.getInfos(locationCountQuery).size();
 
 
     String appointYear = request.getParameter("selected-year");
@@ -74,8 +89,38 @@
             String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
             response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
 
+            // 2 > 1 < 2
+        } else if (!(locationCount >= Integer.parseInt(helper.removeWord(locName, "loc"))
+                    && Integer.parseInt(helper.removeWord(locName, "loc")) <= locationCount)) {
+            appointmentMade = "false";
+            messageDic = "Lütfen size sunulan seçeneklerden seçin.";
 
-        } else {
+            String encodedMessage = URLEncoder.encode(appointmentMade, "UTF-8");
+            String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
+            response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
+
+
+        } else if (!(doctorCount >= Integer.parseInt(helper.removeWord(doctorName, "doctor"))
+                && Integer.parseInt(helper.removeWord(doctorName, "doctor")) <= doctorCount)) {
+            appointmentMade = "false";
+            messageDic = "Lütfen size sunulan seçeneklerden seçin.";
+
+            String encodedMessage = URLEncoder.encode(appointmentMade, "UTF-8");
+            String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
+            response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
+
+
+        } else if (!(_reverationTagNames.contains(intervalType))) {
+            appointmentMade = "false";
+            messageDic = "Lütfen size sunulan seçeneklerden seçin.";
+
+            String encodedMessage = URLEncoder.encode(appointmentMade, "UTF-8");
+            String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
+            response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
+
+
+        }
+        else {
 
             // check if there is no zero at the beginning of the day
             appointDay = helper.checkZeroIfdayOfDate(appointDay);
