@@ -37,10 +37,14 @@
     GetInfo getInfo = new GetInfo();
     ConSql conSql = new ConSql();
 
-    int doctorCount = 0;
+    ArrayList<GetInfo> doctorCount = new ArrayList<>();
+    ArrayList<String> _doctorCount = new ArrayList<>();
+
     ArrayList<GetInfo> reverationTagNames = new ArrayList<>();
     ArrayList<String> _reverationTagNames = new ArrayList<>();
-    int locationCount = 0;
+
+    ArrayList<GetInfo> locationCount = new ArrayList<>();
+    ArrayList<String> _locationCount = new ArrayList<>();
 
     String locationQuery = "SELECT * FROM locationInfo WHERE id = ?";
     String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
@@ -50,13 +54,18 @@
     String locationCountQuery = "SELECT * FROM `locationInfo`";
 
 
-    doctorCount = conSql.getInfos(doctorCountQuery).size();
+    doctorCount = conSql.getInfos(doctorCountQuery);
+    for (int i = 0; i < doctorCount.size(); i++){
+        _doctorCount.add(Integer.toString(i));
+    }
     reverationTagNames = conSql.getRezervationInfos(reverationTagNamesQuery);
     for (int i = 0; i < reverationTagNames.size(); i++){
         _reverationTagNames.add(reverationTagNames.get(i).getRezervationNameTag());
     }
-    locationCount = conSql.getInfos(locationCountQuery).size();
-
+    locationCount = conSql.getInfos(locationCountQuery);
+    for (int i = 0; i < doctorCount.size(); i++){
+        _locationCount.add(Integer.toString(i));
+    }
 
     String appointYear = request.getParameter("selected-year");
     String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
@@ -90,9 +99,7 @@
             response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
 
             // 2 > 1 < 2
-        } else if (!(locationCount >= Integer.parseInt(helper.removeWord(locName, "loc"))
-                    && Integer.parseInt(helper.removeWord(locName, "loc")) <= locationCount)
-                    || helper.removeWord(locName, "loc").equals("0")) {
+        } else if (!(_locationCount.contains(helper.removeWord(locName, "loc")))) {
             appointmentMade = "false";
             messageDic = "Lütfen size sunulan seçeneklerden seçin.";
 
@@ -101,9 +108,7 @@
             response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
 
          //   2 > 5 < 2
-        } else if (!(doctorCount >= Integer.parseInt(helper.removeWord(doctorName, "doctor"))
-                && Integer.parseInt(helper.removeWord(doctorName, "doctor")) <= doctorCount)
-                || helper.removeWord(doctorName, "doctor").equals("0")) {
+        } else if (!(_doctorCount.contains(helper.removeWord(doctorName, "doctor")))) {
             appointmentMade = "false";
             messageDic = "Lütfen size sunulan seçeneklerden seçin.";
 
@@ -115,6 +120,16 @@
         } else if (!(_reverationTagNames.contains(intervalType))) {
             appointmentMade = "false";
             messageDic = "Lütfen size sunulan seçeneklerden seçin.";
+
+            String encodedMessage = URLEncoder.encode(appointmentMade, "UTF-8");
+            String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
+            response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
+
+
+        }
+        else if (!helper.isPhoneNumber(custPhone)) {
+            appointmentMade = "false";
+            messageDic = "Lütfen telefon numarasını doğru şekilde giriniz.";
 
             String encodedMessage = URLEncoder.encode(appointmentMade, "UTF-8");
             String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
@@ -248,13 +263,15 @@
                 } else {
 
 
-                    conSql.insertData(custName, custSurname, custPhone, doctorName, locName
-                            , rndNum, date, appointStartHour, appointEndHour, intervalType);
 
                     location = dbLocationName.get(0).getName();
 
-                    calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
+                    String eventID = calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
+                    if (!(eventID.split("-")[0].equals("Error"))){
+                        conSql.insertData(custName, custSurname, custPhone, doctorName, locName
+                                , rndNum, date, appointStartHour, appointEndHour, intervalType, eventID);
 
+                    }
                 }
             } catch (Exception e) {
                 //System.out.println(e);

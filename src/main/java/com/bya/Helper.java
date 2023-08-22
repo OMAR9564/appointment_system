@@ -306,10 +306,7 @@ public class Helper {
     public static String removeWord(String originalString, String wordToRemove) {
         String result = originalString.replace(wordToRemove, "");
 
-        if (result.equals(originalString)) {
-            // Değişiklik yapılmamışsa, boş bir metin döndür
-            return "0";
-        }
+
 
         return result;
     }
@@ -393,5 +390,15 @@ public class Helper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isPhoneNumber(String input) {
+        // Telefon numarası için düzenli ifade
+        String regex = "\\(\\d{3}\\) \\d{3}-\\d{4}|\\d{3}-\\d{3}-\\d{4}";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+        return matcher.matches();
     }
 }

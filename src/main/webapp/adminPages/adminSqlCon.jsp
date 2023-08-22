@@ -125,12 +125,12 @@
 
 
                 String insertQuery = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`," +
-                        " `locationId`, `date`, `startHour`, `endHour`, `intervalId`) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        " `locationId`, `date`, `startHour`, `endHour`, `intervalId`, eventID) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 ConSql conSql = new ConSql();
 
-                conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
+                conSql.insertData(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
 
                 messageOk = "Kullanıcı başarılı bir şekilde Eklendi.";
                 appointmentMade = "true";

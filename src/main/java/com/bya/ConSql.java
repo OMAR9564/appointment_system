@@ -8,7 +8,7 @@ public class ConSql {
     public void insertData(String name, String surname, String phone,
                            String doktorName, String appLocation,
                            String tempId, String appDate, String appStartHour,
-                           String appEndHour, String intervalType) {
+                           String appEndHour, String intervalType, String eventID) {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -17,7 +17,8 @@ public class ConSql {
 
             conn = getDatabaseConnection(); // veritabanı bağlantısı oluşturma metodu
 
-            String sql = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`, `locationId`, `tempId`, `date`, `startHour`, `EndHour`, `intervalId`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            String sql = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`, `locationId`, `tempId`, `date`, `startHour`, `EndHour`, `intervalId`, `eventID`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, name);
@@ -30,9 +31,12 @@ public class ConSql {
             pstmt.setString(8, appStartHour);
             pstmt.setString(9, appEndHour);
             pstmt.setString(10, intervalType);
+            pstmt.setString(11, eventID);
 
 
             pstmt.executeUpdate();
+
+
         }
 
         catch (SQLException | ClassNotFoundException e) {
