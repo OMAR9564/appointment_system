@@ -3,8 +3,6 @@
 <%@ page import="com.bya.ConSql" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.bya.GetInfo" %>
-<%@ page import="java.util.Set" %>
-<%@ page import="java.util.HashSet" %>
 <%--
   Created by IntelliJ IDEA.
   User: omerfaruk
@@ -461,58 +459,11 @@
     };
 
 
-    //Önceki ve bugün tarihler için gri renkli bir arka plan
-    const today = new Date();
-    const days = daysContainer.querySelectorAll(".day");
-    days.forEach(day => {
-        const dayDate = new Date(year, month, day.textContent);
-        if (dayDate < today) {
-            day.classList.add("past");
-        }
-    });
-
-    // Günleri içeren bir dizi
-    let specialDays = [];
-
-    fetch('days.json')
-        .then(response => response.json())
-        .then(data => {
-            specialDays = data.grayedOutDays;
-            console.log(specialDays[0]);
-        });
 
 
-    //Önceki aylara geçiş butonunu gizlemek
-    if (currentMonth === 0) {
-        prevMonthBtn.style.display = "none";
-    } else {
-        prevMonthBtn.style.display = "block";
-    }
-
-    //Bu ayın sonrasına geçiş butonunu göstermek
-    if (currentMonth === 11) {
-        nextMonthBtn.style.display = "none";
-    } else {
-        nextMonthBtn.style.display = "block";
-    }
 
 
-    const inputField = document.getElementById('input-field');
-    const submitButton = document.getElementById('submit-button');
-    const outputContainer = document.getElementById('output-container');
-    const errorMessage = document.getElementById('error-message');
 
-    function checkInput() {
-        const input = inputField.value.trim();
-        if (/[^A-Za-z\s]/.test(input)) {
-            errorMessage.textContent = "Metin yalnızca harfler ve boşluklar içermelidir.";
-        } else {
-            errorMessage.textContent = "";
-            outputContainer.innerHTML = "<p>Girilen metin: " + input + "</p>";
-        }
-    }
-
-    inputField.addEventListener('input', checkInput);
 
 
 </script>
