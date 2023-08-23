@@ -93,7 +93,7 @@
         discroption = request.getParameter("dic");
 
         if (discroption == null) {
-            discroption = "Randevunuz Basirili Bir Sekilde Alindi.";
+            discroption = "Randevunuz Başarılı Bir Şekilde Alındı.";
         }
         if (requestStr != null && requestStr.equals("true")) {
             appointmentMade = true;
@@ -205,9 +205,9 @@
                                         <th scope="col">Doktor Adı</th>
                                         <th scope="col">Yer</th>
                                         <th scope="col">Tarih</th>
-                                        <th scope="col">Baslangic Saati</th>
-                                        <th scope="col">Bitis Saati</th>
-                                        <th scope="col">Randevu Turu</th>
+                                        <th scope="col">Başlangıç Saati</th>
+                                        <th scope="col">Bitiş Saati</th>
+                                        <th scope="col">Randevu Türü</th>
 
                                         <th scope="col">Düzenle</th>
                                         <th scope="col">Sil</th>
@@ -337,7 +337,7 @@
 
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
-                                                            <label for="phone" class="col-form-label">Phone:</label>
+                                                            <label for="phone" class="col-form-label">Telefon:</label>
                                                             <input type="text" class="form-control phoneInput"
                                                                    name="phone" id="phone">
                                                         </div>
@@ -351,7 +351,7 @@
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label for="interval" class="col-form-label">Randevu
-                                                                Turu:</label>
+                                                                Türü:</label>
                                                             <select class="form-control intervalInput"
                                                                     name="interval"
                                                                     id="interval">

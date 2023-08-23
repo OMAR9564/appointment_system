@@ -136,27 +136,27 @@
                                         <td><%out.println((String) session.getAttribute("companyName"));%></td>
                                     </tr>
                                     <tr>
-                                        <th>Acilis Saati</th>
+                                        <th>Açılış Saati</th>
                                         <td><%
                                             out.println((String) session.getAttribute("openingHour"));%></td>
                                     </tr>
                                     <tr>
-                                        <th>Kapanis Saati</th>
+                                        <th>Kapanış Saati</th>
                                         <td><%
                                             out.println((String) session.getAttribute("closingHour"));%></td>
                                     </tr>
                                     <tr>
-                                        <th>Basarili Uyari Metni</th>
+                                        <th>Başarılı Uyarı Metni</th>
                                         <td><%
                                             out.println((String) session.getAttribute("appointMessageBody"));%>
                                     </tr>
                                     <tr>
-                                        <th>Basarili Uyari Basligi</th>
+                                        <th>Başarılı Uyarı Başlığı</th>
                                         <td><%
                                             out.println((String) session.getAttribute("appointMessageTitle"));%>
                                     </tr>
                                     <tr>
-                                        <th>Tatil Gunu</th>
+                                        <th>Tatil Günü</th>
                                         <td><%
                                             out.println((String) session.getAttribute("holiday"));%></td>
                                     </tr>

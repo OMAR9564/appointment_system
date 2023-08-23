@@ -141,8 +141,8 @@
                                     <thead>
                                     <tr>
                                     <th scope="col">Gün</th>
-                                    <th scope="col">Acilis Saati</th>
-                                    <th scope="col">Kapanis Saati</th>
+                                    <th scope="col">Açılış Saati</th>
+                                    <th scope="col">Kapanış Saati</th>
 
                                     <th scope="col">Düzenle</th>
                                     <th scope="col">Sil</th>

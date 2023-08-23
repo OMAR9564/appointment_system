@@ -204,7 +204,7 @@
 
 
                             <div class="card-body">
-                                <h5 class="card-title">Musait Saatler
+                                <h5 class="card-title">Müsait Saatler
                                     <div class="dropdown">
                                         <a class="icon" href="#"
                                            data-bs-toggle="dropdown">| <%out.println((String) urlSession.getAttribute("selectedFilterName"));%></a>
@@ -295,9 +295,9 @@
                                         <th scope="col">Doktor Adı</th>
                                         <th scope="col">Yer</th>
                                         <th scope="col">Tarih</th>
-                                        <th scope="col">Baslangic Saati</th>
-                                        <th scope="col">Bitis Saati</th>
-                                        <th scope="col">Randevu Turu</th>
+                                        <th scope="col">Başlangıç Saati</th>
+                                        <th scope="col">Bitiş Saati</th>
+                                        <th scope="col">Randevu Türü</th>
 
                                         <th scope="col">Düzenle</th>
                                         <th scope="col">Sil</th>

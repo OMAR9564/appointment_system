@@ -4,18 +4,10 @@
     Author     : omerfaruk
 --%>
 
-<%@page import="java.sql.DriverManager"%>
-<%@page import="java.sql.Connection"%>
-<%@page import="java.io.InputStream"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.io.FileInputStream"%>
-<%@page import="java.io.File"%>
-<%@ page import="java.sql.ResultSet" %>
 <%@ page import="com.bya.ConSql" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
-<%@ page import="java.text.ParseException" %>
 <%@ page import="com.bya.Helper" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.bya.GetInfo" %>
@@ -56,7 +48,7 @@
                 if(deleted.equals("true")) {
                     conSql.executeQuery(deleteQuery, deleteId);
 
-                    messageOk = "Kullanıcı başarılı bir şekilde silindi.";
+                    messageOk = "Kullanıcı Başarılı Bir Şekilde Silindi.";
                     appointmentMade = "true";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                 }
@@ -128,7 +120,7 @@
                 String updated = calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr, calID);
                 if(updated.equals("true")) {
                     conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
-                    messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+                    messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
                     appointmentMade = "true";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -173,7 +165,7 @@
 
                 conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
 
-                messageOk = "Kullanıcı başarılı bir şekilde Eklendi.";
+                messageOk = "Kullanıcı Başarılı Bir Şekilde Eklendi.";
                 appointmentMade = "true";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -206,7 +198,7 @@
 
             conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId, updateId);
 
-            messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+            messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
             appointmentMade = "true";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -244,7 +236,7 @@
 
             conSql.executeQuery(updateQuery, day, openingHour, closingHour, updateId);
 
-            messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
+            messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
             appointmentMade = "true";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -267,7 +259,7 @@
 
                 conSql.executeQuery(deleteQuery, deleteId);
 
-                messageOk = "Kullanıcı başarılı bir şekilde silindi.";
+                messageOk = "Gün Başarılı Bir Şekilde Silindi.";
                 appointmentMade = "true";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -310,7 +302,7 @@
 
                     conSql.executeQuery(insertQuery, day, openingHour, closingHour);
 
-                    messageOk = "Gün başarılı bir şekilde eklendi.";
+                    messageOk = "Gün Başarılı Bir Şekilde Eklendi.";
                     appointmentMade = "true";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                 }
