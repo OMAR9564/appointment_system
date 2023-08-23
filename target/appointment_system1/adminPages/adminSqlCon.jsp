@@ -26,6 +26,7 @@
     String pageName = request.getParameter("page");
     String iam = request.getParameter("iam");
     Helper helper = new Helper();
+    ArrayList<GetInfo> calendarSqlId = new ArrayList<>();
 
     String appointmentMade = "true";
     String messageOk = "";
@@ -37,13 +38,21 @@
 
                 String deleteQuery = "DELETE FROM appointments WHERE id = ?";
 
+
+
                 ConSql conSql = new ConSql();
                 ArrayList<GetInfo> getEventID;
                 String eventIdQuert = "SELECT eventID FROM `appointments` WHERE `id` = ?";
+
+                String calendarIdQuery = "SELECT calendarID FROM `settings`";
+
+                calendarSqlId = conSql.getSettingName(calendarIdQuery);
+                String calID = calendarSqlId.get(0).getName();
+
                 getEventID = conSql.getSettingName(eventIdQuert, deleteId);
                 String eventID = getEventID.get(0).getName();
 
-                String deleted = calendarService.deleteEvent(eventID);
+                String deleted = calendarService.deleteEvent(eventID, calID);
                 if(deleted.equals("true")) {
                     conSql.executeQuery(deleteQuery, deleteId);
 
@@ -111,8 +120,12 @@
                 String startDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _startHour + ":00";
                 String endDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _endHour + ":00";
 
+                String calendarIdQuery = "SELECT calendarID FROM `settings`";
 
-                String updated = calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr);
+                calendarSqlId = conSql.getSettingName(calendarIdQuery);
+                String calID = calendarSqlId.get(0).getName();
+
+                String updated = calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr, calID);
                 if(updated.equals("true")) {
                     conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
                     messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
@@ -183,14 +196,15 @@
             String closingHour = request.getParameter("closingHour");
             String appointMessageBody = new String(request.getParameter("appointMessageBody").getBytes("ISO-8859-9"), "UTF-8");
             String appointMessageTitle = new String(request.getParameter("appointMessageTitle").getBytes("ISO-8859-9"), "UTF-8");
+            String calenarId = request.getParameter("calendarId");
 
             String updateQuery = "UPDATE `settings` SET `companyName`=?," +
                     "`openingHour`=?,`closingHour`=?,`appointMessageBody`=?," +
-                    "`appointMessageTitle`=?,`holiday`=? WHERE `id`=?";
+                    "`appointMessageTitle`=?,`holiday`=?, `calendarID`=? WHERE `id`=?";
 
             ConSql conSql = new ConSql();
 
-            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, updateId);
+            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId, updateId);
 
             messageOk = "Kullanıcı başarılı bir şekilde guncellendi.";
             appointmentMade = "true";

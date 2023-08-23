@@ -37,6 +37,8 @@
     GetInfo getInfo = new GetInfo();
     ConSql conSql = new ConSql();
 
+    ArrayList<GetInfo> calendarSqlId = new ArrayList<>();
+
     ArrayList<GetInfo> doctorCount = new ArrayList<>();
     ArrayList<String> _doctorCount = new ArrayList<>();
 
@@ -52,6 +54,9 @@
     String doctorCountQuery = "SELECT * FROM `doctorInfo`";
     String reverationTagNamesQuery = "SELECT * FROM `reservationInfo`";
     String locationCountQuery = "SELECT * FROM `locationInfo`";
+    String calendarIdQuery = "SELECT calendarID FROM `settings`";
+
+    calendarSqlId = conSql.getSettingName(calendarIdQuery);
 
 
     doctorCount = conSql.getInfos(doctorCountQuery);
@@ -265,8 +270,8 @@
 
 
                     location = dbLocationName.get(0).getName();
-
-                    String eventID = calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr);
+                    String calID = calendarSqlId.get(0).getName();
+                    String eventID = calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr, calID);
                     if (!(eventID.split("-")[0].equals("Error"))){
                         conSql.insertData(custName, custSurname, custPhone, doctorName, locName
                                 , rndNum, date, appointStartHour, appointEndHour, intervalType, eventID);

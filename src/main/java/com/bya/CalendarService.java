@@ -77,7 +77,7 @@ public class CalendarService {
     }
 
     public String createEvent(String title, String description, String location, String startDateTimeStr,
-                            String endDateTimeStr) throws IOException, GeneralSecurityException {
+                            String endDateTimeStr, String CALENDAR_ID) throws IOException, GeneralSecurityException {
         String eventId = null;
         try {
             Event event = new Event()
@@ -101,7 +101,6 @@ public class CalendarService {
                     new EventReminder().setMethod("email").setMinutes(REMINDER_MINUTES),
                     new EventReminder().setMethod("popup").setMinutes(REMINDER_MINUTES),
             };
-            String CALENDAR_ID = "iroqeu1hcosib5emnd6u965tcs@group.calendar.google.com";
 
             Event.Reminders reminders = new Event.Reminders()
                     .setUseDefault(false)
@@ -127,10 +126,9 @@ public class CalendarService {
 
     public String updateEvent(String eventId, String newTitle, String newDescription,
                             String newLocation, String newStartDateTimeStr,
-                            String newEndDateTimeStr) throws IOException, GeneralSecurityException {
+                            String newEndDateTimeStr, String CALENDAR_ID) throws IOException, GeneralSecurityException {
         String ok = "false";
         try {
-            String CALENDAR_ID = "iroqeu1hcosib5emnd6u965tcs@group.calendar.google.com";
 
             Event event = getCalendarService().events().get(CALENDAR_ID, eventId).execute();
 
@@ -164,10 +162,9 @@ public class CalendarService {
 
         return ok;
     }
-    public String deleteEvent(String eventId) throws IOException, GeneralSecurityException {
+    public String deleteEvent(String eventId, String CALENDAR_ID) throws IOException, GeneralSecurityException {
        String ok = "false";
         try {
-            String CALENDAR_ID = "iroqeu1hcosib5emnd6u965tcs@group.calendar.google.com";
 
             // Delete the event from the calendar
             getCalendarService().events().delete(CALENDAR_ID, eventId).execute();

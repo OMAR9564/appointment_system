@@ -5,6 +5,8 @@ public class GetInfo {
     String name = "" ;
     String day = "";
     String rezervationName = "" ;
+    String calendarId = "" ;
+
     String rezervationInterval = "" ;
     String rezervationNameTag = "" ;
     String openingHour = "";
@@ -239,5 +241,13 @@ public class GetInfo {
 
     public void setDay(String day) {
         this.day = day;
+    }
+
+    public String getCalendarId() {
+        return calendarId;
+    }
+
+    public void setCalendarId(String calendarId) {
+        this.calendarId = calendarId;
     }
 }

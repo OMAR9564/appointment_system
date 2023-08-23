@@ -128,6 +128,8 @@
                                         session.setAttribute("appointMessageBody", settingsInfo.get(0).getAppointMessageBody());
                                         session.setAttribute("appointMessageTitle", settingsInfo.get(0).getAppointMessageTitle());
                                         session.setAttribute("holiday", settingsInfo.get(0).getHoliday());
+                                        session.setAttribute("calendarId", settingsInfo.get(0).getCalendarId());
+
                                     %>
                                     <tr>
                                         <th>Firma Adı</th>
@@ -158,6 +160,13 @@
                                         <td><%
                                             out.println((String) session.getAttribute("holiday"));%></td>
                                     </tr>
+                                    <tr>
+                                        <th>Calendar ID</th>
+                                        <td><%
+                                            String _calendarId =  (String) session.getAttribute("calendarId");
+                                                _calendarId = _calendarId.substring(0, 25) + "...";
+                                        %><%out.println(_calendarId);%></td>
+                                    </tr>
 
                                     </tbody>
 
@@ -171,7 +180,8 @@
 
                                             data-bs-appointMessageBody="<%out.println((String)session.getAttribute("appointMessageBody"));%>"
                                             data-bs-appointMessageTitle="<%out.println((String)session.getAttribute("appointMessageTitle"));%>"
-                                            data-bs-holiday="<%out.println((String)session.getAttribute("holiday"));%>">
+                                            data-bs-holiday="<%out.println((String)session.getAttribute("holiday"));%>"
+                                            data-bs-calendarId="<%out.println((String)session.getAttribute("calendarId"));%>">
                                         <i class="bi bi-info-circle"></i> Düzenle</button>
                                         </div>
                                 </table>
@@ -258,7 +268,16 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="row">
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="calendarId" class="col-form-label">Calendar ID:</label>
+                                                            <input type="text"
+                                                                   class="form-control calendarId"
 
+                                                                   name="calendarId" id="calendarId">
+                                                        </div>
+
+                                                    </div>
 
 
                                             <div class="modal-footer">
@@ -353,6 +372,7 @@
         var appointMessageBody = button.getAttribute('data-bs-appointMessageBody');
         var appointMessageTitle = button.getAttribute('data-bs-appointMessageTitle');
         var holiday = button.getAttribute('data-bs-holiday');
+        var calendarId = button.getAttribute('data-bs-calendarId');
 
         var modalBodycompanyNameInput = exampleModal.querySelector('.modal-body .companyNameInput');
         var modalBodyholidayInput = exampleModal.querySelector('.modal-body .holidayInput');
@@ -361,6 +381,7 @@
         var modalBodyappointMessageBodyInput = exampleModal.querySelector('.modal-body .appointMessageBodyInput');
         var modalBodyappointMessageTitleInput = exampleModal.querySelector('.modal-body .appointMessageTitleInput');
         var modalBodyInputId = exampleModal.querySelector('.modal-body .idInput');
+        var modalBodyCalendarId = exampleModal.querySelector('.modal-body .calendarId');
 
 
         modalBodycompanyNameInput.value = companyName;
@@ -370,7 +391,7 @@
         modalBodyclosingHourInput.value = closingHour.trim();
         modalBodyappointMessageBodyInput.value = appointMessageBody;
         modalBodyappointMessageTitleInput.value = appointMessageTitle;
-
+        modalBodyCalendarId.value = calendarId.trim();
 
     });
 

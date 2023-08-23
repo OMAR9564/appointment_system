@@ -363,6 +363,8 @@ public class ConSql {
                 temp.setAppointMessageBody(rs.getString("appointMessageBody"));
                 temp.setAppointMessageTitle(rs.getString("appointMessageTitle"));
                 temp.setHoliday(rs.getString("holiday"));
+                temp.setCalendarId(rs.getString("calendarID"));
+
 
 
 
