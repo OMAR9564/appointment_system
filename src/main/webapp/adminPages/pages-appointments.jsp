@@ -7,12 +7,76 @@
 <%@ page import="com.bya.ConSql" %>
 <%@ page import="com.bya.GetInfo" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="java.time.LocalDate" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="com.bya.Helper" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%
-    //    if((((String)session.getAttribute("adminName")).length() > 1)){
-    if (true) {
+    //startcontrol is login
+    Helper helper = new Helper();
+    String clientIP = request.getHeader("X-Forwarded-For");
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("Proxy-Client-IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("WL-Proxy-Client-IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("HTTP_CLIENT_IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getRemoteAddr();
+    }
+    String username = null;
+    String ip = null;
+
+    Boolean finded = false;
+
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("luna_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            } else if (cookie.getName().equals("lipad_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    ip = helper.decodeJWT(cookie.getValue());
+
+                } else {
+                    finded = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!finded) {
+        HttpSession loginSession = request.getSession(false); // Yeni session oluşturulmasını engelle
+
+        if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
+            username = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
+            ip = helper.decodeJWT((String) loginSession.getAttribute("lipad_token"));
+            finded = true;
+        }
+    }
+
+    if ((ip != null && !ip.equals(clientIP))) {
+
+        response.sendRedirect("loginPage.jsp");
+        return;
+    }else{
+
+
+
+
+        //end control is login
+
 
         String filterName = "";
         String filter = "";
@@ -1197,7 +1261,5 @@ function removeActiveClass(){
 
 </html>
 <%
-    } else {
-        response.sendRedirect("../index.jsp");
     }
 %>

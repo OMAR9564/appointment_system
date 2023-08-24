@@ -1,24 +1,33 @@
 package com.bya;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import org.json.JSONArray;
-
-import com.google.gson.Gson;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.io.InputStream;
+import java.util.Properties;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
+
+import static javax.crypto.Cipher.SECRET_KEY;
 
 public class Helper {
 
@@ -401,4 +410,78 @@ public class Helper {
 
         return matcher.matches();
     }
+
+    public String decrypt(String encryptedText) throws Exception {
+        try {
+            Properties properties = new Properties();
+
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            properties.load(inputStream);
+
+            String key = properties.getProperty("encryption.key");
+            String iv = properties.getProperty("encryption.iv");
+            byte[] keyBytes = key.getBytes("UTF-8");
+            byte[] ivBytes = iv.getBytes("UTF-8");
+
+            SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
+            return new String(decryptedBytes);
+        } catch (Exception e) {
+            throw new Exception("Error while decrypting: " + e.toString());
+        }
+    }
+    public String JWT(String input , long expirationTime)throws Exception{
+        String token = null;
+        expirationTime =  30L * 24 * 60 * 60 * 1000;
+        try{
+            Properties properties = new Properties();
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+            InputStream inputStream = classLoader.getResourceAsStream("config.properties");
+            properties.load(inputStream);
+
+            String secretKey = properties.getProperty("jwt.key");
+
+            token = Jwts.builder()
+                    .setSubject(input)
+                    .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                    .signWith(SignatureAlgorithm.HS512, secretKey)
+                    .compact();
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return token;
+    }
+
+    public String decodeJWT(String token) {
+        try {
+            Properties properties = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            properties.load(inputStream);
+
+            String SECRET_KEY = properties.getProperty("jwt.key");
+
+            Jws<Claims> claimsJws = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token);
+
+            Claims claims = claimsJws.getBody();
+            String output = claims.get("sub", String.class);
+            return output;
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // Token geçerlilik süresi dolmuş
+            return "Token geçerlilik süresi dolmuş.";
+        } catch (Exception e) {
+            // Diğer hata durumları
+            e.printStackTrace();
+            return "Token çözme hatası";
+        }
+    }
+
+
 }

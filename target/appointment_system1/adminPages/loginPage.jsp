@@ -6,22 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%session.setAttribute("whosePage","userLogin");%>
-<%session.setAttribute("whosePageLogOut","logOut");%>
 
-<%session.setAttribute("whosePage",null);%>
-<%if((String)session.getAttribute("loginTag") != "Log Out"){
-//if((String)session.getAttribute("loginIsValid") == null) session.setAttribute("loginIsValid", "hidden");
-    String revCustMail = "";
-    if((String)session.getAttribute("revCustMail") != null){
-        revCustMail = (String)session.getAttribute("revCustMail");
 
-    }
-    System.out.println((String)session.getAttribute("loginTag"));
-
-    session.setAttribute("whosePage", "userLogin");
-
-%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,6 +25,7 @@
 </head>
 
 
+
 <body>
 <div class="section">
     <div class="container">
@@ -54,16 +41,19 @@
                                 <div class="center-wrap">
                                     <div class="section text-center">
                                         <h4 class="mb-4 pb-3">Giriş Yap</h4>
-                                        <p class="wrong-pass"></p>
+                                        <p id="errorMessageArea"></p>
                                         <form action="adminSqlCon.jsp" method="POST" id="loginform">
                                             <div class="form-group">
-                                                <input type="text" name="logeuser" class="form-style" placeholder="Kullanıcı Adınız"
+                                                <input type="text" name="logeuser" id="logeuser" class="form-style" placeholder="Kullanıcı Adınız"
                                                        autocomplete="off" required >
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <input type="password" name="logpass" class="form-style" placeholder="Şifreniz"
+                                                <input type="password" name="logpass" id="logpass" class="form-style" placeholder="Şifreniz"
                                                        autocomplete="off" required="true">
+                                                <input type="text" value="login" name="iam" hidden>
+                                                <input type="text" value="loginPage.jsp" name="page"
+                                                       hidden>
                                                 <i class="input-icon uil uil-lock-alt"></i>
                                             </div>
                                             <a href="#" class="btn mt-4" onclick="document.getElementById('loginform').submit();">Giriş Yap</a>
@@ -75,7 +65,7 @@
                                                     }
 
                                                 </style>
-                                                <input style="left: auto;" class="form-check-input " type="checkbox" id="flexSwitchCheckDefault" checked="false">
+                                                <input style="left: auto;" class="form-check-input " id="rememberMe" name="rememberMe" type="checkbox" id="flexSwitchCheckDefault" checked="false">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Beni Hatırla</label>
                                             </div>
                                         </form>
@@ -95,7 +85,7 @@
                                             </div>
                                             <div class="form-group mt-2">
                                                 <input type="text" name="logeuser" class="form-style" placeholder="Kullanıcı Adınız"
-                                                       autocomplete="off" required value = <%out.println(revCustMail);%>>
+                                                       autocomplete="off" required>
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
                                             <a href="#" class="btn mt-4" onclick="document.getElementById('loginform').submit();">Şifremi Gönder</a>
@@ -135,11 +125,19 @@
             checkbox.checked = true;
         }
     }
-</script>
-<%}
-else{
-    session.invalidate();
 
-    response.sendRedirect("index.jsp");
-}
-%>
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    if (getQueryParam("message") === "false" && getQueryParam("dic")) {
+        const errorMessage = decodeURIComponent(getQueryParam("dic"));
+        const errorMessageArea = document.getElementById("errorMessageArea");
+        const styledErrorMessage = "‼️ " + errorMessage + " ‼️";
+        errorMessageArea.textContent = styledErrorMessage;
+        errorMessageArea.style.color = "red";
+    }
+</script>
+
+

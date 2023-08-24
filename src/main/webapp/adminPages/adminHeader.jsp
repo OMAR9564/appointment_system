@@ -1,11 +1,44 @@
-<%--
+<%@ page import="com.bya.Helper" %><%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
   Time: 17:08
   To change this template use File | Settings | File Templates.
 --%>
+<%
+  Helper helper = new Helper();
 
+  String username = null;
+
+  Boolean finded = false;
+
+  Cookie[] cookies = request.getCookies();
+  if (cookies != null) {
+    for (Cookie cookie : cookies) {
+      if (cookie.getName().equals("luna_token")) {
+        if (!cookie.getValue().isEmpty()) {
+          username = helper.decodeJWT(cookie.getValue());
+          finded = true;
+        } else {
+          finded = false;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!finded) {
+    HttpSession loginSession = request.getSession(false); // Yeni session oluşturulmasını engelle
+
+    if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
+      username = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
+      finded = true;
+    }
+  }
+
+
+
+%>
 <%--<%@page import="com.omar.hotelreservation.tags"%>--%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -25,12 +58,12 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <span class="d-none d-md-block dropdown-toggle ps-2"><%out.println((String)session.getAttribute("adminName"));%></span>
+            <span class="d-none d-md-block dropdown-toggle ps-2"><%out.println(username);%></span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6><%out.println((String)session.getAttribute("adminName"));%></h6>
+              <h6><%out.println(username);%></h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -56,7 +89,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#">
+              <a class="dropdown-item d-flex align-items-center" href="adminSqlCon.jsp?page=loginPage.jsp&iam=logout">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Oturumu Kapat</span>
               </a>
@@ -69,3 +102,4 @@
     </nav><!-- End Icons Navigation -->
 
   </header><!-- End Header -->
+

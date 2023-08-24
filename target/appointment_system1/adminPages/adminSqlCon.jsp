@@ -12,6 +12,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.bya.GetInfo" %>
 <%@ page import="com.bya.CalendarService" %>
+<%@ page import="java.sql.SQLException" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <%
@@ -315,4 +316,146 @@
             }
         }
     }
+    else if (pageName.equals("loginPage.jsp")) {
+        if(iam != null && iam.equals("login")  ){
+            try {
+
+
+                String userName = request.getParameter("logeuser");
+                String password = request.getParameter("logpass");
+                String remember = request.getParameter("rememberMe");
+                String userIPAddress = request.getRemoteAddr();
+
+                ConSql conSql = new ConSql();
+                ArrayList<GetInfo> userInfo = new ArrayList<>();
+                String decryptPass = null;
+                String userQuery = "SELECT * FROM `user` WHERE `username` = ?";
+
+                userInfo = conSql.getUserInfos(userQuery, userName);
+                //kullanici adi konrolu
+                if (userInfo.size() > 0) {
+                    //sifre kontrolu
+                    String depass = helper.decrypt(userInfo.get(0).getPass());
+                    if (depass.equals(password)){
+                        //beni hatirla
+                        if (remember != null) {
+                            //start cookie
+                            long expirationTime = 30 * 24 * 60 * 60 * 1000; // 30 gün
+
+                            String usernameToken = helper.JWT(userName, expirationTime);
+                            String ipToken = helper.JWT(userIPAddress, expirationTime);
+                            String nameToken = helper.JWT(userInfo.get(0).getName(), expirationTime);
+                            String surnameToken = helper.JWT(userInfo.get(0).getSurname(), expirationTime);
+                            String emailToken = helper.JWT(userInfo.get(0).getEmail(), expirationTime);
+
+                            Cookie usernameCookie = new Cookie("luna_token", usernameToken);
+                            Cookie nameCookie = new Cookie("lna_token", nameToken);
+                            Cookie surnameCookie = new Cookie("lsna_token", surnameToken);
+                            Cookie emailCookie = new Cookie("lema_token", emailToken);
+                            Cookie ipCookie = new Cookie("lipad_token", ipToken);
+
+                            usernameCookie.setMaxAge((int) (expirationTime / 1000)); //saniye cinsinden
+                            nameCookie.setMaxAge((int) (expirationTime / 1000));
+                            surnameCookie.setMaxAge((int) (expirationTime / 1000));
+                            emailCookie.setMaxAge((int) (expirationTime / 1000));
+                            ipCookie.setMaxAge((int) (expirationTime / 1000));
+
+                            response.addCookie(usernameCookie);
+                            response.addCookie(nameCookie);
+                            response.addCookie(surnameCookie);
+                            response.addCookie(emailCookie);
+                            response.addCookie(ipCookie);
+                            //end cookie
+
+
+                            appointmentMade = "true";
+                            String dic = "Giriş başarılı bir şekilde yapıldı.";
+                            response.sendRedirect("index.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
+
+                        }
+                        //beni hatirlama
+                        else{
+                            //start session
+                            HttpSession loginSession = request.getSession();
+
+                            long expirationTime =  12 * 60 * 60 * 1000;
+
+                            String usernameToken = helper.JWT(userName, expirationTime);
+                            String ipToken = helper.JWT(userIPAddress, expirationTime);
+                            String nameToken = helper.JWT(userInfo.get(0).getName(), expirationTime);
+                            String surnameToken = helper.JWT(userInfo.get(0).getSurname(), expirationTime);
+                            String emailToken = helper.JWT(userInfo.get(0).getEmail(), expirationTime);
+
+                            loginSession.setAttribute("luna_token", usernameToken);
+                            loginSession.setAttribute("lna_token", nameToken);
+                            loginSession.setAttribute("lsna_token", surnameToken);
+                            loginSession.setAttribute("lema_token", emailToken);
+                            loginSession.setAttribute("lipad_token", ipToken);
+
+                            loginSession.setMaxInactiveInterval(Math.toIntExact(expirationTime / 1000));
+                            //end session
+
+
+                            appointmentMade = "true";
+                            String dic = "Giriş başarılı bir şekilde yapıldı.";
+                            response.sendRedirect("index.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
+
+                        }
+                    }
+                    //sifre yanlis
+                    else {
+                        appointmentMade = "false";
+                        String dic = "Girdiğiniz şifre yanlıştır.";
+                        response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
+
+                    }
+                }
+                //kullanici yanlis
+                else {
+                    appointmentMade = "false";
+                    String dic = "Böyle bir kullanıcı adı bulunamadı.";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
+                }
+
+            }catch (SQLException e){
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+
+                System.out.println("Bir hata oluştu: " + e.getMessage());
+            }
+
+
+        } else if (iam != null && iam.equals("forgetPass")) {
+
+        } else if (iam != null && iam.equals("logout")) {
+            Cookie usernameCookie = new Cookie("luna_token", null);
+            Cookie nameCookie = new Cookie("lna_token", null);
+            Cookie surnameCookie = new Cookie("lsna_token", null);
+            Cookie emailCookie = new Cookie("lema_token", null);
+            Cookie ipCookie = new Cookie("lipad_token", null);
+
+            usernameCookie.setMaxAge(0); //saniye cinsinden
+            nameCookie.setMaxAge(0);
+            surnameCookie.setMaxAge(0);
+            emailCookie.setMaxAge(0);
+            ipCookie.setMaxAge(0);
+
+            response.addCookie(usernameCookie);
+            response.addCookie(nameCookie);
+            response.addCookie(surnameCookie);
+            response.addCookie(emailCookie);
+            response.addCookie(ipCookie);
+
+
+            HttpSession loginSession = request.getSession(false); // Yeni oturum oluşturmasını engelle
+
+            if (loginSession != null) {
+                loginSession.invalidate(); // Oturumu geçersiz kıl
+            }
+
+            response.sendRedirect(pageName);
+
+        }
+    }
+
 %>

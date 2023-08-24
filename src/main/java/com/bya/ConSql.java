@@ -410,6 +410,39 @@ public class ConSql {
         }
         return sqlInfo;
     }
+    public ArrayList<GetInfo> getUserInfos(String query, String... params) throws SQLException {
+        ArrayList<GetInfo> sqlInfo = new ArrayList<>();
+        try {
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
 
+            conn = getDatabaseConnection();
+
+            stmt = conn.prepareStatement(query);
+            for (int i = 0; i < params.length; i++){
+                stmt.setString(i+1, params[i]);
+            }
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                GetInfo temp = new GetInfo();
+                temp.setId(rs.getInt("id"));
+                temp.setName(rs.getString("name"));
+                temp.setSurname(rs.getString("surname"));
+                temp.setUserName(rs.getString("username"));
+                temp.setEmail(rs.getString("email"));
+                temp.setPass(rs.getString("pass"));
+
+                sqlInfo.add(temp);
+            }
+            conn.close();
+        }catch (Exception e){
+            System.err.println(e);
+
+        }
+        return sqlInfo;
+    }
 
 }

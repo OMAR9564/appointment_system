@@ -6,7 +6,10 @@ public class GetInfo {
     String day = "";
     String rezervationName = "" ;
     String calendarId = "" ;
-
+    String surname = "";
+    String userName = "";
+    String email = "";
+    String pass = "";
     String rezervationInterval = "" ;
     String rezervationNameTag = "" ;
     String openingHour = "";
@@ -249,5 +252,37 @@ public class GetInfo {
 
     public void setCalendarId(String calendarId) {
         this.calendarId = calendarId;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 }
