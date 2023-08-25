@@ -13,7 +13,8 @@
 <%@ page import="com.bya.GetInfo" %>
 <%@ page import="com.bya.CalendarService" %>
 <%@ page import="java.sql.SQLException" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 
 <%
     String pageName = request.getParameter("page");
@@ -339,14 +340,41 @@
                     if (depass.equals(password)){
                         //beni hatirla
                         if (remember != null) {
+                            String clientIP = request.getHeader("X-Forwarded-For");
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("Proxy-Client-IP");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("WL-Proxy-Client-IP");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("HTTP_CLIENT_IP");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getRemoteAddr();
+                            }
                             //start cookie
-                            long expirationTime = 30 * 24 * 60 * 60 * 1000; // 30 gün
+                            long expirationTime = 30L * 24 * 60 * 60 * 1000; // 30 gün
 
-                            String usernameToken = helper.JWT(userName, expirationTime);
-                            String ipToken = helper.JWT(userIPAddress, expirationTime);
-                            String nameToken = helper.JWT(userInfo.get(0).getName(), expirationTime);
-                            String surnameToken = helper.JWT(userInfo.get(0).getSurname(), expirationTime);
-                            String emailToken = helper.JWT(userInfo.get(0).getEmail(), expirationTime);
+                            String surnameToken = null;
+                            String usernameToken = null;
+                            String ipToken = null;
+                            String nameToken = null;
+                            String emailToken = null;
+                            try {
+                                 usernameToken = helper.JWT(userName, expirationTime);
+                                 ipToken = helper.JWT(clientIP, expirationTime);
+                                 nameToken = helper.JWT(userInfo.get(0).getName(), expirationTime);
+
+                                surnameToken = helper.JWT(userInfo.get(0).getSurname(), expirationTime);
+                                 emailToken = helper.JWT(userInfo.get(0).getEmail(), expirationTime);
+
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
 
                             Cookie usernameCookie = new Cookie("luna_token", usernameToken);
                             Cookie nameCookie = new Cookie("lna_token", nameToken);
@@ -376,12 +404,53 @@
                         //beni hatirlama
                         else{
                             //start session
-                            HttpSession loginSession = request.getSession();
+                            String clientIP = request.getHeader("X-Forwarded-For");
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("Proxy-Client-IP");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("WL-Proxy-Client-IP");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("HTTP_CLIENT_IP");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
+                            }
+                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+                                clientIP = request.getRemoteAddr();
+                            }
+                            Cookie usernameCookie = new Cookie("luna_token", null);
+                            Cookie nameCookie = new Cookie("lna_token", null);
+                            Cookie surnameCookie = new Cookie("lsna_token", null);
+                            Cookie emailCookie = new Cookie("lema_token", null);
+                            Cookie ipCookie = new Cookie("lipad_token", null);
+
+                            usernameCookie.setMaxAge(0); //saniye cinsinden
+                            nameCookie.setMaxAge(0);
+                            surnameCookie.setMaxAge(0);
+                            emailCookie.setMaxAge(0);
+                            ipCookie.setMaxAge(0);
+
+                            response.addCookie(usernameCookie);
+                            response.addCookie(nameCookie);
+                            response.addCookie(surnameCookie);
+                            response.addCookie(emailCookie);
+                            response.addCookie(ipCookie);
+
+
+                            HttpSession loginSession = request.getSession(false); // Yeni oturum oluşturmasını engelle
+
+                            if (loginSession != null) {
+                                loginSession.invalidate(); // Oturumu geçersiz kıl
+                            }
+
+                            loginSession = request.getSession();
 
                             long expirationTime =  12 * 60 * 60 * 1000;
 
                             String usernameToken = helper.JWT(userName, expirationTime);
-                            String ipToken = helper.JWT(userIPAddress, expirationTime);
+                            String ipToken = helper.JWT(clientIP, expirationTime);
                             String nameToken = helper.JWT(userInfo.get(0).getName(), expirationTime);
                             String surnameToken = helper.JWT(userInfo.get(0).getSurname(), expirationTime);
                             String emailToken = helper.JWT(userInfo.get(0).getEmail(), expirationTime);

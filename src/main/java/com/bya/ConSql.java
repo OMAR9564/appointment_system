@@ -137,8 +137,8 @@ public class ConSql {
     private Connection getDatabaseConnection() {
         // bağlantı bilgileri
         String url = "jdbc:mysql://localhost:3306/appointment_system";
-        String username = "root";
-        String password = "";
+        String username = "bya";
+        String password = "9564";
         Connection conn = null;
 
         try {

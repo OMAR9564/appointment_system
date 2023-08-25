@@ -1,6 +1,7 @@
 package com.bya;
 
 import java.io.*;
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -362,7 +363,10 @@ public class Helper {
     }
 
     public static void writeJsonFile(String inputText) {
-        String filePath = "/Users/omerfaruk/Documents/GitHub/appointment_system/src/main/webapp/days.json";
+
+        String filePath = Helper.class.getResource("").getPath();
+        filePath = filePath.split("WEB-INF")[0];
+        filePath = filePath + "days.json";
         // Gün isimlerine karşılık gelen değerleri içeren bir JSON nesnesi oluştur
         JSONObject dayValues = new JSONObject();
         dayValues.put("pazar", 0);
@@ -481,6 +485,21 @@ public class Helper {
             e.printStackTrace();
             return "Token çözme hatası";
         }
+    }
+    private static Map<String, String> tokenMap = new HashMap<>();
+    public static String generateToken(String sessionId) {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] tokenBytes = new byte[32];
+        secureRandom.nextBytes(tokenBytes);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+
+        tokenMap.put(sessionId, token);
+        return token;
+    }
+
+    public static boolean validateToken(String sessionId, String token) {
+        String storedToken = tokenMap.get(sessionId);
+        return storedToken != null && storedToken.equals(token);
     }
 
 

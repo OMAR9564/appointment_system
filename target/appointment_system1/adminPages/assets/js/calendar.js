@@ -30,7 +30,7 @@ document.getElementById("add-interval").addEventListener("change", saveSelectedO
 // Show the current month's calendar
 fetchAndShowMonth(currentMonth, currentYear);
 function fetchAndShowMonth(month, year) {
-    fetch('../days.json', {
+    fetch('../../../days.json', {
         method: 'GET',
         headers: {
             'Cache-Control': 'no-cache',  // Tarayıcı önbelleği devre dışı bırakılıyor

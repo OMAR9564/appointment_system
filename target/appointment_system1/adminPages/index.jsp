@@ -3,18 +3,21 @@
 <%@ page import="com.bya.GetInfo" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.bya.Helper" %>
+<%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
   Time: 17:08
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%
 
     //startcontrol is login
     Helper helper = new Helper();
+    String username = null;
+    String ip = null;
     String clientIP = request.getHeader("X-Forwarded-For");
     if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
         clientIP = request.getHeader("Proxy-Client-IP");
@@ -31,10 +34,9 @@
     if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
         clientIP = request.getRemoteAddr();
     }
-
-
-    String username = null;
-    String ip = null;
+    Cookie nameCookie = new Cookie("ip", clientIP);
+    nameCookie.setMaxAge((int) (30 * 24 * 60 * 60)); //saniye cinsinden
+    response.addCookie(nameCookie);
 
     Boolean finded = false;
 
@@ -43,7 +45,7 @@
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("luna_token")) {
                 if (!cookie.getValue().isEmpty()) {
-                    helper.decodeJWT(cookie.getValue());
+                    username = helper.decodeJWT(cookie.getValue());
                     finded = true;
                 } else {
                     finded = false;
@@ -52,7 +54,7 @@
             } else if (cookie.getName().equals("lipad_token")) {
                 if (!cookie.getValue().isEmpty()) {
                     ip = helper.decodeJWT(cookie.getValue());
-
+                    finded = true;
                 } else {
                     finded = false;
                     break;
@@ -71,9 +73,10 @@
         }
     }
 
+    String sessionId = request.getSession().getId();
+    boolean isValidToken = helper.validateToken(sessionId, ip);
 
-    if ((ip != null && !ip.equals(clientIP))) {
-
+    if (clientIP != null && !(clientIP.equals(ip))){
         response.sendRedirect("loginPage.jsp");
         return;
     }else{

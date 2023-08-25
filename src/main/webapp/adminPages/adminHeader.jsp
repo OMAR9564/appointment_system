@@ -1,4 +1,6 @@
-<%@ page import="com.bya.Helper" %><%--
+<%@ page import="com.bya.Helper" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--
   Created by IntelliJ IDEA.
   User: omerfaruk
   Date: 27.02.2023
@@ -40,7 +42,6 @@
 
 %>
 <%--<%@page import="com.omar.hotelreservation.tags"%>--%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">

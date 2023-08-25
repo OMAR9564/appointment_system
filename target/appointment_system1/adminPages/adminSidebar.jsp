@@ -4,7 +4,7 @@
     Author     : omerfaruk
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">

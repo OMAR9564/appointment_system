@@ -11,27 +11,12 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="com.bya.Helper" %>
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%
 
     //startcontrol is login
     Helper helper = new Helper();
-    String clientIP = request.getHeader("X-Forwarded-For");
-    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-        clientIP = request.getHeader("Proxy-Client-IP");
-    }
-    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-        clientIP = request.getHeader("WL-Proxy-Client-IP");
-    }
-    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-        clientIP = request.getHeader("HTTP_CLIENT_IP");
-    }
-    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-        clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
-    }
-    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-        clientIP = request.getRemoteAddr();
-    }
     String username = null;
     String ip = null;
 
@@ -50,7 +35,7 @@
                 }
             } else if (cookie.getName().equals("lipad_token")) {
                 if (!cookie.getValue().isEmpty()) {
-                    ip = helper.decodeJWT(cookie.getValue());
+                    ip = (cookie.getValue());
 
                 } else {
                     finded = false;
@@ -65,17 +50,18 @@
 
         if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
             username = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
-            ip = helper.decodeJWT((String) loginSession.getAttribute("lipad_token"));
+            ip = ((String) loginSession.getAttribute("lipad_token"));
             finded = true;
         }
     }
 
-    if ((ip != null && !ip.equals(clientIP))) {
+    String sessionId = request.getSession().getId();
+    boolean isValidToken = helper.validateToken(sessionId, ip);
 
+    if (!isValidToken){
         response.sendRedirect("loginPage.jsp");
         return;
     }else{
-
 
 
 
