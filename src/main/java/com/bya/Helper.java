@@ -415,6 +415,30 @@ public class Helper {
         return matcher.matches();
     }
 
+    public String encrypt(String plainText) throws Exception {
+        try {
+            Properties properties = new Properties();
+
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            properties.load(inputStream);
+
+            String key = properties.getProperty("encryption.key");
+            String iv = properties.getProperty("encryption.iv");
+            byte[] keyBytes = key.getBytes("UTF-8");
+            byte[] ivBytes = iv.getBytes("UTF-8");
+
+            SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+            byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        } catch (Exception e) {
+            throw new Exception("Error while encrypting: " + e.toString());
+        }
+    }
     public String decrypt(String encryptedText) throws Exception {
         try {
             Properties properties = new Properties();
@@ -487,15 +511,6 @@ public class Helper {
         }
     }
     private static Map<String, String> tokenMap = new HashMap<>();
-    public static String generateToken(String sessionId) {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] tokenBytes = new byte[32];
-        secureRandom.nextBytes(tokenBytes);
-        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
-
-        tokenMap.put(sessionId, token);
-        return token;
-    }
 
     public static boolean validateToken(String sessionId, String token) {
         String storedToken = tokenMap.get(sessionId);

@@ -17,6 +17,29 @@
     Helper helper = new Helper();
     String username = null;
     String ip = null;
+    String name = null;
+    String surname = null;
+    String email = null;
+
+    String clientIP = request.getHeader("X-Forwarded-For");
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("Proxy-Client-IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("WL-Proxy-Client-IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("HTTP_CLIENT_IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getRemoteAddr();
+    }
+    Cookie nameCookie = new Cookie("ip", clientIP);
+    nameCookie.setMaxAge((int) (30 * 24 * 60 * 60)); //saniye cinsinden
+    response.addCookie(nameCookie);
 
     Boolean finded = false;
 
@@ -25,7 +48,7 @@
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("luna_token")) {
                 if (!cookie.getValue().isEmpty()) {
-                    helper.decodeJWT(cookie.getValue());
+                    username = helper.decodeJWT(cookie.getValue());
                     finded = true;
                 } else {
                     finded = false;
@@ -33,8 +56,32 @@
                 }
             } else if (cookie.getName().equals("lipad_token")) {
                 if (!cookie.getValue().isEmpty()) {
-                    ip = (cookie.getValue());
-
+                    ip = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            } else if (cookie.getName().equals("lna_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    name = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            } else if (cookie.getName().equals("lsna_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    surname = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            } else if (cookie.getName().equals("lema_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    email = helper.decodeJWT(cookie.getValue());
+                    finded = true;
                 } else {
                     finded = false;
                     break;
@@ -48,7 +95,11 @@
 
         if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
             username = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
-            ip = ((String) loginSession.getAttribute("lipad_token"));
+            name = helper.decodeJWT((String) loginSession.getAttribute("lna_token"));
+            surname = helper.decodeJWT((String) loginSession.getAttribute("lsna_token"));
+            email = helper.decodeJWT((String) loginSession.getAttribute("lema_token"));
+
+            ip = helper.decodeJWT((String) loginSession.getAttribute("lipad_token"));
             finded = true;
         }
     }
@@ -56,7 +107,9 @@
     String sessionId = request.getSession().getId();
     boolean isValidToken = helper.validateToken(sessionId, ip);
 
-    if (!isValidToken){
+    if (clientIP != null && !(clientIP.equals(ip)) && (username.isEmpty() || username ==null)
+            && (name.isEmpty() || name ==null) && (surname.isEmpty() || surname ==null)
+            && (email.isEmpty() || email ==null)){
         response.sendRedirect("loginPage.jsp");
         return;
     }else{
@@ -254,7 +307,7 @@
                                                         <div class="mb-3 col-md-6">
                                                             <label for="companyName" class="col-form-label">Firma
                                                                 Adı:</label>
-                                                            <input type="text" class="form-control companyNameInput"
+                                                            <input type="text" class="form-control validate-input companyNameInput"
                                                                    name="companyName" id="companyName">
                                                         </div>
                                                         <input type="text" value="settingsEdit" name="iam" hidden>
@@ -306,7 +359,7 @@
                                                             <label for="appointMessageBody" class="col-form-label">Başarılı
                                                                 Uyarı Metni:</label>
                                                             <input type="text"
-                                                                   class="form-control appointMessageBodyInput"
+                                                                   class="form-control validate-input appointMessageBodyInput"
 
                                                                    name="appointMessageBody" id="appointMessageBody">
                                                         </div>
@@ -314,7 +367,7 @@
                                                             <label for="appointMessageTitle" class="col-form-label">Başarılı
                                                                 Uyarı Başlıgı: </label>
                                                             <input type="text"
-                                                                   class="form-control appointMessageTitleInput"
+                                                                   class="form-control validate-input appointMessageTitleInput"
 
                                                                    name="appointMessageTitle" id="appointMessageTitle">
                                                         </div>
@@ -324,7 +377,7 @@
                                                         <div class="mb-3 col-md-6">
                                                             <label for="calendarId" class="col-form-label">Calendar ID:</label>
                                                             <input type="text"
-                                                                   class="form-control calendarId"
+                                                                   class="form-control validate-input calendarId"
 
                                                                    name="calendarId" id="calendarId">
                                                         </div>
@@ -481,7 +534,16 @@
 
     });
 
+    const inputElements = document.querySelectorAll('.validate-input');
 
+    inputElements.forEach(input => {
+        input.addEventListener('input', function () {
+            const inputValue = this.value;
+            if (inputValue.length > 0 && inputValue[0] === ' ') {
+                this.value = inputValue.trimStart();
+            }
+        });
+    });
 
 </script>
 

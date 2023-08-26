@@ -18,6 +18,10 @@
     Helper helper = new Helper();
     String username = null;
     String ip = null;
+    String name = null;
+    String surname = null;
+    String email = null;
+
     String clientIP = request.getHeader("X-Forwarded-For");
     if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
         clientIP = request.getHeader("Proxy-Client-IP");
@@ -59,6 +63,30 @@
                     finded = false;
                     break;
                 }
+            } else if (cookie.getName().equals("lna_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    name = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            } else if (cookie.getName().equals("lsna_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    surname = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            } else if (cookie.getName().equals("lema_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    email = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
             }
         }
     }
@@ -68,6 +96,10 @@
 
         if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
             username = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
+            name = helper.decodeJWT((String) loginSession.getAttribute("lna_token"));
+            surname = helper.decodeJWT((String) loginSession.getAttribute("lsna_token"));
+            email = helper.decodeJWT((String) loginSession.getAttribute("lema_token"));
+
             ip = helper.decodeJWT((String) loginSession.getAttribute("lipad_token"));
             finded = true;
         }
@@ -76,7 +108,9 @@
     String sessionId = request.getSession().getId();
     boolean isValidToken = helper.validateToken(sessionId, ip);
 
-    if (clientIP != null && !(clientIP.equals(ip))){
+    if (clientIP != null && !(clientIP.equals(ip)) && (username.isEmpty() || username ==null)
+            && (name.isEmpty() || name ==null) && (surname.isEmpty() || surname ==null)
+            && (email.isEmpty() || email ==null)){
         response.sendRedirect("loginPage.jsp");
         return;
     }else{
@@ -325,6 +359,7 @@
                                     function setFilter(filter) {
                                         const urlParams = new URLSearchParams(window.location.search);
                                         urlParams.delete('message');
+                                        urlParams.delete('dic');
                                         urlParams.set('filter', filter);
                                         window.location.search = urlParams.toString();
                                     }
@@ -332,6 +367,7 @@
                                     function setOption(option) {
                                         console.log(option);
                                         const urlParams = new URLSearchParams(window.location.search);
+                                        urlParams.delete('dic');
                                         urlParams.delete('message');
                                         urlParams.set('selectedOption', option);
                                         window.location.search = urlParams.toString();
@@ -483,7 +519,7 @@
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label for="name" class="col-form-label">Adı:</label>
-                                                            <input type="text" class="form-control nameInput" maxlength="20" required oninput="blockSpecialChars('name')"
+                                                            <input type="text" class="form-control validate-input nameInput" maxlength="20" required oninput="blockSpecialChars('name')"
                                                                    name="name" id="name">
                                                         </div>
                                                         <input type="text" value="appointmentEdit" name="iam" hidden>
@@ -494,7 +530,7 @@
 
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="surname" class="col-form-label">Soyadı:</label>
-                                                            <input type="text" class="form-control surnameInput" maxlength="20" required oninput="blockSpecialChars('surname')"
+                                                            <input type="text" class="form-control validate-input surnameInput" maxlength="20" required oninput="blockSpecialChars('surname')"
                                                                    name="surname" id="surname">
                                                         </div>
 
@@ -503,12 +539,12 @@
                                                     <div class="row">
                                                         <div class="mb-3 col-md-6">
                                                             <label for="phone" class="col-form-label">Phone:</label>
-                                                            <input type="text" class="form-control phoneInput"
+                                                            <input type="text" class="form-control validate-input phoneInput"
                                                                    name="phone" id="phone">
                                                         </div>
                                                         <div class="mb-3 col-md-6">
                                                             <label for="editDate" class="col-form-label">Tarih:</label>
-                                                            <input type="date" class="form-control dateInput"
+                                                            <input type="date" class="form-control validate-input dateInput"
                                                                    name="editDate" id="editDate">
                                                         </div>
 
@@ -517,7 +553,7 @@
                                                         <div class="mb-3 col-md-6">
                                                             <label for="editInterval" class="col-form-label">Randevu
                                                                 Turu:</label>
-                                                            <select class="form-control intervalInput"
+                                                            <select class="form-control validate-input intervalInput"
                                                                     name="editInterval"
                                                                     id="editInterval">
                                                                 <option value="" selected hidden>Seçin</option>
@@ -551,7 +587,7 @@
                                                         <div class="mb-3 col-md-6">
                                                             <label for="doktorName" class="col-form-label">Doktor
                                                                 Adı:</label>
-                                                            <select class="form-control doctorInput" name="doktorName"
+                                                            <select class="form-control validate-input doctorInput" name="doktorName"
                                                                     id="doktorName">
                                                                 <option value="" selected hidden>Seçin</option>
                                                                 <%
@@ -568,7 +604,7 @@
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
                                                             <label for="location" class="col-form-label">Yer:</label>
-                                                            <select class="form-control locationInput" name="location"
+                                                            <select class="form-control validate-input locationInput" name="location"
                                                                     id="location">
                                                                 <option value="" selected hidden>Seçin</option>
                                                                 <%
@@ -756,7 +792,7 @@
                                         <div class="row">
                                             <div class="mb-3 col-md-6">
                                                 <label for="name-input" class="col-form-label">Adı:</label>
-                                                <input type="text" class="form-control nameInput"  maxlength="20" required oninput="blockSpecialChars('name-input')"
+                                                <input type="text" class="form-control validate-input nameInput"  maxlength="20" required oninput="blockSpecialChars('name-input')"
                                                        name="name-input" id="name-input">
                                             </div>
                                             <input type="text" value="appointmentAdd" name="iam" hidden>
@@ -766,7 +802,7 @@
                                             <div class="mb-3 col-md-6 ms-auto">
                                                 <label for="surname-input"
                                                        class="col-form-label">Soyadı:</label>
-                                                <input type="text" class="form-control surnameInput" maxlength="20" required oninput="blockSpecialChars('surname-input')"
+                                                <input type="text" class="form-control validate-input surnameInput" maxlength="20" required oninput="blockSpecialChars('surname-input')"
                                                        name="surname-input" id="surname-input">
                                             </div>
                                         </div>
@@ -774,13 +810,13 @@
                                         <div class="row">
                                             <div class="mb-3 col-md-6">
                                                 <label for="phone-input" class="col-form-label">Phone:</label>
-                                                <input type="text" class="form-control phoneInput"
+                                                <input type="text" class="form-control validate-input phoneInput"
                                                        name="phone-input" id="phone-input">
                                             </div>
                                             <div class="mb-3 col-md-6">
                                                 <label for="add-interval" class="col-form-label">Randevu
                                                     Turu:</label>
-                                                <select class="form-control intervalInput"
+                                                <select class="form-control validate-input intervalInput"
                                                         name="add-interval"
                                                         id="add-interval">
                                                     <option value="" selected hidden>Seçin</option>
@@ -803,7 +839,7 @@
                                             <div class="mb-3 col-md-6">
                                                 <label for="add-doktorName" class="col-form-label">Doktor
                                                     Adı:</label>
-                                                <select class="form-control doctorInput"
+                                                <select class="form-control validate-input doctorInput"
                                                         name="add-doktorName"
                                                         id="add-doktorName">
                                                     <option value="" selected hidden>Seçin</option>
@@ -822,7 +858,7 @@
                                             <div class="mb-3 col-md-6 ms-auto">
                                                 <label for="add-location"
                                                        class="col-form-label">Yer:</label>
-                                                <select class="form-control locationInput"
+                                                <select class="form-control validate-input locationInput"
                                                         name="add-location"
                                                         id="add-location">
                                                     <option value="" selected hidden>Seçin</option>
@@ -1357,7 +1393,16 @@
         }
     }
 
+    const inputElements = document.querySelectorAll('.validate-input');
 
+    inputElements.forEach(input => {
+        input.addEventListener('input', function () {
+            const inputValue = this.value;
+            if (inputValue.length > 0 && inputValue[0] === ' ') {
+                this.value = inputValue.trimStart();
+            }
+        });
+    });
 
 </script>
 </body>

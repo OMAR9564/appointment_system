@@ -23,7 +23,7 @@
       <li class="nav-heading">Sayfalar</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="users-profile.jsp">
+        <a class="nav-link collapsed" href="profilPage.jsp">
           <i class="bi bi-person"></i>
           <span>Profil</span>
         </a>

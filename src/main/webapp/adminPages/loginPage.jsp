@@ -44,12 +44,12 @@
                                         <p id="errorMessageArea"></p>
                                         <form action="adminSqlCon.jsp" method="POST" id="loginform">
                                             <div class="form-group">
-                                                <input type="text" name="logeuser" id="logeuser" class="form-style" placeholder="Kullanıcı Adınız"
+                                                <input type="text" name="logeuser" id="logeuser" class="form-style validate-input" placeholder="Kullanıcı Adınız"
                                                        autocomplete="off" required >
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <input type="password" name="logpass" id="logpass" class="form-style" placeholder="Şifreniz"
+                                                <input type="password" name="logpass" id="logpass" class="form-style validate-input" placeholder="Şifreniz"
                                                        autocomplete="off" required="true">
                                                 <input type="text" value="login" name="iam" hidden>
                                                 <input type="text" value="loginPage.jsp" name="page"
@@ -79,12 +79,12 @@
                                         <p class="wrong-pass"></p>
                                         <form action="adminSqlCon.jsp" method="POST" id="forgetPassForm">
                                             <div class="form-group">
-                                                <input type="email" name="logemail" class="form-style" placeholder="E-Postanız"
+                                                <input type="email" name="logemail" class="form-style validate-input" placeholder="E-Postanız"
                                                        autocomplete="off" required >
                                                 <i class="input-icon uil uil-at"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <input type="text" name="logeuser" class="form-style" placeholder="Kullanıcı Adınız"
+                                                <input type="text" name="logeuser" class="form-style validate-input" placeholder="Kullanıcı Adınız"
                                                        autocomplete="off" required>
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
@@ -138,6 +138,17 @@
         errorMessageArea.textContent = styledErrorMessage;
         errorMessageArea.style.color = "red";
     }
+
+    const inputElements = document.querySelectorAll('.validate-input');
+
+    inputElements.forEach(input => {
+        input.addEventListener('input', function () {
+            const inputValue = this.value;
+            if (inputValue.length > 0 && inputValue[0] === ' ') {
+                this.value = inputValue.trimStart();
+            }
+        });
+    });
 </script>
 
 

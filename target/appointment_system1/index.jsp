@@ -108,22 +108,22 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="name-input">Adınız:</label>
-                <input type="text" class="form-control" id="name-input" name="name-input" maxlength="20" required
+                <input type="text" class="form-control validate-input" id="name-input" name="name-input" maxlength="20" required
                        oninput="blockSpecialChars('name-input')">
             </div>
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
-                <input type="text" class="form-control" id="surname-input" name="surname-input" maxlength="20" required
+                <input type="text" class="form-control validate-input" id="surname-input" name="surname-input" maxlength="20" required
                        oninput="blockSpecialChars('surname-input')">
             </div>
             <div class="form-group">
                 <label for="phone-input">Telefon Numaranız:</label>
-                <input type="tel" class="form-control" id="phone-input" name="phone-input" required>
+                <input type="tel" class="form-control validate-input" id="phone-input" name="phone-input" required>
             </div>
 
             <div class="form-group">
                 <label for="doctor-select">Doktor seçin:</label>
-                <select class="form-control" id="doctor-select">
+                <select class="form-control validate-input" id="doctor-select">
                     <option value="" selected hidden>Seçin</option>
                     <%
                         for (int i = 0; i < doctorInfo.size(); i++) {
@@ -138,7 +138,7 @@
             </div>
             <div class="form-group">
                 <label for="apptype-select">Randevu tipi seçin:</label>
-                <select class="form-control" id="apptype-select">
+                <select class="form-control validate-input" id="apptype-select">
                     <option value="" selected hidden>Seçin</option>
                     <%
                         for (int i = 0; i < rezervationInfo.size(); i++) {
@@ -152,7 +152,7 @@
 
             <div class="form-group">
                 <label for="location-select">Yer:</label>
-                <select class="form-control" id="location-select">
+                <select class="form-control validate-input" id="location-select">
                     <option value="" selected hidden>Seçin</option>
                     <%
                         for (int i = 0; i < locationNames.size(); i++) {
@@ -258,7 +258,7 @@
             <div class="row row-cols-4" style="margin-right: 11px;padding-top: 5px;">
                 <div class="col-10">
                     <div class=" form-floating mt-2" style="padding-right: 0px;">
-                        <input type="text" class="form-control" id="floatingInputGrid" placeholder="xxx-xxx">
+                        <input type="text" class="form-control validate-input" id="floatingInputGrid" placeholder="xxx-xxx">
                         <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
                     </div>
                 </div>
@@ -478,7 +478,16 @@
 
 
 
+    const inputElements = document.querySelectorAll('.validate-input');
 
+    inputElements.forEach(input => {
+        input.addEventListener('input', function () {
+            const inputValue = this.value;
+            if (inputValue.length > 0 && inputValue[0] === ' ') {
+                this.value = inputValue.trimStart();
+            }
+        });
+    });
 
 
 </script>

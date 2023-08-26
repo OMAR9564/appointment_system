@@ -77,6 +77,8 @@ public class ConSql {
             conn.close();
         }catch (SQLException e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
     }
     public ArrayList<GetInfo> readData(String query) throws SQLException {
@@ -104,6 +106,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -131,14 +135,16 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
     private Connection getDatabaseConnection() {
         // bağlantı bilgileri
         String url = "jdbc:mysql://localhost:3306/appointment_system";
-        String username = "bya";
-        String password = "9564";
+        String username = "root";
+        String password = "";
         Connection conn = null;
 
         try {
@@ -190,6 +196,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -220,6 +228,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -253,6 +263,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -279,6 +291,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -306,6 +320,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -335,6 +351,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -373,6 +391,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -407,6 +427,8 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
+
         }
         return sqlInfo;
     }
@@ -440,6 +462,7 @@ public class ConSql {
             conn.close();
         }catch (Exception e){
             System.err.println(e);
+            e.printStackTrace();
 
         }
         return sqlInfo;

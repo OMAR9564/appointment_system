@@ -490,7 +490,7 @@
                 appointmentMade = "false";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
-                System.out.println("Bir hata oluştu: " + e.getMessage());
+                e.printStackTrace();
             }
 
 
@@ -525,6 +525,137 @@
             response.sendRedirect(pageName);
 
         }
+    }
+    else if (pageName.equals("profilPage.jsp")) {
+        try {
+            ConSql conSql = new ConSql();
+            if (iam.equals("profilEdit")) {
+
+                String id = request.getParameter("id");
+                String name = new String(request.getParameter("profilName").getBytes("ISO-8859-9"), "UTF-8");
+                String surname = new String(request.getParameter("profilSurname").getBytes("ISO-8859-9"), "UTF-8");
+                String username = new String(request.getParameter("profilUserName").getBytes("ISO-8859-9"), "UTF-8");
+                String email = request.getParameter("profilEmail");
+                String oldPass = request.getParameter("oldPass");
+                String newPass = request.getParameter("newPass");
+                String reNewPass = request.getParameter("reNewPass");
+                String nicename = new String(request.getParameter("profilNicename").getBytes("ISO-8859-9"), "UTF-8");;
+
+                oldPass = oldPass.replace(" ", "");
+                newPass = newPass.replace(" ", "");
+                reNewPass = reNewPass.replace(" ", "");
+
+                ArrayList<GetInfo> userInfo = new ArrayList<>();
+                String decryptPass = null;
+                String userQuery = "SELECT * FROM `user` WHERE `id` = ?";
+                userInfo = conSql.getUserInfos(userQuery, id);
+
+                String prfilUpdateQuery = null;
+                if ((newPass == null && reNewPass == null) || (newPass.isEmpty() && reNewPass.isEmpty())) {
+                    if(nicename.isEmpty() || nicename == null){
+                        prfilUpdateQuery = "UPDATE `user` SET `name`=?,`surname`=?,`username`=?,`email`=? WHERE `id`=?";
+                        conSql.executeQuery(prfilUpdateQuery, name, surname, username, email, id);
+                    }else{
+                        String profilDoctorQuery = "UPDATE `doctorInfo` SET `name`=? WHERE `userId`=?";
+                        prfilUpdateQuery = "UPDATE `user` SET `name`=?,`surname`=?,`username`=?,`email`=? WHERE `id`=?";
+                        conSql.executeQuery(prfilUpdateQuery, name, surname, username, email, id);
+                        conSql.executeQuery(profilDoctorQuery, nicename, id);
+
+                    }
+                    messageOk = "Profil Başarılı Bir Şekilde Güncellendi.";
+                    appointmentMade = "true";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                    //sifreler yanilenecek
+                } else if ((newPass != null && reNewPass != null) || !(newPass.isEmpty() && reNewPass.isEmpty())) {
+                    try {
+
+                        if (newPass.equals(reNewPass) && !newPass.equals("") && !reNewPass.equals("")) {
+                            if(oldPass.equals(helper.decrypt(userInfo.get(0).getPass()))) {
+
+
+                                prfilUpdateQuery = "UPDATE `user` SET `name`=?,`surname`=?,`username`=?,`email`=?, `pass`=? WHERE `id`=?";
+                                conSql.executeQuery(prfilUpdateQuery, name, surname, username, email, helper.encrypt(newPass), id);
+                                messageOk = "Profil Başarılı Bir Şekilde Güncellendi.";
+                                appointmentMade = "true";
+                                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                            }else {
+                                messageOk = "Önceki Şifre Doğru Değil.";
+                                appointmentMade = "false";
+                                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                            }
+                        } else {
+                            messageOk = "Yazdığınız Şifreler Aynı Olmalı. Ve Boşluk Kullanmyaın!";
+                            appointmentMade = "false";
+                            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                        }
+                    } catch (Exception e) {
+                        messageOk = "Bir Hata Oluştu.";
+                        appointmentMade = "false";
+                        response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+                    }
+                } else {
+                    messageOk = "Bir Hata Oluştu.";
+                    appointmentMade = "false";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                }
+
+
+            } else if (iam.equals("profilAdd")) {
+                try {
+                    String id = null;
+                    String docktorSizeQuery = "SELECT * FROM `user`";
+                    id = Integer.toString(conSql.getUserInfos(docktorSizeQuery).size() + 1);
+
+                    String name = new String(request.getParameter("addProfilName").getBytes("ISO-8859-9"), "UTF-8");
+                    String surname = new String(request.getParameter("addProfilSurname").getBytes("ISO-8859-9"), "UTF-8");
+                    String username = new String(request.getParameter("addProfilUserName").getBytes("ISO-8859-9"), "UTF-8");
+                    String email = request.getParameter("addProfilEmail");
+                    String newPass = request.getParameter("addNewPass");
+                    String reNewPass = request.getParameter("addReNewPass");
+                    String nicename = new String(request.getParameter("addProfilNicename").getBytes("ISO-8859-9"), "UTF-8");
+
+                    if(newPass.equals(reNewPass)){
+                        String addQuery = "INSERT INTO `user`(`id`, `name`, `surname`, `username`, `email`, `pass`) " +
+                                "VALUES (?,?,?,?,?,?)";
+                        String doctorAddQuery = "INSERT INTO `doctorInfo`(`name`, `userId`) VALUES (?,?)";
+                        conSql.executeQuery(addQuery,id, name, surname, username, email, helper.encrypt(newPass));
+                        conSql.executeQuery(doctorAddQuery, nicename, id);
+                        messageOk = "Profil Başarılı Bir Şekilde Eklendi.";
+                        appointmentMade = "true";
+                        response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                    }else{
+                        messageOk = "Yazdığınız Şifreler Aynı Olmalı.";
+                        appointmentMade = "false";
+                        response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                    }
+
+                } catch (Exception e) {
+                    messageOk = "Bir Hata Oluştu.";
+                    appointmentMade = "false";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                }
+
+            } else {
+                messageOk = "Bir Hata Oluştu.";
+                appointmentMade = "false";
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+            }
+        }catch (Exception e){
+            messageOk = "Bir Hata Oluştu.";
+            appointmentMade = "false";
+            response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+        }
+    }
+    else{
+        messageOk = "Bir Hata Oluştu.";
+        appointmentMade = "false";
+        response.sendRedirect("index.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
     }
 
 %>
