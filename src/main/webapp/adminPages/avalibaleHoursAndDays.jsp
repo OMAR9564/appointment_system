@@ -108,13 +108,14 @@
 
     String sessionId = request.getSession().getId();
     boolean isValidToken = helper.validateToken(sessionId, ip);
-
-    if (clientIP != null && !(clientIP.equals(ip)) && (username.isEmpty() || username ==null)
-            && (name.isEmpty() || name ==null) && (surname.isEmpty() || surname ==null)
-            && (email.isEmpty() || email ==null)){
+    if (clientIP == null || !(clientIP.equals(ip)) ||
+            username == null || username.isEmpty() ||
+            name == null || name.isEmpty() ||
+            surname == null || surname.isEmpty() ||
+            email == null || email.isEmpty()
+    ) {
         response.sendRedirect("loginPage.jsp");
-        return;
-    }else{
+    } else {
 
 
 
