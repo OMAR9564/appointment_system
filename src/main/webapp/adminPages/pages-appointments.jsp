@@ -462,6 +462,7 @@
                                                         <input type="text" value="appointmentEdit" name="iam" hidden>
                                                         <input type="text" value="pages-appointments.jsp" name="page" hidden>
                                                         <input type="text" class="appointAllHour" name="appointAllHour" id="appointAllHour" hidden>
+                                                        <input type="text" id="editCookieUsername" name="editCookieUsername" value="<%= _doctorId %>" hidden>
 
 
 

@@ -77,18 +77,18 @@
                                     <div class="section text-center">
                                         <h4 class="mb-4 pb-3">Şifremi Unuttum</h4>
                                         <p class="wrong-pass"></p>
-                                        <form action="adminSqlCon.jsp" method="POST" id="forgetPassForm">
+                                        <form action="forgetPassPage.jsp" method="POST" id="forgetPassForm">
                                             <div class="form-group">
-                                                <input type="email" name="logemail" class="form-style validate-input" placeholder="E-Postanız"
+                                                <input type="email" name="forgetEmail" class="form-style validate-input" placeholder="E-Postanız"
                                                        autocomplete="off" required >
                                                 <i class="input-icon uil uil-at"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <input type="text" name="logeuser" class="form-style validate-input" placeholder="Kullanıcı Adınız"
+                                                <input type="text" name="forgetUsername" class="form-style validate-input" placeholder="Kullanıcı Adınız"
                                                        autocomplete="off" required>
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
-                                            <a href="#" class="btn mt-4" onclick="document.getElementById('loginform').submit();">Şifremi Gönder</a>
+                                            <a href="#" class="btn mt-4" onclick="document.getElementById('forgetPassForm').submit();">Şifremi Gönder</a>
                                             <div class="form-check form-switch mt-3">
                                                 <style>
 

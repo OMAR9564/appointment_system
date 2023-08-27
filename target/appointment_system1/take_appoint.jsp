@@ -48,12 +48,28 @@
     ArrayList<GetInfo> locationCount = new ArrayList<>();
     ArrayList<String> _locationCount = new ArrayList<>();
 
+    String appointYear = request.getParameter("selected-year");
+    String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
+    String appointDay = request.getParameter("selected-dayIn");
+    String appointTime = request.getParameter("selected-hour");
+    String custName = new String(request.getParameter("cust-name").getBytes("ISO-8859-9"), "UTF-8");
+    String custSurname = new String(request.getParameter("cust-surname").getBytes("ISO-8859-9"), "UTF-8");
+    String custPhone = request.getParameter("cust-phone");
+    String doctorName = request.getParameter("doctor-name");
+    String locName = request.getParameter("loc-name");
+    String intervalType = request.getParameter("interval-type");
+    String pageName = request.getParameter("page-name");
+
+
     String selectedDoktor = request.getParameter("cookie-username");
+    if (selectedDoktor == null){
+        selectedDoktor = helper.removeWord(doctorName, "doctor");
+    }
 
 
     String locationQuery = "SELECT * FROM locationInfo WHERE id = ?";
-    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ? AND `userId`=?";
-    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ? AND `userId`=?";
+    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ? AND `doctorId`=?";
+    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ? AND `doctorId`=?";
     String doctorCountQuery = "SELECT * FROM `doctorInfo`";
     String reverationTagNamesQuery = "SELECT * FROM `reservationInfo`";
     String locationCountQuery = "SELECT * FROM `locationInfo`";
@@ -75,17 +91,6 @@
         _locationCount.add(Integer.toString(i));
     }
 
-    String appointYear = request.getParameter("selected-year");
-    String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
-    String appointDay = request.getParameter("selected-dayIn");
-    String appointTime = request.getParameter("selected-hour");
-    String custName = new String(request.getParameter("cust-name").getBytes("ISO-8859-9"), "UTF-8");
-    String custSurname = new String(request.getParameter("cust-surname").getBytes("ISO-8859-9"), "UTF-8");
-    String custPhone = request.getParameter("cust-phone");
-    String doctorName = request.getParameter("doctor-name");
-    String locName = request.getParameter("loc-name");
-    String intervalType = request.getParameter("interval-type");
-    String pageName = request.getParameter("page-name");
 
     if(pageName == null ||pageName.equals("")){
         response.sendRedirect("page404.jsp");
@@ -242,6 +247,7 @@
                 int _tempEndtHourWithMuniteToMunite = _tempEndtHourToMunite + Integer.parseInt(_tempSplitEndHour[1]);
                 int counter = 0;
 
+                //control if other user and I take appointment in one time
                 for (int j = 0; j < appStartHours.size(); j++) {
                     String tempAppStartHour = appStartHours.get(j).getAppHour();
                     String tempAppEndHour = appEndHours.get(j).getAppHour();

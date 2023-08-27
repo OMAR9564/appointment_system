@@ -517,5 +517,28 @@ public class Helper {
         return storedToken != null && storedToken.equals(token);
     }
 
+    public static String generatePassword() {
+        String uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+
+        String allCharacters = uppercaseLetters + lowercaseLetters + digits;
+
+        Random random = new Random();
+        StringBuilder password = new StringBuilder();
+
+        // İlk karakter harf
+        password.append(allCharacters.charAt(random.nextInt(uppercaseLetters.length())));
+
+        // Sonraki 6 karakter harf ve rakam karışık
+        for (int i = 0; i < 6; i++) {
+            password.append(allCharacters.charAt(random.nextInt(allCharacters.length())));
+        }
+
+        // Son karakter rakam
+        password.append(digits.charAt(random.nextInt(digits.length())));
+
+        return password.toString();
+    }
 
 }
