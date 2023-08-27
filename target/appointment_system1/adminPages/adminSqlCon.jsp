@@ -17,10 +17,59 @@
 
 
 <%
+    Helper helper = new Helper();
+
+    //get user ip
+    String clientIP = request.getHeader("X-Forwarded-For");
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("Proxy-Client-IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("WL-Proxy-Client-IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("HTTP_CLIENT_IP");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
+    }
+    if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+        clientIP = request.getRemoteAddr();
+    }
+
+    Boolean finded = false;
+    String usernameCookie = null;
+
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("luna_token")) {
+                if (!cookie.getValue().isEmpty()) {
+                    usernameCookie = helper.decodeJWT(cookie.getValue());
+                    finded = true;
+                } else {
+                    finded = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!finded) {
+        HttpSession loginSession = request.getSession(false); // Yeni session oluşturulmasını engelle
+        if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
+            usernameCookie = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
+            finded = true;
+        }
+    }
+
+
     String pageName = request.getParameter("page");
     String iam = request.getParameter("iam");
-    Helper helper = new Helper();
     ArrayList<GetInfo> calendarSqlId = new ArrayList<>();
+
+
+
 
     String appointmentMade = "true";
     String messageOk = "";
@@ -49,14 +98,17 @@
                 String deleted = calendarService.deleteEvent(eventID, calID);
                 if(deleted.equals("true")) {
                     conSql.executeQuery(deleteQuery, deleteId);
-
                     messageOk = "Kullanıcı Başarılı Bir Şekilde Silindi.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "deleteAppiontment");
+
                     appointmentMade = "true";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                 }
 
             } catch (Exception e) {
                 appointmentMade = "false";
+                helper.createLog(appointmentMade, usernameCookie, clientIP, "deleteAppiontment");
+
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
                 out.println("Bir hata oluştu: " + e.getMessage());
@@ -133,7 +185,10 @@
                     }
                 }
                 if (!appointAvalible) {
+
                     String messageDic = "Seçtiğiniz saat aralığı başka bir kullanıcı tarafından rezerve edilmiştir. Lütfen başka bir saat aralığı seçin.";
+                    helper.createLog(messageDic, usernameCookie, clientIP, "ErrorAddAppiontment");
+
                     String appointmentMade1 = "false";
                     String encodedMessage = URLEncoder.encode(appointmentMade1, "UTF-8");
                     String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
@@ -175,6 +230,8 @@
                     if (updated.equals("true")) {
                         conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
                         messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
+                        helper.createLog(messageOk, usernameCookie, clientIP, "UpdateAppointment");
+
                         appointmentMade = "true";
                         response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -182,8 +239,11 @@
                 }
 
                 } catch(Exception e){
+
                     appointmentMade = "false";
-                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
+                helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorUpdateAppointment");
+
+                response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
                     out.println("Bir hata oluştu: " + e.getMessage());
                 }
@@ -222,12 +282,17 @@
                 conSql.executeQuery(insertQuery, name, surname, phone, doktorName, location, formattedDate, startHour, endHour, interval);
 
                 messageOk = "Kullanıcı Başarılı Bir Şekilde Eklendi.";
+                helper.createLog(messageOk, usernameCookie, clientIP, "AddAppointment");
+
                 appointmentMade = "true";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
 
             } catch (Exception e) {
+
                 appointmentMade = "false";
+                helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorAddAppointment");
+
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
                 out.println("Bir hata oluştu: " + e.getMessage());
@@ -256,12 +321,17 @@
             conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId, updateId, userId);
 
             messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
+            helper.createLog(messageOk, usernameCookie, clientIP, "UpdateSettings");
+
             appointmentMade = "true";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
 
         } catch (Exception e) {
+
             appointmentMade = "false";
+            helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorUpdateSettings");
+
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
             out.println("Bir hata oluştu: " + e.getMessage());
@@ -269,8 +339,6 @@
     }
     else if (pageName.equals("avalibaleHoursAndDays.jsp")) {
         if(iam != null && iam.equals("editDailyOCHour")  ){
-
-
         try {
 
             String updateId = request.getParameter("id");
@@ -295,12 +363,17 @@
             conSql.executeQuery(updateQuery, day, openingHour, closingHour, updateId, userId);
 
             messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
+            helper.createLog(messageOk, usernameCookie, clientIP, "EditDailyOCHour");
+
             appointmentMade = "true";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
 
         } catch (Exception e) {
+
             appointmentMade = "false";
+            helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorEditDailyOCHour");
+
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
             out.println("Bir hata oluştu: " + e.getMessage());
@@ -316,7 +389,7 @@
                 ConSql conSql = new ConSql();
 
                 conSql.executeQuery(deleteQuery, deleteId);
-
+                helper.createLog(deleteId, usernameCookie, clientIP, "DeleteDailyOCHour");
                 messageOk = "Gün Başarılı Bir Şekilde Silindi.";
                 appointmentMade = "true";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
@@ -324,6 +397,8 @@
 
             } catch (Exception e) {
                 appointmentMade = "false";
+                helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorDeleteDailyOCHour");
+
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
                 out.println("Bir hata oluştu: " + e.getMessage());
@@ -349,7 +424,10 @@
                 String checkDayQuery = "SELECT * FROM `dailyOCHour` WHERE `day` = ? AND `userID` =?";
                 countDayQuery = conSql.getDailyOCHour(checkDayQuery, day, userId);
                 if(countDayQuery.size() > 0){
+
                     messageOk = "Aynı Günde Birden Fazla Kural Yazılmaz.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "ErrorAddDailyOCHour");
+
                     appointmentMade = "false";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -363,11 +441,15 @@
                     conSql.executeQuery(insertQuery, day, openingHour, closingHour, userId);
 
                     messageOk = "Gün Başarılı Bir Şekilde Eklendi.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "AddDailyOCHour");
+
                     appointmentMade = "true";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                 }
 
             } catch (Exception e) {
+                helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorAddDailyOCHour");
+
                 appointmentMade = "false";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
@@ -398,22 +480,7 @@
                     if (depass.equals(password)){
                         //beni hatirla
                         if (remember != null) {
-                            String clientIP = request.getHeader("X-Forwarded-For");
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("Proxy-Client-IP");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("WL-Proxy-Client-IP");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("HTTP_CLIENT_IP");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getRemoteAddr();
-                            }
+
                             //start cookie
                             long expirationTime = 30L * 24 * 60 * 60 * 1000; // 30 gün
 
@@ -434,19 +501,19 @@
                                 throw new RuntimeException(e);
                             }
 
-                            Cookie usernameCookie = new Cookie("luna_token", usernameToken);
+                            Cookie _usernameCookie = new Cookie("luna_token", usernameToken);
                             Cookie nameCookie = new Cookie("lna_token", nameToken);
                             Cookie surnameCookie = new Cookie("lsna_token", surnameToken);
                             Cookie emailCookie = new Cookie("lema_token", emailToken);
                             Cookie ipCookie = new Cookie("lipad_token", ipToken);
 
-                            usernameCookie.setMaxAge((int) (expirationTime / 1000)); //saniye cinsinden
+                            _usernameCookie.setMaxAge((int) (expirationTime / 1000)); //saniye cinsinden
                             nameCookie.setMaxAge((int) (expirationTime / 1000));
                             surnameCookie.setMaxAge((int) (expirationTime / 1000));
                             emailCookie.setMaxAge((int) (expirationTime / 1000));
                             ipCookie.setMaxAge((int) (expirationTime / 1000));
 
-                            response.addCookie(usernameCookie);
+                            response.addCookie(_usernameCookie);
                             response.addCookie(nameCookie);
                             response.addCookie(surnameCookie);
                             response.addCookie(emailCookie);
@@ -456,41 +523,28 @@
 
                             appointmentMade = "true";
                             String dic = "Giriş başarılı bir şekilde yapıldı.";
+                            helper.createLog(dic, usernameCookie, clientIP, "login");
+
                             response.sendRedirect("index.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
 
                         }
                         //beni hatirlama
                         else{
                             //start session
-                            String clientIP = request.getHeader("X-Forwarded-For");
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("Proxy-Client-IP");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("WL-Proxy-Client-IP");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("HTTP_CLIENT_IP");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
-                            }
-                            if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
-                                clientIP = request.getRemoteAddr();
-                            }
-                            Cookie usernameCookie = new Cookie("luna_token", null);
+
+                            Cookie _usernameCookie = new Cookie("luna_token", null);
                             Cookie nameCookie = new Cookie("lna_token", null);
                             Cookie surnameCookie = new Cookie("lsna_token", null);
                             Cookie emailCookie = new Cookie("lema_token", null);
                             Cookie ipCookie = new Cookie("lipad_token", null);
 
-                            usernameCookie.setMaxAge(0); //saniye cinsinden
+                            _usernameCookie.setMaxAge(0); //saniye cinsinden
                             nameCookie.setMaxAge(0);
                             surnameCookie.setMaxAge(0);
                             emailCookie.setMaxAge(0);
                             ipCookie.setMaxAge(0);
 
-                            response.addCookie(usernameCookie);
+                            response.addCookie(_usernameCookie);
                             response.addCookie(nameCookie);
                             response.addCookie(surnameCookie);
                             response.addCookie(emailCookie);
@@ -524,7 +578,10 @@
 
 
                             appointmentMade = "true";
+
                             String dic = "Giriş başarılı bir şekilde yapıldı.";
+                            helper.createLog(dic, usernameCookie, clientIP, "login");
+
                             response.sendRedirect("index.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
 
                         }
@@ -533,6 +590,8 @@
                     else {
                         appointmentMade = "false";
                         String dic = "Girdiğiniz şifre yanlıştır.";
+                        helper.createLog(dic, usernameCookie, clientIP, "ErrorLogin");
+
                         response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
 
                     }
@@ -541,11 +600,15 @@
                 else {
                     appointmentMade = "false";
                     String dic = "Böyle bir kullanıcı adı bulunamadı.";
+                    helper.createLog(dic, usernameCookie, clientIP, "ErrorLogin");
+
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(dic));
                 }
 
             }catch (SQLException e){
                 appointmentMade = "false";
+                helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorLogin");
+
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(e.getMessage()));
 
                 e.printStackTrace();
@@ -555,19 +618,19 @@
         } else if (iam != null && iam.equals("forgetPass")) {
 
         } else if (iam != null && iam.equals("logout")) {
-            Cookie usernameCookie = new Cookie("luna_token", null);
+            Cookie _usernameCookie = new Cookie("luna_token", null);
             Cookie nameCookie = new Cookie("lna_token", null);
             Cookie surnameCookie = new Cookie("lsna_token", null);
             Cookie emailCookie = new Cookie("lema_token", null);
             Cookie ipCookie = new Cookie("lipad_token", null);
 
-            usernameCookie.setMaxAge(0); //saniye cinsinden
+            _usernameCookie.setMaxAge(0); //saniye cinsinden
             nameCookie.setMaxAge(0);
             surnameCookie.setMaxAge(0);
             emailCookie.setMaxAge(0);
             ipCookie.setMaxAge(0);
 
-            response.addCookie(usernameCookie);
+            response.addCookie(_usernameCookie);
             response.addCookie(nameCookie);
             response.addCookie(surnameCookie);
             response.addCookie(emailCookie);
@@ -621,6 +684,8 @@
 
                     }
                     messageOk = "Profil Başarılı Bir Şekilde Güncellendi.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "ProfilEdit");
+
                     appointmentMade = "true";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -635,26 +700,36 @@
                                 prfilUpdateQuery = "UPDATE `user` SET `name`=?,`surname`=?,`username`=?,`email`=?, `pass`=? WHERE `id`=?";
                                 conSql.executeQuery(prfilUpdateQuery, name, surname, username, email, helper.encrypt(newPass), id);
                                 messageOk = "Profil Başarılı Bir Şekilde Güncellendi.";
+                                helper.createLog(messageOk, usernameCookie, clientIP, "ProfilEdit");
+
                                 appointmentMade = "true";
                                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                             }else {
                                 messageOk = "Önceki Şifre Doğru Değil.";
+                                helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilEdit");
+
                                 appointmentMade = "false";
                                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
                             }
                         } else {
                             messageOk = "Yazdığınız Şifreler Aynı Olmalı. Ve Boşluk Kullanmyaın!";
+                            helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilEdit");
+
                             appointmentMade = "false";
                             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                         }
                     } catch (Exception e) {
                         messageOk = "Bir Hata Oluştu.";
+                        helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorProfilEdit");
+
                         appointmentMade = "false";
                         response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
                     }
                 } else {
                     messageOk = "Bir Hata Oluştu.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilEdit");
+
                     appointmentMade = "false";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -682,11 +757,15 @@
                         conSql.executeQuery(addQuery,id, name, surname, username, email, helper.encrypt(newPass));
                         conSql.executeQuery(doctorAddQuery, nicename, id);
                         messageOk = "Profil Başarılı Bir Şekilde Eklendi.";
+                        helper.createLog(messageOk, usernameCookie, clientIP, "profilAdd");
+
                         appointmentMade = "true";
                         response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
                     }else{
                         messageOk = "Yazdığınız Şifreler Aynı Olmalı.";
+                        helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilAdd");
+
                         appointmentMade = "false";
                         response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -694,6 +773,8 @@
 
                 } catch (Exception e) {
                     messageOk = "Bir Hata Oluştu.";
+                    helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorProfilAdd");
+
                     appointmentMade = "false";
                     response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
 
@@ -701,17 +782,23 @@
 
             } else {
                 messageOk = "Bir Hata Oluştu.";
+                helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilAdd");
+
                 appointmentMade = "false";
                 response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
             }
         }catch (Exception e){
             messageOk = "Bir Hata Oluştu.";
+            helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorProfilAdd");
+
             appointmentMade = "false";
             response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
         }
     }
     else{
         messageOk = "Bir Hata Oluştu.";
+        helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilAdd");
+
         appointmentMade = "false";
         response.sendRedirect("index.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
     }

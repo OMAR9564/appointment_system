@@ -541,4 +541,23 @@ public class Helper {
         return password.toString();
     }
 
+    public static void createLog(String name, String username, String ip, String action){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
+        String currentDate = dateFormat.format(new Date());
+        String currentTime = timeFormat.format(new Date());
+
+        String logMessage = "Date: " + currentDate + " " +currentTime + ",action: " + action + ", username: " + username + " " + "actionId: " + name + "ip: " + ip + "\n";
+        String logFileName = "log_" + currentDate + ".log";
+
+        try {
+            FileWriter writer = new FileWriter(logFileName, true); // true for appending
+            writer.write(logMessage);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

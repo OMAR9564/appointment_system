@@ -12,6 +12,53 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
+  Helper helper = new Helper();
+
+  //get user ip
+  String clientIP = request.getHeader("X-Forwarded-For");
+  if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+    clientIP = request.getHeader("Proxy-Client-IP");
+  }
+  if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+    clientIP = request.getHeader("WL-Proxy-Client-IP");
+  }
+  if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+    clientIP = request.getHeader("HTTP_CLIENT_IP");
+  }
+  if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+    clientIP = request.getHeader("HTTP_X_FORWARDED_FOR");
+  }
+  if (clientIP == null || clientIP.isEmpty() || "unknown".equalsIgnoreCase(clientIP)) {
+    clientIP = request.getRemoteAddr();
+  }
+
+  Boolean finded = false;
+  String usernameCookie = null;
+
+  Cookie[] cookies = request.getCookies();
+  if (cookies != null) {
+    for (Cookie cookie : cookies) {
+      if (cookie.getName().equals("luna_token")) {
+        if (!cookie.getValue().isEmpty()) {
+          usernameCookie = helper.decodeJWT(cookie.getValue());
+          finded = true;
+        } else {
+          finded = false;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!finded) {
+    HttpSession loginSession = request.getSession(false); // Yeni session oluşturulmasını engelle
+    if (loginSession != null && loginSession.getAttribute("luna_token") != null) {
+      usernameCookie = helper.decodeJWT((String) loginSession.getAttribute("luna_token"));
+      finded = true;
+    }
+  }
+
+
   ConSql conSql = new ConSql();
 
   String message = null;
@@ -26,7 +73,6 @@
   if(forgetMail != null && forgetUsername != null){
     try {
       ArrayList<GetInfo> infos = new ArrayList<>();
-      Helper helper = new Helper();
       infos = conSql.getUserInfos(checkMailUserQuery, forgetUsername, forgetMail);
       if (infos.size() > 0){
         //send mail
@@ -50,11 +96,15 @@
             conSql.executeQuery(passUpdateQuery, newPass, username, id);
             message = "true";
             dic = "Şifreniz e-posta adresinize gönderildi.";
+            helper.createLog(dic, usernameCookie, clientIP, "TrueForgetPass");
+
             response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(message) + "&dic=" + URLEncoder.encode(dic));
 
           }catch (Exception e ){
             message = "false";
             dic = "Maalesef, bir hata oluştu.";
+            helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorForgetPass");
+
             response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(message) + "&dic=" + URLEncoder.encode(dic));
 
           }
@@ -62,8 +112,12 @@
 
 
         }else{
+          helper.createLog(name, usernameCookie, clientIP, "ErrorForgetPass");
+
           message = "false";
           dic = "Maalesef, e-posta gönderilirken bir hata oluştu.";
+          helper.createLog(dic, usernameCookie, clientIP, "ErrorForgetPass");
+
           response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(message) + "&dic=" + URLEncoder.encode(dic));
 
         }
@@ -71,8 +125,11 @@
 
 
       }else{
+
         message = "false";
         dic = "Böyle bir kullanıcı bulunmamaktadır.";
+        helper.createLog(dic, usernameCookie, clientIP, "ErrorForgetPass");
+
         response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(message) + "&dic=" + URLEncoder.encode(dic));
 
       }
@@ -80,13 +137,18 @@
     }catch (Exception e){
       message = "false";
       dic = "Maalesef, bir hata oluştu.";
+      helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorForgetPass");
+
       response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(message) + "&dic=" + URLEncoder.encode(dic));
 
     }
     }
     else{
+    String temp = "E-Mail"+forgetMail;
+    helper.createLog(temp, usernameCookie, clientIP, "ErrorForgetPass");
     message = "false";
     dic = "Bilgileri Yanlış Girdiniz.";
+    helper.createLog(dic, usernameCookie, clientIP, "ErrorForgetPass");
     response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(message) + "&dic=" + URLEncoder.encode(dic));
   }
 
