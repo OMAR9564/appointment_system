@@ -104,7 +104,6 @@
     }
 
     String sessionId = request.getSession().getId();
-    boolean isValidToken = helper.validateToken(sessionId, ip);
     if (clientIP == null || !(clientIP.equals(ip)) ||
             username == null || username.isEmpty() ||
                     name == null || name.isEmpty() ||

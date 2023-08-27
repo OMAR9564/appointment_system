@@ -176,12 +176,14 @@ function selectDay(event, firstDayIndex) {
     const warningMessage = document.getElementById("warning-message")
     const formattedDate = formatDate(selectedDate);
     const intervalType = document.getElementById("interval-type");
+    const selectDoctor = document.getElementById("doctor-name").value;
+
 
 
     var hours = []; // Boş bir dizi oluşturun
 
     var xhttp = new XMLHttpRequest();
-    var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate) + "&selectedOption=" + encodeURIComponent(selectedOption);
+    var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(formattedDate) + "&selectedOption=" + encodeURIComponent(selectedOption) + "&selectedDoktor=" + encodeURIComponent(selectDoctor);
     xhttp.open("GET", url, true);
     xhttp.send();
     xhttp.onreadystatechange = function () {

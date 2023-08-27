@@ -106,7 +106,6 @@
     }
 
     String sessionId = request.getSession().getId();
-    boolean isValidToken = helper.validateToken(sessionId, ip);
     if (clientIP == null || !(clientIP.equals(ip)) ||
             username == null || username.isEmpty() ||
             name == null || name.isEmpty() ||
@@ -115,17 +114,21 @@
     ) {
         response.sendRedirect("loginPage.jsp");
     } else {
-
-
-
-
+        ConSql consql = new ConSql();
 
         //end control is login
 
+        ArrayList<GetInfo> doctorId = new ArrayList<>();
+        String doctorIdQuery = "SELECT di.*\n" +
+                "FROM doctorInfo di\n" +
+                "INNER JOIN user u ON di.userId = u.id\n" +
+                "WHERE u.username = ?;\n";
+        doctorId = consql.getInfos(doctorIdQuery, username);
+        String _doctorId = Integer.toString(doctorId.get(0).getId());
+        String _doctorName = doctorId.get(0).getName();
 
 
-
-    ArrayList<GetInfo> info = new ArrayList<>();
+        ArrayList<GetInfo> info = new ArrayList<>();
     String sqlQuery = "";
     String filterName = "";
     String selectedOptionName = "";
@@ -134,9 +137,10 @@
     filter = request.getParameter("filter");
     selectedOption = request.getParameter("selectedOption");
 
-    ConSql consql = new ConSql();
-    sqlQuery = "SELECT * FROM `appointments` WHERE date = CURDATE() ORDER BY `appointments`.`startHour` DESC";
-    info = consql.getAppointmentData(sqlQuery);
+    sqlQuery = "SELECT * FROM `appointments`\n" +
+            "WHERE `date` = CURDATE() AND `doctorId` = ?\n" +
+            "ORDER BY `appointments`.`startHour` DESC, `appointments`.`endHour` DESC;\n";
+    info = consql.getAppointmentData(sqlQuery, _doctorId);
 
     ArrayList<GetInfo> locInfo = new ArrayList<>();
     ArrayList<GetInfo> docInfo = new ArrayList<>();
@@ -220,6 +224,8 @@
         selectedOptionName = _revNameInfo.get(0).getRezervationName();
     }
     urlSession.setAttribute("selectedOptionName", selectedOptionName);
+
+
 
 
 %>
@@ -355,6 +361,7 @@
                                             <% } %>
                                         </ul>
                                     </div>
+                                    <input id="username-cookie" hidden="hidden" value="<%= _doctorId %>">
                                 </h5>
 
                                 <script>
@@ -592,16 +599,12 @@
                                                             <select class="form-control validate-input doctorInput" name="doktorName"
                                                                     id="doktorName">
                                                                 <option value="" selected hidden>Seçin</option>
-                                                                <%
-                                                                    for (int i = 0; i < docInfo.size(); i++) {
-                                                                %>
+
                                                                 <option value=<%
-                                                                    out.println((docInfo.get(i).getId()));%>>
-                                                                    <%out.println(docInfo.get(i).getName());%>
+                                                                    out.println(_doctorId);%>>
+                                                                    <%out.println(_doctorName);%>
                                                                 </option>
-                                                                <%
-                                                                    }
-                                                                %>
+
                                                             </select>
                                                         </div>
                                                         <div class="mb-3 col-md-6 ms-auto">
@@ -845,16 +848,12 @@
                                                         name="add-doktorName"
                                                         id="add-doktorName">
                                                     <option value="" selected hidden>Seçin</option>
-                                                    <%
-                                                        for (int i = 0; i < docInfo.size(); i++) {
-                                                    %>
+
                                                     <option value=<%
-                                                        out.println((docInfo.get(i).getId()));%>>
-                                                        <%out.println(docInfo.get(i).getName());%>
+                                                        out.println(_doctorId);%>>
+                                                        <%out.println(_doctorName);%>
                                                     </option>
-                                                    <%
-                                                        }
-                                                    %>
+
                                                 </select>
                                             </div>
                                             <div class="mb-3 col-md-6 ms-auto">
@@ -931,6 +930,7 @@
                                                         <input type="hidden" id="loc-name" name="loc-name" value="">
                                                         <input type="hidden" id="interval-type" name="interval-type" value="">
                                                         <input type="hidden" id="page-name" name="page-name" value="adminPages/index.jsp">
+                                                        <input type="hidden" id="cookie-username" name="cookie-username"value="<%= _doctorId %>">
 
 
                                                         <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"
@@ -1028,6 +1028,7 @@
         //Add Hours
         var selectedFilter = date.trim();
         var selectedOption = interval.trim();
+        var selectDoctor = doctorName.trim();
 
 
         // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
@@ -1043,7 +1044,7 @@
         const warningMessage = document.getElementById("edit-warning-messageIndex")
 
         var xhttp = new XMLHttpRequest();
-        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption) + "&selectedDoktor=" + encodeURIComponent(selectDoctor);
         xhttp.open("GET", url, true);
         xhttp.send();
 
@@ -1283,11 +1284,13 @@
 
     var dateInput = document.getElementById('editDate');
     var intervalInput = document.getElementById('editInterval');
+    var doctorInput = document.getElementById('doktorName');
     dateInput.addEventListener('change', getHours);
     intervalInput.addEventListener('change', getHours);
+    doctorInput.addEventListener('change', getHours);
 
 
-    //add hour to modify data
+    //add hour to modify data for edit
     function getHours(){
         //Add Hours
         var startHour = button.getAttribute('data-bs-startHour');
@@ -1298,6 +1301,7 @@
 
         var selectedFilter = dateInput.value;
         var selectedOption = intervalInput.value;
+        var selectedDoctor = doctorInput.value;
 
 
         // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
@@ -1309,11 +1313,11 @@
         }
 
         console.log(selectedFilter);
-        var hours = []; // Boş bir dizi oluşturun
+        var hours = [];
         const warningMessage = document.getElementById("edit-warning-messageIndex")
 
         var xhttp = new XMLHttpRequest();
-        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+        var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption) + "&selectedDoktor=" + encodeURIComponent(selectedDoctor);
         xhttp.open("GET", url, true);
         xhttp.send();
 
@@ -1380,6 +1384,9 @@
         };
 
     }
+
+
+
 
 
     function customSort(timeSlots) {

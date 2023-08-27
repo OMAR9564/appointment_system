@@ -14,11 +14,15 @@
 
 <%
 try {
+    Helper helper = new Helper();
 
     ConSql conSql = new ConSql();
     ArrayList<GetInfo> _revNameInfo = new ArrayList<>();
     String _filter = request.getParameter("filter");
     String selectedOption = request.getParameter("selectedOption");
+    String selectedDoktor = request.getParameter("selectedDoktor");
+    selectedDoktor = helper.removeWord(selectedDoktor, "doctor");
+
     String filter = "";
 
 
@@ -46,15 +50,15 @@ try {
 
 
 
-    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
-    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
-    String settingsQuery = "SELECT `openingHour`, `closingHour` FROM `settings`";
-    String dailyOCHourQuery = "SELECT `openingHour`, `closingHour` FROM `dailyOCHour` WHERE day = ?";
+    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ? AND `doctorId`=?";
+    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ? AND `doctorId`=?";
+    String settingsQuery = "SELECT `openingHour`, `closingHour` FROM `settings` WHERE `userId`=?";
+    String dailyOCHourQuery = "SELECT `openingHour`, `closingHour` FROM `dailyOCHour` WHERE day = ? AND `userId`=?";
 
-    ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, filter);
-    ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, filter);
-    ArrayList<GetInfo> openingClosingHours = conSql.getOpeningClosingHours(settingsQuery);
-    ArrayList<GetInfo> dailyOCHours = conSql.getDailyOpeningClosingHours(dailyOCHourQuery, filter);
+    ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, filter, selectedDoktor);
+    ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, filter, selectedDoktor);
+    ArrayList<GetInfo> openingClosingHours = conSql.getOpeningClosingHours(settingsQuery, selectedDoktor);
+    ArrayList<GetInfo> dailyOCHours = conSql.getDailyOpeningClosingHours(dailyOCHourQuery, filter, selectedDoktor);
 
      // Calculate the working hours
     String openingTime = openingClosingHours.get(0).getOpeningHour();
@@ -317,7 +321,6 @@ try {
 
 }} catch (Exception e) {
     // Handle exceptions appropriately (e.g., log the error, return an error JSON, etc.)
-    System.out.println(e);
     out.println("[]"); // Return an empty JSON array as a response if an error occurs
 }
 %>

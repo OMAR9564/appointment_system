@@ -191,14 +191,14 @@
             String appointMessageBody = new String(request.getParameter("appointMessageBody").getBytes("ISO-8859-9"), "UTF-8");
             String appointMessageTitle = new String(request.getParameter("appointMessageTitle").getBytes("ISO-8859-9"), "UTF-8");
             String calenarId = request.getParameter("calendarId");
-
+            String userId = request.getParameter("settingsUsernameCookie");
             String updateQuery = "UPDATE `settings` SET `companyName`=?," +
                     "`openingHour`=?,`closingHour`=?,`appointMessageBody`=?," +
-                    "`appointMessageTitle`=?,`holiday`=?, `calendarID`=? WHERE `id`=?";
+                    "`appointMessageTitle`=?,`holiday`=?, `calendarID`=? WHERE `id`=? AND `userId`=?";
 
             ConSql conSql = new ConSql();
 
-            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId, updateId);
+            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId, updateId, userId);
 
             messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
             appointmentMade = "true";
@@ -223,6 +223,7 @@
             day = helper.changePatternOfDate(day);
             String openingHour = request.getParameter("openingHour");
             String closingHour = request.getParameter("closingHour");
+            String userId = request.getParameter("edit-cookie-userId-HD");
 
             //if day is holiday
             if(openingHour == null || closingHour == null){
@@ -232,11 +233,11 @@
             }
 
             String updateQuery = "UPDATE `dailyOCHour` SET `day`=?," +
-                    "`openingHour`=?,`closingHour`=? WHERE `id`=?";
+                    "`openingHour`=?,`closingHour`=? WHERE `id`=? AND `userId`=?";
 
             ConSql conSql = new ConSql();
 
-            conSql.executeQuery(updateQuery, day, openingHour, closingHour, updateId);
+            conSql.executeQuery(updateQuery, day, openingHour, closingHour, updateId, userId);
 
             messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
             appointmentMade = "true";
@@ -279,6 +280,8 @@
                 day = helper.changePatternOfDate(day);
                 String openingHour = request.getParameter("addOpeningHour");
                 String closingHour = request.getParameter("addClosingHour");
+                String userId = request.getParameter("add-cookie-userId-HD");
+
                 //if day is holiday
                 if(openingHour == null || closingHour == null){
                     openingHour = "0";
@@ -288,8 +291,8 @@
                 ConSql conSql = new ConSql();
                 ArrayList<GetInfo> countDayQuery = new ArrayList<>();
                 //control if add two rule in one day
-                String checkDayQuery = "SELECT * FROM `dailyOCHour` WHERE `day` = ?";
-                countDayQuery = conSql.getDailyOCHour(checkDayQuery, day);
+                String checkDayQuery = "SELECT * FROM `dailyOCHour` WHERE `day` = ? AND `userID` =?";
+                countDayQuery = conSql.getDailyOCHour(checkDayQuery, day, userId);
                 if(countDayQuery.size() > 0){
                     messageOk = "Aynı Günde Birden Fazla Kural Yazılmaz.";
                     appointmentMade = "false";
@@ -299,10 +302,10 @@
                 else {
 
 
-                    String insertQuery = "INSERT INTO `dailyOCHour`(`day`, `openingHour`, `closingHour`) " +
-                            "VALUES (?, ?, ?)";
+                    String insertQuery = "INSERT INTO `dailyOCHour`(`day`, `openingHour`, `closingHour`, `userId`) " +
+                            "VALUES (?, ?, ?, ?)";
 
-                    conSql.executeQuery(insertQuery, day, openingHour, closingHour);
+                    conSql.executeQuery(insertQuery, day, openingHour, closingHour, userId);
 
                     messageOk = "Gün Başarılı Bir Şekilde Eklendi.";
                     appointmentMade = "true";

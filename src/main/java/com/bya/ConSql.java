@@ -111,7 +111,7 @@ public class ConSql {
         }
         return sqlInfo;
     }
-    public ArrayList<GetInfo> readHourData(String query, String date) throws SQLException {
+    public ArrayList<GetInfo> readHourData(String query, String... params) throws SQLException {
 //        sqlQuery = SELECT `hour` FROM `appointments` WHERE `date`= "2023-03-17";
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
@@ -122,7 +122,9 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
-            stmt.setString(1, date);
+            for (int i = 0; i < params.length; i++){
+                stmt.setString(i+1, params[i]);
+            }
 
             rs = stmt.executeQuery();
 
@@ -268,7 +270,7 @@ public class ConSql {
         }
         return sqlInfo;
     }
-    public ArrayList<GetInfo> getOpeningClosingHours(String query) throws SQLException {
+    public ArrayList<GetInfo> getOpeningClosingHours(String query , String... params) throws SQLException {
         ArrayList<GetInfo> sqlInfo = new ArrayList<>();
         try {
             Connection conn = null;
@@ -278,7 +280,9 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
-
+            for (int i = 0; i < params.length; i++){
+                stmt.setString(i+1, params[i]);
+            }
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -335,8 +339,8 @@ public class ConSql {
             conn = getDatabaseConnection();
 
             stmt = conn.prepareStatement(query);
-            if(params.length != 0){
-                stmt.setString(1, params[0]);
+            for (int i = 0; i < params.length; i++){
+                stmt.setString(i+1, params[i]);
             }
 
             rs = stmt.executeQuery();

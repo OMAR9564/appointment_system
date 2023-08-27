@@ -334,9 +334,10 @@ window.addEventListener("load", function () {
   console.log(selectedFilter);
   var hours = []; // Boş bir dizi oluşturun
   const warningMessage = document.getElementById("warning-messageIndex")
+  const selectDoctor = document.getElementById("username-cookie").value;
 
   var xhttp = new XMLHttpRequest();
-  var url = "/adminPages/get_available_hours.jsp" + "?filter=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+  var url = "/adminPages/get_available_hours.jsp" + "?filter=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption) + "&selectedDoktor=" + encodeURIComponent(selectDoctor);
   xhttp.open("GET", url, true);
   xhttp.send();
 

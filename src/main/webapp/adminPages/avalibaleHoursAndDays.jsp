@@ -107,7 +107,6 @@
     }
 
     String sessionId = request.getSession().getId();
-    boolean isValidToken = helper.validateToken(sessionId, ip);
     if (clientIP == null || !(clientIP.equals(ip)) ||
             username == null || username.isEmpty() ||
             name == null || name.isEmpty() ||
@@ -117,7 +116,16 @@
         response.sendRedirect("loginPage.jsp");
     } else {
 
+        ConSql consql = new ConSql();
 
+        ArrayList<GetInfo> doctorId = new ArrayList<>();
+        String doctorIdQuery = "SELECT di.*\n" +
+                "FROM doctorInfo di\n" +
+                "INNER JOIN user u ON di.userId = u.id\n" +
+                "WHERE u.username = ?;\n";
+        doctorId = consql.getInfos(doctorIdQuery, username);
+        String _doctorId = Integer.toString(doctorId.get(0).getId());
+        String _doctorName = doctorId.get(0).getName();
 
 
         //end control is login
@@ -127,10 +135,9 @@
 
 
     ArrayList<GetInfo> dailyOCHours = new ArrayList<>();
-    ConSql consql = new ConSql();
-    sqlQuery = "SELECT * FROM `dailyOCHour` ORDER BY `dailyOCHour`.`day` DESC ";
+    sqlQuery = "SELECT * FROM `dailyOCHour` WHERE `userId`=? ORDER BY `dailyOCHour`.`day` DESC ";
     try {
-        dailyOCHours = consql.getDailyOCHour(sqlQuery);
+        dailyOCHours = consql.getDailyOCHour(sqlQuery, _doctorId);
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }
@@ -358,6 +365,7 @@
                                                                    name="day" id="day"  required>
                                                         </div>
                                                         <input type="text" value="editDailyOCHour" name="iam" hidden>
+                                                        <input value="<%=_doctorId%>" name="edit-cookie-userId-HD" hidden>
                                                         <input type="text" value="avalibaleHoursAndDays.jsp" name="page"
                                                                hidden>
 
@@ -433,6 +441,8 @@
                                                         <input type="text" value="addDailyOCHour" name="iam" hidden>
                                                         <input type="text" value="avalibaleHoursAndDays.jsp" name="page"
                                                                hidden>
+                                                        <input value="<%=_doctorId%>" name="add-cookie-userId-HD" hidden>
+
 
                                                         <div class="mb-3 col-md-6 ms-auto fs-6">
                                                             <div class="form-check form-switch">

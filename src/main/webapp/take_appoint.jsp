@@ -48,19 +48,22 @@
     ArrayList<GetInfo> locationCount = new ArrayList<>();
     ArrayList<String> _locationCount = new ArrayList<>();
 
+    String selectedDoktor = request.getParameter("cookie-username");
+
+
     String locationQuery = "SELECT * FROM locationInfo WHERE id = ?";
-    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
-    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
+    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ? AND `userId`=?";
+    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ? AND `userId`=?";
     String doctorCountQuery = "SELECT * FROM `doctorInfo`";
     String reverationTagNamesQuery = "SELECT * FROM `reservationInfo`";
     String locationCountQuery = "SELECT * FROM `locationInfo`";
-    String calendarIdQuery = "SELECT calendarID FROM `settings`";
+    String calendarIdQuery = "SELECT calendarID FROM `settings` WHERE `userId`=?";
 
-    calendarSqlId = conSql.getSettingName(calendarIdQuery);
+    calendarSqlId = conSql.getSettingName(calendarIdQuery, selectedDoktor);
 
 
     doctorCount = conSql.getInfos(doctorCountQuery);
-    for (int i = 0; i < doctorCount.size(); i++){
+    for (int i = 1; i <= doctorCount.size(); i++){
         _doctorCount.add(Integer.toString(i));
     }
     reverationTagNames = conSql.getRezervationInfos(reverationTagNamesQuery);
@@ -68,7 +71,7 @@
         _reverationTagNames.add(reverationTagNames.get(i).getRezervationNameTag());
     }
     locationCount = conSql.getInfos(locationCountQuery);
-    for (int i = 0; i < doctorCount.size(); i++){
+    for (int i = 1; i <= doctorCount.size(); i++){
         _locationCount.add(Integer.toString(i));
     }
 
@@ -213,8 +216,8 @@
 
 
                 date = appointYear + "-" + numOfMonth + "-" + appointDay;
-                ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, date);
-                ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, date);
+                ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, date, selectedDoktor);
+                ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, date, selectedDoktor);
 
                 //set sql setters
                 getInfo.setCustName(custName);

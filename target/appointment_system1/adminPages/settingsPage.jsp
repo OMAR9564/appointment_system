@@ -105,7 +105,6 @@
     }
 
     String sessionId = request.getSession().getId();
-    boolean isValidToken = helper.validateToken(sessionId, ip);
     if (clientIP == null || !(clientIP.equals(ip)) ||
             username == null || username.isEmpty() ||
             name == null || name.isEmpty() ||
@@ -114,8 +113,17 @@
     ) {
         response.sendRedirect("loginPage.jsp");
     } else {
+        ConSql consql = new ConSql();
 
 
+        ArrayList<GetInfo> doctorId = new ArrayList<>();
+        String doctorIdQuery = "SELECT di.*\n" +
+                "FROM doctorInfo di\n" +
+                "INNER JOIN user u ON di.userId = u.id\n" +
+                "WHERE u.username = ?;\n";
+        doctorId = consql.getInfos(doctorIdQuery, username);
+        String _doctorId = Integer.toString(doctorId.get(0).getId());
+        String _doctorName = doctorId.get(0).getName();
 
 
         //end control is login
@@ -124,9 +132,8 @@
 
 
         ArrayList<GetInfo> settingsInfo = new ArrayList<>();
-        ConSql consql = new ConSql();
-        sqlQuery = "SELECT * FROM settings";
-        settingsInfo = consql.getSettings(sqlQuery);
+        sqlQuery = "SELECT * FROM settings WHERE `userId`=?";
+        settingsInfo = consql.getSettings(sqlQuery, _doctorId);
 
         String requestStr = null;
         String discroption = null;
@@ -313,6 +320,7 @@
                                                                    name="companyName" id="companyName">
                                                         </div>
                                                         <input type="text" value="settingsEdit" name="iam" hidden>
+                                                        <input name="settingsUsernameCookie" hidden="hidden" value="<%= _doctorId %>">
                                                         <input type="text" value="settingsPage.jsp" name="page"
                                                                hidden>
 

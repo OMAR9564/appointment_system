@@ -6,25 +6,29 @@
 <%@ page import="java.util.List" %><%@ page import="com.bya.Helper"%>
 <%
 try {
-
+    Helper helper = new Helper();
     String selectedDate = request.getParameter("selectedDate");
     String selectedOption = request.getParameter("selectedOption");
+    String selectedDoktor = request.getParameter("selectedDoktor");
+    selectedDoktor = helper.removeWord(selectedDoktor, "doctor");
+
+
 
     //check if clock in clock pattern
     if (Helper.StringPatternCheck(selectedDate)){
 
 
 
-    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ?";
-    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ?";
-    String settingsQuery = "SELECT `openingHour`, `closingHour` FROM `settings`";
-    String dailyOCHourQuery = "SELECT `openingHour`, `closingHour` FROM `dailyOCHour` WHERE day = ?";
+    String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ? AND `doctorId`=?";
+    String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ? AND `doctorId`=?";
+    String settingsQuery = "SELECT `openingHour`, `closingHour` FROM `settings` WHERE `userId`=?";
+    String dailyOCHourQuery = "SELECT `openingHour`, `closingHour` FROM `dailyOCHour` WHERE day = ? AND `userId`=?";
 
     ConSql conSql = new ConSql();
-    ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, selectedDate);
-    ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, selectedDate);
-    ArrayList<GetInfo> openingClosingHours = conSql.getOpeningClosingHours(settingsQuery);
-    ArrayList<GetInfo> dailyOCHours = conSql.getDailyOpeningClosingHours(dailyOCHourQuery, selectedDate);
+    ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, selectedDate, selectedDoktor);
+    ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, selectedDate, selectedDoktor);
+    ArrayList<GetInfo> openingClosingHours = conSql.getOpeningClosingHours(settingsQuery, selectedDoktor);
+    ArrayList<GetInfo> dailyOCHours = conSql.getDailyOpeningClosingHours(dailyOCHourQuery, selectedDate, selectedDoktor);
 
      // Calculate the working hours
     String openingTime = openingClosingHours.get(0).getOpeningHour();

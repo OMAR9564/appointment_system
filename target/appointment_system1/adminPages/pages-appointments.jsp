@@ -1,4 +1,4 @@
-<%--
+        <%--
     Document   : pages-customers
     Created on : Dec 21, 2022, 10:32:33 PM
     Author     : omerfaruk
@@ -103,7 +103,7 @@
     }
 
     String sessionId = request.getSession().getId();
-    boolean isValidToken = helper.validateToken(sessionId, ip);
+    String _doctorId;
     if (clientIP == null || !(clientIP.equals(ip)) ||
             username == null || username.isEmpty() ||
             name == null || name.isEmpty() ||
@@ -113,8 +113,16 @@
         response.sendRedirect("loginPage.jsp");
     } else {
 
+        ConSql consql = new ConSql();
 
-
+        ArrayList<GetInfo> doctorId = new ArrayList<>();
+        String doctorIdQuery = "SELECT di.*\n" +
+                "FROM doctorInfo di\n" +
+                "INNER JOIN user u ON di.userId = u.id\n" +
+                "WHERE u.username = ?;\n";
+        doctorId = consql.getInfos(doctorIdQuery, username);
+        _doctorId = Integer.toString(doctorId.get(0).getId());
+        String _doctorName = doctorId.get(0).getName();
 
 
         //end control is login
@@ -143,46 +151,58 @@
         String locationNameQuery = "SELECT * FROM `locationInfo` WHERE `id` = ?";
 
 
-        ConSql consql = new ConSql();
         locInfo = consql.getInfos(locQuery);
         docInfo = consql.getInfos(docQuery);
         revInfo = consql.getRezervationInfos(reservationQuery);
         session.setAttribute("appointmentCount", Integer.toString(info.size()));
 
         if (filter != null && filter.equals("today")) {
-            sqlQuery = "SELECT * FROM `appointments` WHERE date = CURDATE() ORDER BY `appointments`.`startHour` DESC";
-            info = consql.getAppointmentData(sqlQuery);
+            sqlQuery = "SELECT * FROM `appointments` \n" +
+                    "WHERE date = CURDATE() AND `doctorId` = ?\n" +
+                    "ORDER BY `startHour` DESC;";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bugün";
         } else if (filter != null && filter.equals("thisMonth")) {
             sqlQuery = "SELECT * FROM `appointments`\n" +
                     "WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE())\n" +
-                    "ORDER BY `date` DESC, `startHour` DESC\n";
-            info = consql.getAppointmentData(sqlQuery);
+                    "  AND `doctorId` = 2\n" +
+                    "ORDER BY `date` DESC, `startHour` DESC;\n";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bu Ay";
         } else if (filter != null && filter.equals("theseThreeMonths")) {
-            sqlQuery = "SELECT * FROM `appointments` WHERE date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH) ORDER BY `date` DESC, `startHour` DESC;";
-            info = consql.getAppointmentData(sqlQuery);
+            sqlQuery = "SELECT * FROM `appointments`\n" +
+                    "WHERE doctorId = ? AND date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)\n" +
+                    "ORDER BY `date` DESC, `startHour` DESC;\n";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bu 3 Ay";
         } else if (filter != null && filter.equals("thisYear")) {
-            sqlQuery = "SELECT * FROM `appointments` WHERE YEAR(date) = YEAR(CURDATE()) ORDER BY `date` DESC, `startHour` DESC; ";
-            info = consql.getAppointmentData(sqlQuery);
+            sqlQuery = "SELECT * FROM `appointments`\n" +
+                    "WHERE doctorId = ? AND YEAR(date) = YEAR(CURDATE())\n" +
+                    "ORDER BY `date` DESC, `startHour` DESC;\n ";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bu Yıl";
         } else if (filter != null && filter.equals("all")) {
-            sqlQuery = "SELECT * FROM `appointments` ORDER BY `date` DESC, `startHour` DESC; ";
-            info = consql.getAppointmentData(sqlQuery);
+            sqlQuery = "SELECT * FROM `appointments`\n" +
+                    "WHERE doctorId = ?\n" +
+                    "ORDER BY `date` DESC, `startHour` DESC;\n";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Hepsi";
         } else if (filter == null) {
             sqlQuery = "SELECT * FROM `appointments`\n" +
-                    "WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE())\n" +
-                    "ORDER BY `date` DESC, `startHour` DESC\n";
-            info = consql.getAppointmentData(sqlQuery);
+                    "WHERE doctorId = ?\n" +
+                    "AND YEAR(date) = YEAR(CURDATE())\n" +
+                    "AND MONTH(date) = MONTH(CURDATE())\n" +
+                    "ORDER BY `date` DESC, `startHour` DESC;\n";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bu Ay";
 
         } else {
             sqlQuery = "SELECT * FROM `appointments`\n" +
-                    "WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE())\n" +
-                    "ORDER BY `date` DESC, `startHour` DESC\n";
-            info = consql.getAppointmentData(sqlQuery);
+                    "WHERE doctorId = ?\n" +
+                    "AND YEAR(date) = YEAR(CURDATE())\n" +
+                    "AND MONTH(date) = MONTH(CURDATE())\n" +
+                    "ORDER BY `date` DESC, `startHour` DESC;\n";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bu Ay";
 
         }
@@ -361,7 +381,7 @@
                                             }
                                         %>
                                         <td><span class="badge" style="color:black; font-size: 12px;">
-                                        <%= appLocation %>
+                                        <%=appLocation%>
                                         </span></td>
                                         <td><span class="badge" style="color:black; font-size: 12px;"><%
                                             out.println((String) session.getAttribute("AppDate"));%></span></td>
@@ -377,31 +397,43 @@
                                             }
                                         %>
                                         <td><span class="badge" style="color:black; font-size: 12px;">
-                                        <%= appInterval %>
+                                        <%=appInterval%>
                                         </span></td>
 
                                         <td>
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                                     data-bs-target="#editModal"
-                                                    data-bs-id="<%out.println(Integer.parseInt((String)session.getAttribute("custId")));%>"
-                                                    data-bs-nameSurname="<%out.println((String)session.getAttribute("custNameSurname"));%>"
-                                                    data-bs-name="<%out.println((String)session.getAttribute("custName"));%>"
-                                                    data-bs-surname="<%out.println((String)session.getAttribute("custSurname"));%>"
+                                                    data-bs-id="<%
+                        out.println(Integer.parseInt((String) session.getAttribute("custId")));%>"
+                                                    data-bs-nameSurname="<%
+                        out.println((String) session.getAttribute("custNameSurname"));%>"
+                                                    data-bs-name="<%
+                        out.println((String) session.getAttribute("custName"));%>"
+                                                    data-bs-surname="<%
+                        out.println((String) session.getAttribute("custSurname"));%>"
 
-                                                    data-bs-phone="<%out.println((String)session.getAttribute("CustPhone"));%>"
-                                                    data-bs-date="<%out.println((String)session.getAttribute("AppDate"));%>"
-                                                    data-bs-doktorName="<%out.println((String)session.getAttribute("DoctorName1"));%>"
-                                                    data-bs-location="<%out.println((String)session.getAttribute("AppLocation1"));%>"
-                                                    data-bs-interval="<%out.println((String)session.getAttribute("AppIntervalValue"));%>"
-                                                    data-bs-startHour="<%out.println((String)session.getAttribute("AppStartHour"));%>"
-                                                    data-bs-endHour="<%out.println((String)session.getAttribute("AppEndHour"));%>">
+                                                    data-bs-phone="<%
+                        out.println((String) session.getAttribute("CustPhone"));%>"
+                                                    data-bs-date="<%
+                        out.println((String) session.getAttribute("AppDate"));%>"
+                                                    data-bs-doktorName="<%
+                        out.println((String) session.getAttribute("DoctorName1"));%>"
+                                                    data-bs-location="<%
+                        out.println((String) session.getAttribute("AppLocation1"));%>"
+                                                    data-bs-interval="<%
+                        out.println((String) session.getAttribute("AppIntervalValue"));%>"
+                                                    data-bs-startHour="<%
+                        out.println((String) session.getAttribute("AppStartHour"));%>"
+                                                    data-bs-endHour="<%
+                        out.println((String) session.getAttribute("AppEndHour"));%>">
 
                                                 <i class="bi bi-info-circle"></i></button>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-danger"
                                                     data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                    data-bs-idDel="<%out.println(Integer.parseInt((String)session.getAttribute("custId")));%>">
+                                                    data-bs-idDel="<%
+                        out.println(Integer.parseInt((String) session.getAttribute("custId")));%>">
                                                 <i class="bi bi-x-octagon"></i></button>
                                         </td>
                                     </tr>
@@ -495,16 +527,12 @@
                                                     <select class="form-control validate-input doctorInput" name="doktorName"
                                                             id="doktorName">
                                                         <option value="" selected hidden>Seçin</option>
-                                                        <%
-                                                            for (int i = 0; i < docInfo.size(); i++) {
-                                                        %>
+
                                                         <option value=<%
-                                                            out.println((docInfo.get(i).getId()));%>>
-                                                            <%out.println(docInfo.get(i).getName());%>
+                                                            out.println(_doctorId);%>>
+                                                            <%out.println(_doctorName);%>
                                                         </option>
-                                                        <%
-                                                            }
-                                                        %>
+
                                                     </select>
                                                 </div>
                                                 <div class="mb-3 col-md-6 ms-auto">
@@ -676,16 +704,12 @@
                                                             name="add-doktorName"
                                                             id="add-doktorName">
                                                         <option value="" selected hidden>Seçin</option>
-                                                        <%
-                                                            for (int i = 0; i < docInfo.size(); i++) {
-                                                        %>
+
                                                         <option value=<%
-                                                            out.println((docInfo.get(i).getId()));%>>
-                                                            <%out.println(docInfo.get(i).getName());%>
+                                                            out.println(_doctorId);%>>
+                                                            <%out.println(_doctorName);%>
                                                         </option>
-                                                        <%
-                                                            }
-                                                        %>
+
                                                     </select>
                                                 </div>
                                                 <div class="mb-3 col-md-6 ms-auto">
@@ -771,6 +795,7 @@
                                                                    value="">
                                                             <input type="hidden" id="page-name" name="page-name"
                                                                    value="adminPages/pages-appointments.jsp">
+                                                            <input type="hidden" id="cookie-username" name="cookie-username"value="<%= _doctorId %>">
 
 
                                                             <input type="submit" class="btn btn-primary btn-lg "
@@ -906,6 +931,7 @@
         //Add Hours
             var selectedFilter = date.trim();
             var selectedOption = interval.trim();
+            var selectDoctor = doctorName.trim();
 
 
             // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
@@ -921,7 +947,7 @@
             const warningMessage = document.getElementById("warning-messageIndex")
 
             var xhttp = new XMLHttpRequest();
-            var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+            var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption) + "&selectedDoktor=" + encodeURIComponent(selectDoctor);
             xhttp.open("GET", url, true);
             xhttp.send();
 
@@ -1001,6 +1027,7 @@
 
     var dateInput = document.getElementById('date');
     var intervalInput = document.getElementById('interval');
+    var doctorInput = document.getElementById('doktorName');
 
     function getHours(){
         //Add Hours
@@ -1012,7 +1039,7 @@
 
             var selectedFilter = dateInput.value;
             var selectedOption = intervalInput.value;
-
+            var selectedDoctor =  doctorInput.value;
 
             // Eğer "filter" parametresi yoksa veya boşsa, varsayılan olarak "today" atama
             if (!selectedFilter) {
@@ -1027,7 +1054,7 @@
             const warningMessage = document.getElementById("warning-messageIndex")
 
             var xhttp = new XMLHttpRequest();
-            var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption);
+            var url = "/get_available_hours.jsp" + "?selectedDate=" + encodeURIComponent(selectedFilter) + "&selectedOption=" + encodeURIComponent(selectedOption) + "&selectedDoktor=" + encodeURIComponent(selectedDoctor);
             xhttp.open("GET", url, true);
             xhttp.send();
 
@@ -1096,7 +1123,7 @@
         }
         dateInput.addEventListener('change', getHours);
         intervalInput.addEventListener('change', getHours);
-
+        doctorInput.addEventListener('change', getHours);
 
 
 
