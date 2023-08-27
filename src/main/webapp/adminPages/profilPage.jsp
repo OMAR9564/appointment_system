@@ -284,7 +284,7 @@
                                                 data-bs-profilUserName="<%out.println((String)session.getAttribute("profilUserName"));%>"
                                                 data-bs-profilNickname="<%out.println((String)session.getAttribute("profilDoctorName"));%>"
 
-                                                data-bs-profilOldPass="<%out.println((String)session.getAttribute("profilPass"));%>"
+                                                data-bs-profilOldPass=""
 
                                                 data-bs-profilEmail="<%out.println((String)session.getAttribute("profilEmail"));%>">
                                             <i class="bi bi-info-circle"></i> Düzenle</button>

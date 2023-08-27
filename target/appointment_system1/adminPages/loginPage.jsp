@@ -138,6 +138,13 @@
         errorMessageArea.textContent = styledErrorMessage;
         errorMessageArea.style.color = "red";
     }
+    if (getQueryParam("message") === "true" && getQueryParam("dic")) {
+        const errorMessage = decodeURIComponent(getQueryParam("dic"));
+        const errorMessageArea = document.getElementById("errorMessageArea");
+        const styledErrorMessage = "✅ ️" + errorMessage;
+        errorMessageArea.textContent = styledErrorMessage;
+        errorMessageArea.style.color = "green";
+    }
 
     const inputElements = document.querySelectorAll('.validate-input');
 
