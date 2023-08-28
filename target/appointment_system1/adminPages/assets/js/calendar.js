@@ -95,6 +95,13 @@ function showMonthWithSpecialDays(month, year, specialDays) {
         if (new Date(year, month, j) < new Date()) {
             dayEl.classList.add("disabled"); //Add the "disabled" class
         }
+        //open today date for admins
+        if (year === currentDate.getFullYear() && month === currentDate.getMonth() && j === currentDate.getDate()) {
+            dayEl.classList.remove("disabled");
+            dayEl.style.pointerEvents = "auto";
+            dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
+
+        }
         else {
             dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
 
