@@ -292,8 +292,17 @@
                                 </table>
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-success" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#addModal">
-                                        <i class="bi bi-person"></i> Yeni Kişi Ekle</button>
+                                            data-bs-target="#addModal"
+                                            data-bs-idDel="<%out.println(((String) session.getAttribute("profilId")));%>">
+                                        <i class="bi bi-person-plus"></i> Yeni Kişi Ekle</button>
+
+                                </div>
+                                <div class="d-grid gap-2 mt-2">
+                                    <button class="btn btn-danger" type="button" data-bs-toggle="modal"
+                                            data-bs-idDel="<%out.println(((String) session.getAttribute("profilId")));%>"
+
+                                            data-bs-target="#deleteModal">
+                                        <i class="bi bi-person-dash"></i> Bu Profili Sil</button>
 
                                 </div>
                                 <!--edit modal-->
@@ -384,6 +393,42 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <!--Delete modal-->
+                                <div class="modal fade" id="deleteModal" tabindex="-1"
+                                     aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Silmek istediğinizden
+                                                    emin misiniz?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    Bu profilin tüm bilgilerini silenecektir!!
+                                                </div>
+
+                                                <form method="post" action="adminSqlCon.jsp">
+                                                    <input type="text" class="delIdInput" name="profilDeleteId" id="profilDeleteId"
+                                                           hidden>
+                                                    <input type="text" value="profilPage.jsp" name="page"
+                                                           hidden>
+                                                    <input type="text" value="profilDelete" name="iam" hidden>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Kapat
+                                                        </button>
+                                                        <input type="submit" class="btn btn-danger"
+                                                               value="Profili sil">
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <%--add modal--%>
@@ -665,6 +710,18 @@
             }
         });
     });
+
+
+    var deleteModal = document.getElementById('deleteModal');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var delId = button.getAttribute('data-bs-idDel');
+        var modalBodyInputDelId = deleteModal.querySelector('.modal-body .delIdInput');
+        modalBodyInputDelId.value = delId;
+
+    });
+
 
 </script>
 

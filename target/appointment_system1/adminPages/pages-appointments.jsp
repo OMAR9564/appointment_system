@@ -187,6 +187,13 @@
                     "ORDER BY `date` DESC, `startHour` DESC;\n";
             info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Hepsi";
+        } else if (filter != null && filter.equals("receivedToday")) {
+            sqlQuery = "SELECT * FROM `appointments`\n" +
+                    "WHERE DATE(createdAt) = CURDATE()\n" +
+                    "AND `doctorId`=?\n" +
+                    "ORDER BY createdAt DESC;\n";
+            info = consql.getAppointmentData(sqlQuery, _doctorId);
+            filterName = "Bugüne Alınan Randevular";
         } else if (filter == null) {
             sqlQuery = "SELECT * FROM `appointments`\n" +
                     "WHERE doctorId = ?\n" +
@@ -307,6 +314,8 @@
                                     <li><a class="dropdown-item" href="?filter=theseThreeMonths">Bu 3 Ay</a></li>
                                     <li><a class="dropdown-item" href="?filter=thisYear">Bu Yıl</a></li>
                                     <li><a class="dropdown-item" href="?filter=all">Hepsi</a></li>
+                                    <li><a class="dropdown-item" href="?filter=receivedToday">Bugün Alınanlar</a></li>
+
                                 </ul>
                             </div>
 
@@ -1043,7 +1052,6 @@
 
     deleteModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
-        console.log("omeroemroemreomreormeormeorm");
         var delId = button.getAttribute('data-bs-idDel');
         var modalBodyInputDelId = deleteModal.querySelector('.modal-body .delIdInput');
         modalBodyInputDelId.value = delId;

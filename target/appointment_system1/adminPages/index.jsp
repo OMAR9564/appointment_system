@@ -769,30 +769,35 @@
                         </div>
                         <div class="row d-flex justify-content-evenly">
                             <div class="col mt-4">
-                                <button class="btn btn-success btn-lg" type="button" style="padding:30px;"
-                                        data-bs-toggle="modal" data-bs-target="#takeAppointment">
+                                <button class="btn btn-success" type="button" style="width: 150px; height: 150px; font-size: 19px;" data-bs-toggle="modal" data-bs-target="#takeAppointment">
                                     Randevu Al
                                 </button>
                             </div>
-
+                            <div class="col mt-4">
+                                <a href="pages-appointments.jsp?filter=receivedToday">
+                                    <button class="btn btn-info" type="button" style="width: 150px; height: 150px; font-size: 19px;">
+                                        Bugün Alınan Randevular
+                                    </button>
+                                </a>
+                            </div>
                             <div class="col mt-4">
                                 <a href="pages-appointments.jsp">
-                                    <button class="btn btn-primary btn-lg" type="button" style="padding:30px;">Tüm
-                                        Randevular
+                                    <button class="btn btn-primary" type="button" style="width: 150px; height: 150px; font-size: 19px;">
+                                        Tüm Randevular
                                     </button>
                                 </a>
                             </div>
                             <div class="col mt-4">
                                 <a href="avalibaleHoursAndDays.jsp">
-                                    <button class="btn btn-warning btn-lg" type="button" style="padding:30px;">Müsait Günler
-                                        ve Saatler
+                                    <button class="btn btn-warning" type="button" style="width: 150px; height: 150px; font-size: 19px;">
+                                        Müsait Günler ve Saatler
                                     </button>
                                 </a>
                             </div>
                             <div class="col mt-4">
                                 <a href="settingsPage.jsp">
-                                    <button class="btn btn-danger btn-lg" type="button" style="padding:30px;">Sayfa
-                                        Ayarları
+                                    <button class="btn btn-danger" type="button" style="width: 150px; height: 150px; font-size: 19px;">
+                                        Sayfa Ayarları
                                     </button>
                                 </a>
                             </div>

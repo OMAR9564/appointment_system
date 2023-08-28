@@ -59,7 +59,7 @@ public class ConSql {
         }
     }
 
-    public void executeQuery(String query, String... params){
+    public void executeQuery(String query, String... params) throws SQLException{
         try {
             Connection conn = null;
             PreparedStatement stmt = null;
@@ -79,6 +79,7 @@ public class ConSql {
         }catch (SQLException e){
             System.err.println(e);
             e.printStackTrace();
+            throw new RuntimeException(e);
 
         }
     }

@@ -702,9 +702,12 @@
                     if(newPass.equals(reNewPass)){
                         String addQuery = "INSERT INTO `user`(`id`, `name`, `surname`, `username`, `email`, `pass`) " +
                                 "VALUES (?,?,?,?,?,?)";
-                        String doctorAddQuery = "INSERT INTO `doctorInfo`(`name`, `userId`) VALUES (?,?)";
+                        String doctorAddQuery = "INSERT INTO `doctorInfo`(`id`, `name`, `userId`) VALUES (?,?,?)";
+                        String settingAddQuery = "INSERT INTO `settings`(`id`,`userId`) VALUES (?,?)";
+
                         conSql.executeQuery(addQuery,id, name, surname, username, email, helper.encrypt(newPass));
-                        conSql.executeQuery(doctorAddQuery, nicename, id);
+                        conSql.executeQuery(doctorAddQuery,id, nicename, id);
+                        conSql.executeQuery(settingAddQuery,id, id);
                         messageOk = "Profil Başarılı Bir Şekilde Eklendi.";
                         helper.createLog(messageOk, usernameCookie, clientIP, "profilAdd");
 
@@ -720,7 +723,7 @@
 
                     }
 
-                } catch (Exception e) {
+                } catch (SQLException e) {
                     messageOk = "Bir Hata Oluştu.";
                     helper.createLog(e.getMessage(), usernameCookie, clientIP, "ErrorProfilAdd");
 
@@ -729,6 +732,31 @@
 
                 }
 
+            } else if (iam.equals("profilDelete")) {
+                String deleteId = request.getParameter("profilDeleteId");
+                ConSql conSql1 = new ConSql();
+                try{
+                    String userDeleteQuery = "DELETE FROM `user` WHERE `id` = ?";
+                    String settingsDeleteQuery = "DELETE FROM `settings` WHERE `userId`=?";
+                    String doctorDeleteQuery = "DELETE FROM `doctorInfo` WHERE `userId`=?";
+                    conSql1.executeQuery(userDeleteQuery, deleteId);
+                    conSql1.executeQuery(settingsDeleteQuery, deleteId);
+                    conSql1.executeQuery(doctorDeleteQuery, deleteId);
+                    messageOk = "Profil Başarılı Bir Şekilde Silindi.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "profilDelete");
+
+                    appointmentMade = "true";
+                    response.sendRedirect("loginPage.jsp" + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                }catch (SQLException e){
+                    e.printStackTrace();
+                    messageOk = e.getMessage();
+                    helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilDelete");
+
+                    appointmentMade = "false";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
+                }
             } else {
                 messageOk = "Bir Hata Oluştu.";
                 helper.createLog(messageOk, usernameCookie, clientIP, "ErrorProfilAdd");
