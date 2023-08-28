@@ -83,10 +83,10 @@ function showMonthWithSpecialDays(month, year, specialDays) {
         }
         const dayOfWeek = date.getDay();
         console.log(dayOfWeek);
+        // Pazar ve Pazartesi günleri için etkileşimi devre dışı bırak
         if (specialDays.includes(dayOfWeek)) {
-            console.log(specialDays[0] + "--" + specialDays[1]);
-            dayEl.classList.add("disabled"); // Pazar (0) ve Pazartesi (1) günlerini gri renkte göster
-            dayEl.style.pointerEvents = "none"; // Pazar ve Pazartesi günleri için etkileşimi devre dışı bırak
+            dayEl.classList.add("disabled");
+            dayEl.style.pointerEvents = "none";
         }
 
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && j === currentDate.getDate()) {
@@ -94,8 +94,8 @@ function showMonthWithSpecialDays(month, year, specialDays) {
         }
         if (new Date(year, month, j) < new Date()) {
             dayEl.classList.add("disabled"); //Add the "disabled" class
-
-        } else {
+        }
+        else {
             dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
 
         }

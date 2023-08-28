@@ -8,7 +8,7 @@ public class ConSql {
     public void insertData(String name, String surname, String phone,
                            String doktorName, String appLocation,
                            String tempId, String appDate, String appStartHour,
-                           String appEndHour, String intervalType, String eventID) {
+                           String appEndHour, String intervalType, String eventID, String status) {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -18,7 +18,7 @@ public class ConSql {
             conn = getDatabaseConnection(); // veritabanı bağlantısı oluşturma metodu
 
 
-            String sql = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`, `locationId`, `tempId`, `date`, `startHour`, `EndHour`, `intervalId`, `eventID`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO `appointments`(`name`, `surname`, `phone`, `doctorId`, `locationId`, `tempId`, `date`, `startHour`, `EndHour`, `intervalId`, `eventID`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, name);
@@ -32,6 +32,7 @@ public class ConSql {
             pstmt.setString(9, appEndHour);
             pstmt.setString(10, intervalType);
             pstmt.setString(11, eventID);
+            pstmt.setString(12, status);
 
 
             pstmt.executeUpdate();
@@ -190,6 +191,8 @@ public class ConSql {
                 temp.setAppStartHour(rs.getString("startHour"));
                 temp.setAppEndHour(rs.getString("endHour"));
                 temp.setRezervationInterval(rs.getString("intervalId"));
+                temp.setRezervationStatus(rs.getString("status"));
+
 
 
                 sqlInfo.add(temp);
@@ -385,6 +388,7 @@ public class ConSql {
                 temp.setAppointMessageBody(rs.getString("appointMessageBody"));
                 temp.setAppointMessageTitle(rs.getString("appointMessageTitle"));
                 temp.setHoliday(rs.getString("holiday"));
+                temp.setAppiontmentStatus(rs.getString("appointmentStatus"));
                 temp.setCalendarId(rs.getString("calendarID"));
 
 

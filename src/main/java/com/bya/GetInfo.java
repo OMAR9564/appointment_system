@@ -33,6 +33,8 @@ public class GetInfo {
     String availableHours = "";
     String availableDate = "";
     String locations = "";
+    String appiontmentStatus = "";
+    String rezervationStatus = "";
 
     public int getId() {
         return id;
@@ -285,4 +287,21 @@ public class GetInfo {
     public void setPass(String pass) {
         this.pass = pass;
     }
+
+    public String getAppiontmentStatus() {
+        return appiontmentStatus;
+    }
+
+    public void setAppiontmentStatus(String appiontmentStatus) {
+        this.appiontmentStatus = appiontmentStatus;
+    }
+    public String getRezervationStatus() {
+        return rezervationStatus;
+    }
+
+    public void setRezervationStatus(String rezervationStatus) {
+        this.rezervationStatus = rezervationStatus;
+    }
+
+
 }

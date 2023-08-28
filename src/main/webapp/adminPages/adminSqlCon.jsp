@@ -121,8 +121,8 @@
                 String startHour = null;
                 String endHour = null;
                 String updateId = request.getParameter("id");
-                String name = request.getParameter("name");
-                String surname = request.getParameter("surname");
+                String name = new String(request.getParameter("name").getBytes("ISO-8859-9"), "UTF-8");;
+                String surname = new String(request.getParameter("surname").getBytes("ISO-8859-9"), "UTF-8");;
                 String phone = request.getParameter("phone");
                 String date = request.getParameter("date");
                 if (date == null) {
@@ -132,111 +132,58 @@
                 if (interval == null) {
                     interval = request.getParameter("editInterval");
                 }
+
                 String fullHour = request.getParameter("appointAllHour");
-/*
-                String startHour = request.getParameter("startHour");
-                String endHour = request.getParameter("endHour");
-*/
-                String doktorName = request.getParameter("doktorName");
+                String doktorName = new String(request.getParameter("doktorName").getBytes("ISO-8859-9"), "UTF-8");;
                 String location = request.getParameter("location");
+                String rezervationStatus = new String(request.getParameter("rezervationStatus").getBytes("ISO-8859-9"), "UTF-8");
+
 
                 startHour = fullHour.split("-")[0];
                 endHour = fullHour.split("-")[1];
 
-                //control if hour is avalibale
-                String appStartHoursQuery = "SELECT startHour FROM appointments WHERE date = ? AND `doctorId`=?";
-                String appEndtHoursQuery = "SELECT endHour FROM appointments WHERE date = ? AND `doctorId`=?";
-                String selectedDoktor = request.getParameter("editCookieUsername");
-
-                String appointStartHour = fullHour.split("-")[0];
-                String appointEndHour = fullHour.split("-")[1];
-                Boolean appointAvalible = true;
-                ArrayList<GetInfo> appStartHours = conSql.readHourData(appStartHoursQuery, date, selectedDoktor);
-                ArrayList<GetInfo> appEndHours = conSql.readHourData(appEndtHoursQuery, date, selectedDoktor);
 
 
-                String[] _tempSplitStartHour = appointStartHour.split(":");
-                String[] _tempSplitEndHour = appointEndHour.split(":");
-                int _tempStartHourToMunite = Integer.parseInt(_tempSplitStartHour[0]) * 60;
-                int _tempEndtHourToMunite = Integer.parseInt(_tempSplitEndHour[0]) * 60;
+                CalendarService calendarService = new CalendarService();
+                ArrayList<GetInfo> getEventID;
+                String eventIdQuert = "SELECT eventID FROM `appointments` WHERE `id` = ?";
+                getEventID = conSql.getSettingName(eventIdQuert, updateId);
 
-                int _tempStartHourWithMuniteToMunite = _tempStartHourToMunite + Integer.parseInt(_tempSplitStartHour[1]);
-                int _tempEndtHourWithMuniteToMunite = _tempEndtHourToMunite + Integer.parseInt(_tempSplitEndHour[1]);
-                int counter = 0;
+                ArrayList<GetInfo> getLocName;
+                String locNameQuery = "SELECT * FROM `locationInfo` WHERE `id` = ?";
+                getLocName = conSql.getInfos(locNameQuery, location);
 
-                //control if other user and I take appointment in one time
-                for (int j = 0; j < appStartHours.size(); j++) {
-                    String tempAppStartHour = appStartHours.get(j).getAppHour();
-                    String tempAppEndHour = appEndHours.get(j).getAppHour();
-                    String[] tempAppSplitStartHour = tempAppStartHour.split(":");
-                    String[] tempAppSplitEndHour = tempAppEndHour.split(":");
-                    int tempAppStartHourToMunite = Integer.parseInt(tempAppSplitStartHour[0]) * 60;
-                    int tempAppEndtHourToMunite = Integer.parseInt(tempAppSplitEndHour[0]) * 60;
+                String updateQuery = "UPDATE `appointments` SET `name`= ?,`surname`=?," +
+                        "`phone`=?,`doctorId`=?,`locationId`=?," +
+                        "`date`=?,`startHour`=?," +
+                        "`endHour`=?,`intervalId`=?, `status`=? WHERE `id`=?";
 
-                    int tempAppStartHourWithMuniteToMunite = tempAppStartHourToMunite + Integer.parseInt(tempAppSplitStartHour[1]);
-                    int tempAppEndHourWithMuniteToMunite = tempAppEndtHourToMunite + Integer.parseInt(tempAppSplitEndHour[1]);
+                String eventID = getEventID.get(0).getName();
+                String title = name + " " + surname;
+                String locationName = getLocName.get(0).getName();
+                String description = "Düzeltildi" + " - " + phone;
+                String _startHour = helper.hourUnUtc(startHour);
+                String _endHour = helper.hourUnUtc(endHour);
 
-                    if ((tempAppStartHourWithMuniteToMunite <= _tempStartHourWithMuniteToMunite
-                            && _tempStartHourWithMuniteToMunite < tempAppEndHourWithMuniteToMunite)
-                            || tempAppStartHourWithMuniteToMunite < _tempEndtHourWithMuniteToMunite
-                            && _tempEndtHourWithMuniteToMunite <= tempAppEndHourWithMuniteToMunite) {
-                        appointAvalible = false;
+                String startDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _startHour + ":00";
+                String endDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _endHour + ":00";
 
-                    }
+                String calendarIdQuery = "SELECT calendarID FROM `settings`";
+
+                calendarSqlId = conSql.getSettingName(calendarIdQuery);
+                String calID = calendarSqlId.get(0).getName();
+
+                String updated = calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr, calID);
+                if (updated.equals("true")) {
+                    conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, rezervationStatus, updateId);
+                    messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
+                    helper.createLog(messageOk, usernameCookie, clientIP, "UpdateAppointment");
+
+                    appointmentMade = "true";
+                    response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
+
                 }
-                if (!appointAvalible) {
 
-                    String messageDic = "Seçtiğiniz saat aralığı başka bir kullanıcı tarafından rezerve edilmiştir. Lütfen başka bir saat aralığı seçin.";
-                    helper.createLog(messageDic, usernameCookie, clientIP, "ErrorAddAppiontment");
-
-                    String appointmentMade1 = "false";
-                    String encodedMessage = URLEncoder.encode(appointmentMade1, "UTF-8");
-                    String encodedDescription = URLEncoder.encode(messageDic, "UTF-8");
-                    response.sendRedirect(pageName + "?message=" + encodedMessage + "&dic=" + encodedDescription);
-
-                } else {
-
-
-                    CalendarService calendarService = new CalendarService();
-                    ArrayList<GetInfo> getEventID;
-                    String eventIdQuert = "SELECT eventID FROM `appointments` WHERE `id` = ?";
-                    getEventID = conSql.getSettingName(eventIdQuert, updateId);
-
-                    ArrayList<GetInfo> getLocName;
-                    String locNameQuery = "SELECT * FROM `locationInfo` WHERE `id` = ?";
-                    getLocName = conSql.getInfos(locNameQuery, location);
-
-                    String updateQuery = "UPDATE `appointments` SET `name`= ?,`surname`=?," +
-                            "`phone`=?,`doctorId`=?,`locationId`=?," +
-                            "`date`=?,`startHour`=?," +
-                            "`endHour`=?,`intervalId`=? WHERE `id`=?";
-
-                    String eventID = getEventID.get(0).getName();
-                    String title = name + " " + surname;
-                    String locationName = getLocName.get(0).getName();
-                    String description = "Düzeltildi" + " - " + phone;
-                    String _startHour = helper.hourUnUtc(startHour);
-                    String _endHour = helper.hourUnUtc(endHour);
-
-                    String startDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _startHour + ":00";
-                    String endDateTimeStr = date.split("-")[0] + "-" + date.split("-")[1] + "-" + date.split("-")[2] + "T" + _endHour + ":00";
-
-                    String calendarIdQuery = "SELECT calendarID FROM `settings`";
-
-                    calendarSqlId = conSql.getSettingName(calendarIdQuery);
-                    String calID = calendarSqlId.get(0).getName();
-
-                    String updated = calendarService.updateEvent(eventID, title, description, locationName, startDateTimeStr, endDateTimeStr, calID);
-                    if (updated.equals("true")) {
-                        conSql.executeQuery(updateQuery, name, surname, phone, doktorName, location, date, startHour, endHour, interval, updateId);
-                        messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
-                        helper.createLog(messageOk, usernameCookie, clientIP, "UpdateAppointment");
-
-                        appointmentMade = "true";
-                        response.sendRedirect(pageName + "?message=" + URLEncoder.encode(appointmentMade) + "&dic=" + URLEncoder.encode(messageOk));
-
-                    }
-                }
 
                 } catch(Exception e){
 
@@ -311,14 +258,16 @@
             String appointMessageBody = new String(request.getParameter("appointMessageBody").getBytes("ISO-8859-9"), "UTF-8");
             String appointMessageTitle = new String(request.getParameter("appointMessageTitle").getBytes("ISO-8859-9"), "UTF-8");
             String calenarId = request.getParameter("calendarId");
+            String appointmentStatus = new String(request.getParameter("appointmentStatus").getBytes("ISO-8859-9"), "UTF-8");
+
             String userId = request.getParameter("settingsUsernameCookie");
             String updateQuery = "UPDATE `settings` SET `companyName`=?," +
                     "`openingHour`=?,`closingHour`=?,`appointMessageBody`=?," +
-                    "`appointMessageTitle`=?,`holiday`=?, `calendarID`=? WHERE `id`=? AND `userId`=?";
+                    "`appointMessageTitle`=?,`holiday`=?, `calendarID`=?, `appointmentStatus`=? WHERE `id`=? AND `userId`=?";
 
             ConSql conSql = new ConSql();
 
-            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId, updateId, userId);
+            conSql.executeQuery(updateQuery, companyName, openingHour, closingHour, appointMessageBody, appointMessageTitle, holiday, calenarId,appointmentStatus, updateId, userId);
 
             messageOk = "Kullanıcı Başarılı Bir Şekilde Güncellendi.";
             helper.createLog(messageOk, usernameCookie, clientIP, "UpdateSettings");
@@ -660,7 +609,7 @@
                 String oldPass = request.getParameter("oldPass");
                 String newPass = request.getParameter("newPass");
                 String reNewPass = request.getParameter("reNewPass");
-                String nicename = new String(request.getParameter("profilNicename").getBytes("ISO-8859-9"), "UTF-8");;
+                String nicename = new String(request.getParameter("profilNicename").getBytes("ISO-8859-9"), "UTF-8");
 
                 oldPass = oldPass.replace(" ", "");
                 newPass = newPass.replace(" ", "");

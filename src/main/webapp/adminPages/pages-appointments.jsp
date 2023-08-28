@@ -334,6 +334,8 @@
                                         <th scope="col">Başlangıç Saati</th>
                                         <th scope="col">Bitiş Saati</th>
                                         <th scope="col">Randevu Türü</th>
+                                        <th scope="col">Randevu Durumu</th>
+
 
                                         <th scope="col">Düzenle</th>
                                         <th scope="col">Sil</th>
@@ -361,6 +363,7 @@
                                             session.setAttribute("AppStartHour", info.get(i).getAppStartHour());
                                             session.setAttribute("AppEndHour", info.get(i).getAppEndHour());
                                             session.setAttribute("AppIntervalValue", info.get(i).getRezervationInterval());
+                                            session.setAttribute("rezervationStatus", info.get(i).getRezervationStatus());
 
                                             session.setAttribute("AppInterval", revNameInfo.get(0).getRezervationName());
 
@@ -399,6 +402,8 @@
                                         <td><span class="badge" style="color:black; font-size: 12px;">
                                         <%=appInterval%>
                                         </span></td>
+                                        <td><span class="badge" style="color:black; font-size: 12px;"><%
+                                            out.println((String) session.getAttribute("rezervationStatus"));%></span></td>
 
                                         <td>
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
@@ -424,6 +429,8 @@
                         out.println((String) session.getAttribute("AppIntervalValue"));%>"
                                                     data-bs-startHour="<%
                         out.println((String) session.getAttribute("AppStartHour"));%>"
+                                                    data-bs-rezervationStatus="<%
+                        out.println((String) session.getAttribute("rezervationStatus"));%>"
                                                     data-bs-endHour="<%
                         out.println((String) session.getAttribute("AppEndHour"));%>">
 
@@ -506,6 +513,18 @@
                                                                 <%
                                                                     }
                                                                 %>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3 col-md-6">
+                                                            <label for="rezervationStatus" class="col-form-label">Randevu
+                                                                Durumu:</label>
+                                                            <select class="form-control rezervationStatus-input rezervationStatus"
+                                                                    name="rezervationStatus"
+                                                                    id="rezervationStatus">
+                                                                <option value="" selected hidden>Seçin</option>
+                                                                <option value="Onaylanıyor">Onaylanıyor</option>
+                                                                <option value="Onaylandı">Onaylandı</option>
+
                                                             </select>
                                                         </div>
                                                     </div>
@@ -905,6 +924,7 @@
         var startHour = button.getAttribute('data-bs-startHour');
         var endHour = button.getAttribute('data-bs-endHour');
         var interval = button.getAttribute('data-bs-interval');
+        var rezervationStatus = button.getAttribute('data-bs-rezervationStatus');
 
         var modalBodyInputName = exampleModal.querySelector('.modal-body .nameInput');
         var modalBodyInputSurname = exampleModal.querySelector('.modal-body .surnameInput');
@@ -915,17 +935,21 @@
         var modalBodyInputDoctor = exampleModal.querySelector('.modal-body .doctorInput');
         var modalBodyInputLocation = exampleModal.querySelector('.modal-body .locationInput');
         var modalBodyInputInterval = exampleModal.querySelector('.modal-body .intervalInput');
+        var modalBodyInputTime = exampleModal.querySelector('.modal-body .appointAllHour');
+
+        var modalBodyInputrezervationStatus = exampleModal.querySelector('.modal-body .rezervationStatus-input');
 
 
         modalBodyInputName.value = name;
         modalBodyInputSurname.value = surname;
-
+        modalBodyInputTime.value = startHour + "-" + endHour;
         modalBodyInputId.value = id;
         modalBodyInputPhone.value = phone;
         modalBodyInputDate.value = date.trim();
         modalBodyInputDoctor.value = doctorName.trim();
         modalBodyInputLocation.value = location.trim();
         modalBodyInputInterval.value = interval.trim();
+        modalBodyInputrezervationStatus.value = rezervationStatus.trim();
 
         var hourSql = startHour + "-" + endHour;
 

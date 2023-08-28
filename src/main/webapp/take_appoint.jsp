@@ -48,6 +48,8 @@
     ArrayList<GetInfo> locationCount = new ArrayList<>();
     ArrayList<String> _locationCount = new ArrayList<>();
 
+    ArrayList<GetInfo> approvalStatus = new ArrayList<>();
+
     String appointYear = request.getParameter("selected-year");
     String appointMonth = new String(request.getParameter("selected-month").getBytes("ISO-8859-9"), "UTF-8");
     String appointDay = request.getParameter("selected-dayIn");
@@ -59,10 +61,11 @@
     String locName = request.getParameter("loc-name");
     String intervalType = request.getParameter("interval-type");
     String pageName = request.getParameter("page-name");
+    String approvalString = null;
 
-
+//if from adminpage or normal user
     String selectedDoktor = request.getParameter("cookie-username");
-    if (selectedDoktor == null){
+    if (selectedDoktor == null || selectedDoktor.equals("")){
         selectedDoktor = helper.removeWord(doctorName, "doctor");
     }
 
@@ -74,9 +77,12 @@
     String reverationTagNamesQuery = "SELECT * FROM `reservationInfo`";
     String locationCountQuery = "SELECT * FROM `locationInfo`";
     String calendarIdQuery = "SELECT calendarID FROM `settings` WHERE `userId`=?";
+    String approvalQuery = "SELECT `appointmentStatus` FROM `settings` WHERE `userId`=?";
 
     calendarSqlId = conSql.getSettingName(calendarIdQuery, selectedDoktor);
 
+    approvalStatus = conSql.getSettingName(approvalQuery, selectedDoktor);
+    approvalString = approvalStatus.get(0).getName();
 
     doctorCount = conSql.getInfos(doctorCountQuery);
     for (int i = 1; i <= doctorCount.size(); i++){
@@ -283,7 +289,7 @@
                     String eventID = calendarService.createEvent(title, description, location, startDateTimeStr, endDateTimeStr, calID);
                     if (!(eventID.split("-")[0].equals("Error"))){
                         conSql.insertData(custName, custSurname, custPhone, doctorName, locName
-                                , rndNum, date, appointStartHour, appointEndHour, intervalType, eventID);
+                                , rndNum, date, appointStartHour, appointEndHour, intervalType, eventID, approvalString);
 
                     }
                 }
