@@ -291,14 +291,14 @@
                                     </div>
                                 </table>
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-success" type="button" data-bs-toggle="modal"
+                                    <button class="btn btn-outline-success" type="button" data-bs-toggle="modal"
                                             data-bs-target="#addModal"
                                             data-bs-idDel="<%out.println(((String) session.getAttribute("profilId")));%>">
                                         <i class="bi bi-person-plus"></i> Yeni Kişi Ekle</button>
 
                                 </div>
                                 <div class="d-grid gap-2 mt-2">
-                                    <button class="btn btn-danger" type="button" data-bs-toggle="modal"
+                                    <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
                                             data-bs-idDel="<%out.println(((String) session.getAttribute("profilId")));%>"
 
                                             data-bs-target="#deleteModal">

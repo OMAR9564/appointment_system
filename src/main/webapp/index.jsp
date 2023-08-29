@@ -30,7 +30,6 @@
     ArrayList<GetInfo> holiday = new ArrayList<>();
 
 
-
     String locationsQuery = "SELECT * FROM locationInfo";
     String doctorsQuery = "SELECT * FROM `doctorInfo`";
     String rezervationQuery = "SELECT * FROM `reservationInfo`";
@@ -50,10 +49,10 @@
     holiday = conSql.getSettingName(holidayQuery);
 
     String appointmentMadeStr = messageBody.get(0).getName();
-    String appointmentNotMadeStr = "Randevunuzu Olustururken Bir Hata Olustu!!\nLutfen Daha Sonra Deneyin.";
+    String appointmentNotMadeStr = "Randevu oluştururken bir hata oluştu! \nLütfen daha sonra deneyin.";
 
     String appointmentMadeHeader = messageTitle.get(0).getName();
-    String appointmentNotMadeHeader = "Bir Hata Olustu!!";
+    String appointmentNotMadeHeader = "Bir Hata Oluştu";
 
     String holidayName = holiday.get(0).getName();
 
@@ -108,12 +107,14 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="name-input">Adınız:</label>
-                <input type="text" class="form-control validate-input" id="name-input" name="name-input" maxlength="20" required
+                <input type="text" class="form-control validate-input" id="name-input" name="name-input" maxlength="20"
+                       required
                        oninput="blockSpecialChars('name-input')">
             </div>
             <div class="form-group">
                 <label for="surname-input">Soyadınız:</label>
-                <input type="text" class="form-control validate-input" id="surname-input" name="surname-input" maxlength="20" required
+                <input type="text" class="form-control validate-input" id="surname-input" name="surname-input"
+                       maxlength="20" required
                        oninput="blockSpecialChars('surname-input')">
             </div>
             <div class="form-group">
@@ -208,7 +209,6 @@
                     <input type="hidden" id="page-name" name="page-name" value="index.jsp">
 
 
-
                     <input type="submit" class="btn btn-primary btn-lg " id="schedule-appointment"
                            name="schedule-appointment" onclick="clearInput()" value="Randevu Al">
 
@@ -225,27 +225,65 @@
             <!-- Modal -->
             <div class="modal fade" id="sucsessModal" tabindex="-1" aria-labelledby="sucsess-modal" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
+                    <div class="modal-content" style="border-radius: 15px;">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="sucsess-modal">
+                            <h1 id="sucsess-modal" class="modal-title fs-5" style="margin-left: -10px;">
                                 <%
                                     if (appointmentMade) {
-                                        out.println(appointmentMadeHeader);
-                                    } else {
+                                %>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-check-lg text-success"
+                                     width="30" height="30" viewBox="0 0 10 17">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"></path>
+                                </svg>
+
+
+                                <%
+                                    out.println(appointmentMadeHeader);
+                                } else {
+
+                                %>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-exclamation-lg text-danger" viewBox="0 0 10 17">
+                                    <path d="M7.005 3.1a1 1 0 1 1 1.99 0l-.388 6.35a.61.61 0 0 1-1.214 0L7.005 3.1ZM7 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z"/>
+                                </svg>
+
+
+                                <%
                                         out.println(appointmentNotMadeHeader);
                                     }
                                 %>
                             </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <%
-                                if (appointmentMade) {
-                                    out.println(appointmentMadeStr);
+                            <p class="text-center">
+                                <%
+                                    if (appointmentMade) {
+                                %>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-check2-circle text-success" viewBox="0 0 16 16">
+                                    <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/>
+                                    <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
+                                </svg>
+                                <%
+                                        out.println(appointmentMadeStr);
+
+                                %>
+                            </p>
+                                <%
                                 } else {
-                                    out.println(appointmentNotMadeStr);
-                                }
-                            %>
+
+                                %>
+                            <p class="text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-circle text-danger" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                                <%
+                                        out.println(appointmentNotMadeStr);
+                                    }
+                                %>
+                            </p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
@@ -258,7 +296,8 @@
             <div class="row row-cols-4" style="margin-right: 11px;padding-top: 5px;">
                 <div class="col-10">
                     <div class=" form-floating mt-2" style="padding-right: 0px;">
-                        <input type="text" class="form-control validate-input" id="floatingInputGrid" placeholder="xxx-xxx">
+                        <input type="text" class="form-control validate-input" id="floatingInputGrid"
+                               placeholder="xxx-xxx">
                         <label for="floatingInputGrid">Randevu duzeltmek icin kodu giriniz</label>
                     </div>
                 </div>
@@ -435,7 +474,6 @@
     });
 
 
-
     // Sadece rakam girişine izin ver
     phoneInput.addEventListener("keypress", function (e) {
         // Sadece sayı tuşlarına izin ver (0-9 arası ASCII kodları 48-57 arasındadır)
@@ -472,10 +510,6 @@
         // Değerin başka bir input öğesine atanması
         document.getElementById("interval-type").value = selectedValue;
     };
-
-
-
-
 
 
     const inputElements = document.querySelectorAll('.validate-input');
