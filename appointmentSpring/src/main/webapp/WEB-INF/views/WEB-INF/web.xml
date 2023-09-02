@@ -1,0 +1,41 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+  <context-param>
+    <param-name>propertiesConfigLocation</param-name>
+    <param-value>config/properties.config</param-value>
+  </context-param>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/adminPages/pages-error-404.html</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/adminPages/page-error-500.html</location>
+  </error-page>
+
+
+  <servlet>
+    <servlet-name>indexServelt</servlet-name>
+    <jsp-file>/index.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>indexServelt</servlet-name>
+    <url-pattern>/randevuAl</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>appointmentServelt</servlet-name>
+    <jsp-file>/adminPages/pages-appointments.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>appointmentServelt</servlet-name>
+    <url-pattern>/danisanlar</url-pattern>
+  </servlet-mapping>
+
+</web-app>
+

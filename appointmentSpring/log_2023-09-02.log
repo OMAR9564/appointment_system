@@ -1,0 +1,10 @@
+Date: 2023-09-02 10:14:49,action: ErrorLogin, username: null actionId: Böyle bir kullanıcı adı bulunamadı.ip: 127.0.0.1
+Date: 2023-09-02 10:21:46,action: login, username: null actionId: Giriş başarılı bir şekilde yapıldı.ip: 127.0.0.1
+Date: 2023-09-02 10:25:22,action: login, username: null actionId: Giriş başarılı bir şekilde yapıldı.ip: 127.0.0.1
+Date: 2023-09-02 13:15:00,action: UpdateAppointment, username: hilalK actionId: Kullanıcı Başarılı Bir Şekilde Güncellendi.ip: 127.0.0.1
+Date: 2023-09-02 16:54:28,action: login, username: null actionId: Giriş başarılı bir şekilde yapıldı.ip: 127.0.0.1
+Date: 2023-09-02 16:54:51,action: ProfilEdit, username: hilalK actionId: Profil Başarılı Bir Şekilde Güncellendi.ip: 127.0.0.1
+Date: 2023-09-02 16:55:16,action: TrueForgetPass, username: null actionId: Şifreniz e-posta adresinize gönderildi.ip: 127.0.0.1
+Date: 2023-09-02 16:55:43,action: login, username: null actionId: Giriş başarılı bir şekilde yapıldı.ip: 127.0.0.1
+Date: 2023-09-02 16:56:02,action: ProfilEdit, username: hilalK actionId: Profil Başarılı Bir Şekilde Güncellendi.ip: 127.0.0.1
+Date: 2023-09-02 17:07:04,action: EditDailyOCHour, username: hilalK actionId: Kullanıcı Başarılı Bir Şekilde Güncellendi.ip: 127.0.0.1
