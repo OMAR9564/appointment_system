@@ -16,8 +16,6 @@
 
 <%
     Boolean appointmentMade = null;
-    String requestStr = null;
-    String discroption = null;
 /*
     String selectedDate = null;
 */
@@ -60,9 +58,11 @@
 
     String companyNameTitle = companyName.get(0).getName();
 
+    String requestStr = request.getParameter("message");
+    String discroption = (request.getParameter("dic"));
 
-    requestStr = request.getParameter("message");
-    discroption = request.getParameter("dic");
+
+
     if (discroption == null) {
         discroption = ""; // Varsayılan değeri boş bir dize olarak atadık
     }
@@ -266,14 +266,14 @@
                                     <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/>
                                 </svg>
                                 <%
-                                        out.println(appointmentMadeStr);
+                                    out.println(appointmentMadeStr);
 
                                 %>
                             </p>
-                                <%
-                                } else {
+                            <%
+                            } else {
 
-                                %>
+                            %>
                             <p class="text-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-x-circle text-danger" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -293,7 +293,7 @@
             </div>
 
 
-            <div class="row row-cols-4" style="margin-right: 11px;padding-top: 5px;">
+            <%--<div class="row row-cols-4" style="margin-right: 11px;padding-top: 5px;">
                 <div class="col-10">
                     <div class=" form-floating mt-2" style="padding-right: 0px;">
                         <input type="text" class="form-control validate-input" id="floatingInputGrid"
@@ -304,7 +304,7 @@
                 <div class="col-2" style="padding-top: 5px;padding-left: -1px;padding-right: 15px;margin-right: 0px;">
                     <button type="button" class="btn btn-info mt-2 btn-lg">Info</button>
                 </div>
-            </div>
+            </div>--%>
 
             <%
                 Helper helper = new Helper();
@@ -366,24 +366,28 @@
                         if (locNameCo.equals(Integer.toString(locationNames.get(i).getId()))) {
                             locName = locationNames.get(i).getName();
                         }
+                        locName = locName.replace("Merkezi", "Mer.");
                     }
             %>
 
 
-            <ol class="list-group list-group-numbered mt-5">
-                <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="list-group list-group-numbered mt-5">
+                <div class="list-group-item d-flex justify-content-between align-items-start" style="border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold"><%out.println(firstNameWithSpaceCo + " " + lastNamWithSpaceCo);%></div>
                         <%out.println("Ayın " + appointDayCo + helper.monthEki(Integer.parseInt(appointDayCo))); %> <br>
                         <%out.println(" Saat " + appointTimeCo);%>
                     </div>
+<%--
                     <span class="badge bg-primary rounded-pill me-2"><%out.println(appointIdCo);%></span>
+--%>
                     <br>
-                    <span class="badge bg-success rounded-pill"><%out.println(locName);%></span>
+                    <span class="badge bg-success rounded-pill" style="vertical-align: baseline; text-align: right;"><%out.println(locName);%></span>
 
-                </li>
+                </div>
 
-            </ol>
+            </div>
+
             <%}%>
 
 

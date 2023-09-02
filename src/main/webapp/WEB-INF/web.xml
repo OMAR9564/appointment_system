@@ -19,23 +19,8 @@
   </error-page>
 
 
-  <servlet>
-    <servlet-name>indexServelt</servlet-name>
-    <jsp-file>/index.jsp</jsp-file>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>indexServelt</servlet-name>
-    <url-pattern>/randevuAl</url-pattern>
-  </servlet-mapping>
 
-  <servlet>
-    <servlet-name>appointmentServelt</servlet-name>
-    <jsp-file>/adminPages/pages-appointments.jsp</jsp-file>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>appointmentServelt</servlet-name>
-    <url-pattern>/danisanlar</url-pattern>
-  </servlet-mapping>
+
 
 </web-app>
 

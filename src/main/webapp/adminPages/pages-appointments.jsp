@@ -8,7 +8,8 @@
 <%@ page import="com.bya.GetInfo" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.bya.Helper" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+        <%@ page import="java.net.URLDecoder" %>
+        <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
     //startcontrol is login
@@ -165,7 +166,7 @@
         } else if (filter != null && filter.equals("thisMonth")) {
             sqlQuery = "SELECT * FROM `appointments`\n" +
                     "WHERE YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE())\n" +
-                    "  AND `doctorId` = 2\n" +
+                    "  AND `doctorId` = ?\n" +
                     "ORDER BY `date` DESC, `startHour` DESC;\n";
             info = consql.getAppointmentData(sqlQuery, _doctorId);
             filterName = "Bu Ay";
@@ -222,9 +223,13 @@
         String appointmentNotMadeStr = "";
         String messageHeader = "Işlemi sonucu";
 
-        requestStr = request.getParameter("message");
-        discroption = request.getParameter("dic");
+        String messageParam = request.getParameter("message");
+        String dicParam = request.getParameter("dic");
 
+        if (messageParam != null && dicParam != null) {
+            requestStr = URLDecoder.decode(messageParam, "UTF-8");
+            discroption = URLDecoder.decode(dicParam, "UTF-8");
+        }
         if (discroption == null) {
             discroption = "Randevunuz Başarılı Bir Şekilde Alındı.";
         }

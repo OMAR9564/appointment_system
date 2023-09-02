@@ -11,6 +11,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="com.bya.Helper" %>
+<%@ page import="java.net.URLDecoder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -148,9 +149,13 @@
     String appointmentNotMadeStr = "";
     String messageHeader = "Işlemi sonucu";
 
-    requestStr = request.getParameter("message");
-    discroption = request.getParameter("dic");
+        String messageParam = request.getParameter("message");
+        String dicParam = request.getParameter("dic");
 
+        if (messageParam != null && dicParam != null) {
+            requestStr = URLDecoder.decode(messageParam, "UTF-8");
+            discroption = URLDecoder.decode(dicParam, "UTF-8");
+        }
     if (discroption == null) {
         discroption = "";
     }
