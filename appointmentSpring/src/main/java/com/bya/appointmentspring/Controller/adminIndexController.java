@@ -16,7 +16,7 @@ public class adminIndexController {
             request.setAttribute("dic", dic);
         }
     }
-    @RequestMapping({"/kontrolPaneli", "/kontrolPaneli/"})
+    @RequestMapping("/kontrolPaneli")
     public String controlPanel(
             @RequestParam(name = "message", required = false) String message,
             @RequestParam(name = "dic",required = false) String dic,
@@ -25,6 +25,14 @@ public class adminIndexController {
         return "adminPages/index";
     }
 
+    @RequestMapping( "/kontrolPaneli/")
+    public String redirectcontrolPanel(
+            @RequestParam(name = "message", required = false) String message,
+            @RequestParam(name = "dic",required = false) String dic,
+            HttpServletRequest request) {
+        setAttributes(request, message, dic);
+        return "redirect:/kontrolPaneli";
+    }
 
 
 

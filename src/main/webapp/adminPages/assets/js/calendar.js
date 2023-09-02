@@ -57,57 +57,49 @@ function showMonthWithSpecialDays(month, year, specialDays) {
     // Get the number of days in the month
     const numDays = getNumDaysInMonth(month, year);
 
-    // Get the index of the first day of the month (0-6, Sun-Sat)
-    const firstDayIndex = new Date(year, month, 1).getDay();
+    const firstDayIndex = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
 
-    // Günleri içeren bir dizi
-
-
-    // Add empty day elements for days before the first day of the month
-    for (let i = 1; i < firstDayIndex; i++) {
+// Add empty day elements for days before the first day of the month
+    for (let i = 0; i < firstDayIndex; i++) {
         const emptyDayEl = document.createElement("div");
-        emptyDayEl.classList.add("day");
+        emptyDayEl.classList.add("day", "empty");
         daysContainer.appendChild(emptyDayEl);
     }
 
-    // Add day elements for each day of the month
+// Add day elements for each day of the month
     for (let j = 1; j <= numDays; j++) {
         const dayEl = document.createElement("div");
         dayEl.classList.add("day");
         dayEl.innerHTML = j;
 
-        const date = new Date(year, month, j);
+        const date = new Date(currentYear, currentMonth, j);
         if (!isDateInCurrentMonth(date)) {
             dayEl.classList.add("disabled"); // Add the "disabled" class to non-current month days
             dayEl.style.pointerEvents = "none"; // Disable pointer events for non-current month days
         }
-        const dayOfWeek = date.getDay();
-        console.log(dayOfWeek);
-        // Pazar ve Pazartesi günleri için etkileşimi devre dışı bırak
-        if (specialDays.includes(dayOfWeek)) {
-            dayEl.classList.add("disabled");
-            dayEl.style.pointerEvents = "none";
-        }
 
-        if (year === currentDate.getFullYear() && month === currentDate.getMonth() && j === currentDate.getDate()) {
-            dayEl.classList.add("today"); // Add the "today" class to the current day element
+        const dayOfWeek = (firstDayIndex + j ) % 7; // Calculate the day of the week
+        if (specialDays.includes(dayOfWeek)) {
+            dayEl.classList.add("disabled"); // Gray out special days
+            dayEl.style.pointerEvents = "none"; // Disable pointer events for special days
         }
-        if (new Date(year, month, j) < new Date()) {
-            dayEl.classList.add("disabled"); //Add the "disabled" class
-        }
-        //open today date for admins
+            //open today date for admins
         if (year === currentDate.getFullYear() && month === currentDate.getMonth() && j === currentDate.getDate()) {
             dayEl.classList.remove("disabled");
             dayEl.style.pointerEvents = "auto";
             dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
 
         }
-        else {
-            dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
-
+        if (year === currentDate.getFullYear() && month === currentDate.getMonth() && j === currentDate.getDate()) {
+            dayEl.classList.add("today"); // Add the "today" class to the current day element
         }
+
+        dayEl.addEventListener("click", (event) => selectDay(event, firstDayIndex));
+
         daysContainer.appendChild(dayEl);
     }
+
+
 
     // Add empty day elements for days after the last day of the month
     const lastDayIndex = new Date(year, month, numDays).getDay();
