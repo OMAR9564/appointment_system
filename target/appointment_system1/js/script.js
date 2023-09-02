@@ -1,4 +1,4 @@
-const currentDate = new Date();
+const currentDate = new Date(2023, 7, 31);
 let currentMonth = currentDate.getMonth();
 let currentMonthName = getMonthName(currentMonth);
 let currentYear = currentDate.getFullYear();
@@ -12,6 +12,18 @@ const hourButtonsContainer = document.querySelector(".hour-buttons");
 // Add event listeners to previous and next month buttons
 prevMonthBtn.addEventListener("click", showPrevMonth);
 nextMonthBtn.addEventListener("click", showNextMonth);
+
+
+// Ayın son gününü almak için bir fonksiyon
+const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+// Eğer şu anki gün, ayın son günü ise bir sonraki aya geçin
+if (currentDate.getDate() === lastDayOfMonth) {
+    showNextMonth();
+}
+
+
+
 
 let selectedOption = null
 
@@ -493,3 +505,7 @@ function encryptData(data, key) {
             return encryptedDataWithIV;
         });
 }
+
+
+
+

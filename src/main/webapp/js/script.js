@@ -13,6 +13,18 @@ const hourButtonsContainer = document.querySelector(".hour-buttons");
 prevMonthBtn.addEventListener("click", showPrevMonth);
 nextMonthBtn.addEventListener("click", showNextMonth);
 
+
+// Ayın son gününü almak için bir fonksiyon
+const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+// Eğer şu anki gün, ayın son günü ise bir sonraki aya geçin
+if (currentDate.getDate() === lastDayOfMonth) {
+    showNextMonth();
+}
+
+
+
+
 let selectedOption = null
 
 function saveSelectedOption() {
@@ -493,3 +505,7 @@ function encryptData(data, key) {
             return encryptedDataWithIV;
         });
 }
+
+
+
+
