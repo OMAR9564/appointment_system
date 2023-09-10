@@ -178,6 +178,9 @@ function selectDay(event, firstDayIndex) {
 // Sonucu kontrol etmek için
     console.log("Selected Doctor: " + selectDoctor);
 
+
+
+
     var hours = []; // Boş bir dizi oluşturun
 
     var xhttp = new XMLHttpRequest();
@@ -215,6 +218,7 @@ function selectDay(event, firstDayIndex) {
             }
         }
         console.log(hours.length);
+        hourButtonsContainer.innerHTML = "";
         for (let i = 0; i < hours.length; i++) {
             console.log("om");
             const hourButtonEl = document.createElement("button");
@@ -223,8 +227,8 @@ function selectDay(event, firstDayIndex) {
             hourButtonsContainer.appendChild(hourButtonEl);
 
             // Add event listener to select the hour
-            hourButtonEl.addEventListener("click", () => {
-
+            hourButtonEl.addEventListener("click", (event) => {
+                event.stopPropagation(); // Olayın yayılmasını durdur
                 const selectedHour = hours[i];
                 const selectedDateTime = new Date(currentYear, currentMonth, selectedDayEl.innerHTML, selectedHour);
                 const selectedDateTimeStr = `${selectedDayEl.innerHTML} ${getMonthName(currentMonth)} ${currentYear}, ${selectedHour}`;

@@ -109,6 +109,7 @@ public class takeAppointController {
             return "page404.jsp";
 
         }else {
+            custPhone = helper.formatPhoneNumber(custPhone);
 
             //control inputs
             if (!(helper.checkForSpecialChars(appointYear) && helper.checkForSpecialChars(appointMonth) &&

@@ -404,7 +404,26 @@ public class Helper {
             e.printStackTrace();
         }
     }
+    //control if number is in pattern
+    public static String formatPhoneNumber(String input) {
+        // Sadece rakamları içeren bir desen
+        Pattern digitsPattern = Pattern.compile("^\\d+$");
+        Matcher digitsMatcher = digitsPattern.matcher(input);
 
+        // İstenen formatta bir desen
+        Pattern formattedPattern = Pattern.compile("^\\(\\d{3}\\) \\d{3}-\\d{4}$");
+
+        if (formattedPattern.matcher(input).matches()) {
+            // Gelen input zaten istenen formatta ise, aynı formatı geri döndürün.
+            return input;
+        } else if (digitsMatcher.matches() && input.length() == 10) {
+            // Gelen input sadece rakamlardan oluşuyor ve uzunluğu 10 ise, istenen formata dönüştürün.
+            String formattedNumber = String.format("(%s) %s-%s", input.substring(0, 3), input.substring(3, 6), input.substring(6, 10));
+            return formattedNumber;
+        } else {
+            return "false";
+        }
+    }
     public static boolean isPhoneNumber(String input) {
         // Telefon numarası için düzenli ifade
         String regex = "\\(\\d{3}\\) \\d{3}-\\d{4}|\\d{3}-\\d{3}-\\d{4}";

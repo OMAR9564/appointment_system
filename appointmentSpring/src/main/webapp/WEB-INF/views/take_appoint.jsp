@@ -107,6 +107,7 @@
 
     }else {
 
+        custPhone = helper.formatPhoneNumber(custPhone);
 
         if (!(helper.checkForSpecialChars(appointYear) && helper.checkForSpecialChars(appointMonth) &&
                 helper.checkForSpecialChars(appointDay) && helper.checkForSpecialChars(appointTime) &&

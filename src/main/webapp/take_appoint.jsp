@@ -102,6 +102,7 @@
         response.sendRedirect("page404.jsp");
 
     }else {
+        custPhone = helper.formatPhoneNumber(custPhone);
 
 
         if (!(helper.checkForSpecialChars(appointYear) && helper.checkForSpecialChars(appointMonth) &&
